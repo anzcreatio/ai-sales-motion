@@ -33,6 +33,10 @@
    the full assumptions register to an appendix if needed, keeping the top 10 in §6).
 8. **Claims:** only from the differentiator catalogue and governance pack, attributed as they say.
 9. Customer-facing text has no internal jargon (no MEDDPICC, Gate, evidence tag, D-IDs, track letters).
+10. **Delivery Assurance** (16 Nov 2026): when the deal shows partner delivery risk (new partner, custom or integration
+    lines, core-system integrations, a customer burned before), propose Creatio Delivery Assurance in the Proposal's
+    delivery approach and list the planned reviews in the Partner Pack. Package and price come only from the AE.
+    Internal reference and "can say" lines: `apac-sc-motion/knowledge/DELIVERY-ASSURANCE-v0.1.md`.
 
 ## Steps
 1. Update the Brief from the demo outcome notes (Rule 1). List the changes.

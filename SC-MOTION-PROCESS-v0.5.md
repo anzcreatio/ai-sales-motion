@@ -305,6 +305,7 @@ each other; W5 runs the Gate C consistency check.
 | [Solution Proposal](templates/TEMPLATE-Solution-Proposal-v0.1.md) | Customer | [W5](workflows/W5-Close.md) | Draft v0.1 · mock-tested |
 | [Partner Handover Pack](templates/TEMPLATE-Partner-Handover-Pack-v0.1.md) | Partner | W5 | Draft v0.1 · mock-tested |
 | [AI governance pack lite](AI-GOVERNANCE-PACK-LITE-v0.1.md) | Internal | SC | Draft; official answers pending (9 internal asks) |
+| [Delivery Assurance](apac-sc-motion/knowledge/DELIVERY-ASSURANCE-v0.1.md): framework, 3 packages + Freedom, when to raise it for partner delivery risk, can say / don't say | **Internal only** | SC + AE | v0.1 from the Jan 2026 deck (16 Nov 2026); currency and APAC contact open |
 | [M6 live-change kit](modules/M6-LIVE-CHANGE-KIT-v0.1.md): 4 change tiers, demo rules object, 21-entry catalogue (Core, BFSI, Manufacturing), presenter protocol | SC | Pack owners | Design v0.1 · harvested from Scentia; T1/T2 times not yet measured |
 | [Demo video library plan](modules/VIDEO-LIBRARY-PLAN-v0.1.md) (4 industry videos, scene clips, backup videos; toolkit-recorded) · [Red follow-up email](templates/TEMPLATE-Red-Followup-Email-v0.1.md) (drafted by W2) | Customer (Red/Amber) | Pack owners · AE | Plan v0.1 · videos need built modules; interim = public Creatio videos; hosting tool to decide |
 | **FM v0.6 = plugin skill [`sc-first-meeting`](apac-sc-motion/skills/sc-first-meeting/SKILL.md)** (since 11 Nov 2026): transcript → standard deck + light-config brief (Business Studio, then AI) + meeting plan. Superseded: [FM v0.2](workflows/FM-First-Meeting-Prep.md) and its [3-slide builder](templates/_build/build_first_meeting_slides.py) | SC (customer sees the deck) | SC + Claude | v0.6 (13 Nov: agenda with today's goal = the closing question; meeting card) · v0.5 (13 Nov: asks introduction or detailed demo first) · v0.4 (12 Nov: website + customer documents as inputs) · Phase 0; used on H&G, Suntory, Telkomsel as v0.2 |
@@ -415,6 +416,9 @@ per deal · SE hours used · demo → next-stage conversion · partner feedback 
 ## 15. Changes
 
 ### After v0.5: live-deal updates
+- **16 Nov 2026: Delivery Assurance knowledge (internal).** New `apac-sc-motion/knowledge/DELIVERY-ASSURANCE-v0.1.md`
+  from the Jan 2026 deck: framework, packages, partner-risk signals → package, can say / don't say. Pointers in W5 rule 10
+  and `sc-rfp` step 7 (bid with conditions). Log §4 item 108.
 - **16 Nov 2026: DECK-STANDARD v0.5** (plugin 0.21.0). From the Navalo deck as presented: no caps label above titles, agenda as numbered cards with a solid goal panel, no minutes or owners on the agenda or next-steps slides (in the notes instead). Owners off the slide is a 2-deal pattern (Suntory, Navalo). Log §4 item 98.
 - **12 Nov 2026: token efficiency, no quality change (plugin v0.16.1).** `CONTEXT-HANDOVER.md` cut from ~27k to ~3k
   tokens; the history moved verbatim to `CONTEXT-HANDOVER-LOG.md`, read on demand. This process doc is read only when

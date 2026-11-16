@@ -69,6 +69,8 @@
 
 ## 3. Resume here
 
+- **16 Nov: Delivery Assurance knowledge** (§4 item 108): `apac-sc-motion/knowledge/DELIVERY-ASSURANCE-v0.1.md` (internal; packages, partner-risk signals, can say). Plugin 0.22.0. Open: currency + APAC DA contact; consider DA in the IQumulate delivery model.
+
 - **16 Nov: IQumulate** (§4 item 107): `deals/iqumulate-rh/` prep, internal risk plan `02-cost-risk-plan.md`, workshop 1 draft journey, agenda, invite email. Waiting on Aaron (Steadfast Life facts, delivery model, call to Wai-Lum) and a workshop date.
 
 - **16 Nov: plugin 0.21.0 published** (tag v0.21.0 = 386ae3f): chat section rule, UI kit standard v0.4, **DECK-STANDARD v0.5** (no title kickers, card agenda, owners and minutes in the notes; log §4 item 98). Navalo meeting 2 reviewed (item 96): next = RFP criteria ~Wed 18 Nov.
