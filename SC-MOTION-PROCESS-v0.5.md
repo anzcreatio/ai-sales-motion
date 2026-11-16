@@ -305,6 +305,7 @@ each other; W5 runs the Gate C consistency check.
 | [Solution Proposal](templates/TEMPLATE-Solution-Proposal-v0.1.md) | Customer | [W5](workflows/W5-Close.md) | Draft v0.1 · mock-tested |
 | [Partner Handover Pack](templates/TEMPLATE-Partner-Handover-Pack-v0.1.md) | Partner | W5 | Draft v0.1 · mock-tested |
 | [AI governance pack lite](AI-GOVERNANCE-PACK-LITE-v0.1.md) | Internal | SC | Draft; official answers pending (9 internal asks) |
+| [Confidential terms v0.1](apac-sc-motion/standards/CONFIDENTIAL-TERMS-v0.1.md): a customer's confidential terms stay in the deal folder, generic labels everywhere shared, `confidential.py` scan · [As-built template v0.1](apac-sc-motion/knowledge/TEMPLATE-As-Built-v0.1.md) for existing customers (`sc-guide` mode D) | Internal | SC + Claude | v0.1 (16 Nov 2026, plugin 0.24.0) |
 | [Delivery Assurance](apac-sc-motion/knowledge/DELIVERY-ASSURANCE-v0.2.md): framework, 3 packages + Freedom, when to raise it for partner delivery risk, where it shows up with customers, can say / don't say. No prices in any output | **Internal only** | SC + AE (owner Alex Klochkov) | v0.2 (16 Nov 2026); currency open |
 | [M6 live-change kit](modules/M6-LIVE-CHANGE-KIT-v0.1.md): 4 change tiers, demo rules object, 21-entry catalogue (Core, BFSI, Manufacturing), presenter protocol | SC | Pack owners | Design v0.1 · harvested from Scentia; T1/T2 times not yet measured |
 | [Demo video library plan](modules/VIDEO-LIBRARY-PLAN-v0.1.md) (4 industry videos, scene clips, backup videos; toolkit-recorded) · [Red follow-up email](templates/TEMPLATE-Red-Followup-Email-v0.1.md) (drafted by W2) | Customer (Red/Amber) | Pack owners · AE | Plan v0.1 · videos need built modules; interim = public Creatio videos; hosting tool to decide |
@@ -416,6 +417,10 @@ per deal · SE hours used · demo → next-stage conversion · partner feedback 
 ## 15. Changes
 
 ### After v0.5: live-deal updates
+- **16 Nov 2026: existing customers, confidential terms, who owns what** (plugin 0.24.0, published). New
+  `apac-sc-motion/standards/CONFIDENTIAL-TERMS-v0.1.md` (+ `confidential.py`: generic labels in everything shared,
+  scan before writing); `sc-guide` mode D, the existing-customer path, with `knowledge/TEMPLATE-As-Built-v0.1.md`;
+  `deal_dates.py event`; roadmap `owner` line (DECK-STANDARD v0.5 row). From EDB. Log §4 item 115.
 - **16 Nov 2026: build on top of master stands** (plugin 0.23.0). `DEMO-BAR-v0.3` §6c and `BUILD-RULES-v0.5`: complementary
   use cases are built on top of a neutral master stand (register `apac-sc-motion/library/stands.json`), one customer
   layer at a time, so masters grow into one coherent solution. Log §4 item 109.
