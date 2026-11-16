@@ -18,4 +18,4 @@ Standing rules from Renzo (13 Nov 2026):
 
 **Why:** unnecessary restarts cost stand time; expired tokens look like real bugs; the Bank.AI team needs clean APAC requirements and gaps to build banking features.
 
-**How to apply:** full text in `apac-sc-motion/standards/BUILD-RULES-v0.4.md` and `skills/sc-bank-ai-log/SKILL.md`. Related: [[build-plan-before-build]], [[ai-sales-motion-redesign]].
+**How to apply:** full text in `apac-sc-motion/standards/BUILD-RULES-v0.5.md` and `skills/sc-bank-ai-log/SKILL.md`. Related: [[build-plan-before-build]], [[ai-sales-motion-redesign]].

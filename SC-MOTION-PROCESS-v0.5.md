@@ -416,6 +416,9 @@ per deal · SE hours used · demo → next-stage conversion · partner feedback 
 ## 15. Changes
 
 ### After v0.5: live-deal updates
+- **16 Nov 2026: build on top of master stands** (plugin 0.23.0). `DEMO-BAR-v0.3` §6c and `BUILD-RULES-v0.5`: complementary
+  use cases are built on top of a neutral master stand (register `apac-sc-motion/library/stands.json`), one customer
+  layer at a time, so masters grow into one coherent solution. Log §4 item 109.
 - **16 Nov 2026: Delivery Assurance knowledge (internal).** New `apac-sc-motion/knowledge/DELIVERY-ASSURANCE-v0.1.md`
   from the Jan 2026 deck: framework, packages, partner-risk signals → package, can say / don't say. Pointers in W5 rule 10
   and `sc-rfp` step 7 (bid with conditions). Log §4 item 108.
