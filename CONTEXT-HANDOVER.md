@@ -66,7 +66,7 @@
 
 ## 3. Resume here
 
-- **16 Nov: second machine (Mac)** (§4 item 93): workspace + plugin are git repos for GitHub `anzcreatio`. Workspace pushed to `anzcreatio/ai-sales-motion` 16 Nov. To do: Renzo pushes `apac-sc-motion` himself (`git push -u origin main --tags`; Claude's push was blocked by auto mode), then Mac setup per `_mac-setup/MAC-SETUP.md`.
+- **16 Nov: second machine (Mac)** (§4 item 94): workspace + plugin are git repos for GitHub `anzcreatio`. Workspace pushed to `anzcreatio/ai-sales-motion` 16 Nov. To do: Renzo pushes `apac-sc-motion` himself (`git push -u origin main --tags`; Claude's push was blocked by auto mode), then Mac setup per `_mac-setup/MAC-SETUP.md`.
 
 - **15 Nov: Navalo performance page + labUiKit 0.5.0 (no-code pickers) live on 11014108** (§4 item 89). To do: open the pickers in the designer; Renzo pushes the kit; page into the menu after Monday.
 

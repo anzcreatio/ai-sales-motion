@@ -1,7 +1,7 @@
 # Mac setup: AI Sales Motion on a second machine (16 Nov 2026)
 
 Renzo works on a Windows PC and a Mac, each with its own Creatio Claude seat. The **folder is the source of truth**:
-Claude sessions, memory and artifacts never cross between the two accounts. Decision: `CONTEXT-HANDOVER-LOG.md` §4 item 93.
+Claude sessions, memory and artifacts never cross between the two accounts. Decision: `CONTEXT-HANDOVER-LOG.md` §4 item 94.
 
 ## Where things live
 
