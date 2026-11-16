@@ -75,7 +75,7 @@
 
 - **16 Nov: Delivery Assurance knowledge** (§4 items 108, 110): `apac-sc-motion/knowledge/DELIVERY-ASSURANCE-v0.2.md` (internal; owner Alex Klochkov; no prices in any output, chat only with a warning). Hooked into first meeting, deck, workshop, meeting review, RFP, W5. Plugin 0.22.0 (not published). Open: currency; consider DA in the IQumulate delivery model.
 
-- **16 Nov: IQumulate** (§4 item 107): `deals/iqumulate-rh/` prep, internal risk plan `02-cost-risk-plan.md`, workshop 1 draft journey, agenda, invite email. Direction: customer-led path with Creatio Delivery Assurance (item 111: DA section in the risk plan, package #2 recommended). Next: Renzo + Aaron brief Alex Klochkov (package, cost, AU capacity). Waiting on Aaron (Steadfast Life facts, 12 Nov call notes, Koncept) and a workshop date.
+- **16 Nov: IQumulate** (§4 items 107, 111, 114): `deals/iqumulate-rh/`. Decided: customer-led backed by Delivery Assurance (package #2 recommended, confirm with Alex Klochkov); strong PM raised internally only; five delivery controls answer the Steadfast Life failures. Drafted for Renzo to send: `04-aaron-brief.md` (Koncept, Alex/DA incl. PM cover, call plan + qualifying questions) and `05-technical-questions.md` (Velvetech Zoom Contact Center; Creatio tech Snowflake ≤5 min). Next: Aaron's call → workshop 1 early Dec.
 
 - **16 Nov: plugin 0.21.0 published** (tag v0.21.0 = 386ae3f): chat section rule, UI kit standard v0.4, **DECK-STANDARD v0.5** (no title kickers, card agenda, owners and minutes in the notes; log §4 item 98). Navalo meeting 2 reviewed (item 96): next = RFP criteria ~Wed 18 Nov.
 
