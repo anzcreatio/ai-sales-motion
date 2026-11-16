@@ -415,7 +415,7 @@ per deal · SE hours used · demo → next-stage conversion · partner feedback 
 ## 15. Changes
 
 ### After v0.5: live-deal updates
-- **16 Nov 2026: DECK-STANDARD v0.5** (plugin 0.21.0). From the Navalo deck as presented: no caps label above titles, agenda as numbered cards with a solid goal panel, no minutes or owners on the agenda or next-steps slides (in the notes instead). Owners off the slide is a 2-deal pattern (Suntory, Navalo). Log §4 item 97.
+- **16 Nov 2026: DECK-STANDARD v0.5** (plugin 0.21.0). From the Navalo deck as presented: no caps label above titles, agenda as numbered cards with a solid goal panel, no minutes or owners on the agenda or next-steps slides (in the notes instead). Owners off the slide is a 2-deal pattern (Suntory, Navalo). Log §4 item 98.
 - **12 Nov 2026: token efficiency, no quality change (plugin v0.16.1).** `CONTEXT-HANDOVER.md` cut from ~27k to ~3k
   tokens; the history moved verbatim to `CONTEXT-HANDOVER-LOG.md`, read on demand. This process doc is read only when
   a task changes the motion or needs §8. Deck checks: every slide on the first build, then only changed slides unless
