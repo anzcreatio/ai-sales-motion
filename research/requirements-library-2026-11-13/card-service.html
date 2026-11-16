@@ -1,0 +1,104 @@
+<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Omnichannel customer service meeting card</title><style>
+:root{--ink:#1d2433;--body:#3b4252;--grey:#6b7280;--acc:#ff4013;--teal:#0b7a75;--soft:#f6f7f9;--line:#e5e7eb;--draft:#7a5300;--draft-bg:#fff6e0}
+*{box-sizing:border-box}body{margin:0;font:15px/1.45 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--body);background:#fff}
+.wrap{max-width:860px;margin:0 auto;padding:16px}
+h1{font-size:22px;color:var(--ink);margin:4px 0 2px}.sub{color:var(--grey);font-size:13px;margin-bottom:12px}
+.draft{background:var(--draft-bg);color:var(--draft);border-radius:8px;padding:8px 12px;font-weight:600;margin:8px 0}
+.moves{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 16px}
+.move{background:var(--soft);border-radius:10px;padding:10px 12px}.move b{display:block;color:var(--acc);font-size:12px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+.move span{color:var(--ink);font-weight:600}
+.top3{border:2px solid var(--acc);border-radius:12px;padding:10px 14px;margin:0 0 18px}
+.top3 h2{font-size:15px;color:var(--acc);margin:2px 0 8px;text-transform:uppercase;letter-spacing:.04em}
+.top3 li{margin:4px 0;color:var(--ink)}
+details{border:1px solid var(--line);border-radius:10px;margin:0 0 10px;background:#fff}
+summary{cursor:pointer;padding:10px 14px;font-weight:700;color:var(--ink);list-style:none}
+summary::-webkit-details-marker{display:none}summary small{color:var(--grey);font-weight:400}
+.stage{padding:0 14px 6px}.stage h3{font-size:13px;color:var(--teal);text-transform:uppercase;letter-spacing:.05em;margin:10px 0 4px}
+.line{border-top:1px solid var(--line);padding:8px 0}.line:first-of-type{border-top:0}
+.req{color:var(--ink);font-weight:600}.why{font-size:14px}.meta{font-size:12px;color:var(--grey);margin-top:2px}
+.chip{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;margin-right:4px;vertical-align:1px}
+.proven{background:#e6f4f1;color:var(--teal)}.standard{background:#eef2ff;color:#3949ab}.first{background:#ffe9e2;color:var(--acc)}
+.check{background:var(--draft-bg);border-radius:10px;padding:10px 14px;margin:14px 0}.check h2{font-size:14px;margin:0 0 6px;color:var(--draft)}
+.foot{color:var(--grey);font-size:12px;margin:18px 0 8px}
+@media (max-width:600px){.moves{grid-template-columns:1fr}}
+</style></head><body><div class='wrap'>
+<h1>If they ask what they need: Omnichannel customer service</h1>
+<div class='sub'>Internal, for the SC only · built 2026-11-13 from the requirements library</div>
+<div class='draft'>DRAFT: includes lines Renzo hasn't approved yet. Don't rely on unapproved lines in a meeting.</div>
+<div class='moves'><div class='move'><b>1 · Peers</b><span>"What we see at organisations like yours is…"</span> 2-3 lines from their stage</div><div class='move'><b>2 · Recommend</b><span>"For you, I'd start with…"</span> the top 3 below</div><div class='move'><b>3 · Ask</b><span>"Which of these matter most to you?"</span> their ranking goes in the review as C</div></div>
+<div class='top3'><h2>I'd start with</h2><ol>
+<li>Emails to our service addresses become cases automatically, with the customer identified and an acknowledgement sent. <span class='chip standard'>standard</span></li>
+<li>Agents see the customer&#x27;s details, products, open cases and recent contacts on one screen. <span class='chip standard'>standard</span></li>
+<li>Each case is routed to the right team by its category and priority, from rules the service team maintains. <span class='chip standard'>standard</span></li>
+</ol></div>
+<details open><summary>Contact intake and routing <small>· 9 lines</small></summary>
+<div class='stage'><h3>Capture from every channel</h3>
+<div class='line'><span class='chip standard'>standard</span><span class='chip first'>start here</span><div class='req'>Emails to our service addresses become cases automatically, with the customer identified and an acknowledgement sent.</div><div class='why'>Enquiries sit in shared inboxes with no owner and no record.</div><div class='meta'>Show: standard: email-to-case with automatic acknowledgement</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Chat conversations are handled in the same workspace as emails and saved to the customer&#x27;s history.</div><div class='why'>Each channel has its own tool, so agents don&#x27;t see what was said elsewhere.</div><div class='meta'>Show: standard: omnichannel chat in the agent workspace, linked to the contact · D2</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Staff log a phone or walk-in enquiry as a case in under a minute from the customer&#x27;s record.</div><div class='why'>Contacts that aren&#x27;t logged can&#x27;t be followed up or measured.</div><div class='meta'>Show: configure: quick-add case page (P11)</div></div>
+</div>
+<div class='stage'><h3>Identify the customer</h3>
+<div class='line'><span class='chip standard'>standard</span><span class='chip first'>start here</span><div class='req'>Agents see the customer&#x27;s details, products, open cases and recent contacts on one screen.</div><div class='why'>Agents switch between several screens to see one customer.</div><div class='meta'>Average handle time (AU contact centres): ~537 s (~9 min), self-reported (source: CORE pack v0.2 §4, ACXPA, year not named, Medium) · Show: standard: Customer 360 page with cases and activities · D2</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Agents see whether the customer has contacted us about the same issue recently.</div><div class='why'>Repeat contacts aren&#x27;t spotted, so customers explain their issue again.</div><div class='meta'>First-contact resolution: average ~69% (range 43–88%); 70–79% good; 80%+ world-class (~5% of centres); complaints ~48% (source: CORE pack v0.2 §4, SQM Group 2024, Strong) · Show: standard: case history on the customer and the case</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Vulnerable-customer or priority flags show on every case for that customer.</div><div class='why'>Agents treat vulnerable or priority customers the same as everyone else.</div><div class='meta'>Show: configure: flag on the customer shown on the case by a business rule</div></div>
+</div>
+<div class='stage'><h3>Classify and route</h3>
+<div class='line'><span class='chip standard'>standard</span><span class='chip first'>start here</span><div class='req'>Each case is routed to the right team by its category and priority, from rules the service team maintains.</div><div class='why'>Cases are misrouted and transferred between teams.</div><div class='meta'>Show: configure: assignment rules as data read by the routing process (P04) · D4</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>AI reads an incoming email, suggests the category and priority, and drafts a first reply for the agent to confirm.</div><div class='why'>Triage takes agent time before any work on the case starts.</div><div class='meta'>Show: configure: AI step on case creation suggests category and drafts a reply; agent confirms (AI-T2, P12, P07) · D3</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Complaints and urgent cases are flagged and routed to a specialist team.</div><div class='why'>Complaints wait in the general queue and miss their deadlines.</div><div class='meta'>First-contact resolution: average ~69% (range 43–88%); 70–79% good; 80%+ world-class (~5% of centres); complaints ~48% (source: CORE pack v0.2 §4, SQM Group 2024, Strong) · Show: configure: case type and priority rules route to the complaints team</div></div>
+</div>
+</details>
+<details><summary>Resolution and knowledge <small>· 9 lines</small></summary>
+<div class='stage'><h3>Resolve first time</h3>
+<div class='line'><span class='chip standard'>standard</span><span class='chip first'>start here</span><div class='req'>Agents find the right answer in a shared knowledge base without leaving the case.</div><div class='why'>Knowledge is hard to find, so answers vary and cases get escalated.</div><div class='meta'>Time spent searching for information: ~19% of a knowledge worker&#x27;s time (source: CORE pack v0.2 §4, McKinsey 2012, Medium, old; label it) · Show: standard: knowledge base linked to cases</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Agents reply using approved templates that fill in the customer&#x27;s details.</div><div class='why'>Agents write the same replies from scratch, and quality varies.</div><div class='meta'>Show: standard: email templates on the case</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>AI suggests a reply drawn from the knowledge base, which the agent edits before sending.</div><div class='why'>Agents spend time finding and rewording policy answers.</div><div class='meta'>Average handle time (AU contact centres): ~537 s (~9 min), self-reported (source: CORE pack v0.2 §4, ACXPA, year not named, Medium) · Show: configure: AI skill on the case drafts from knowledge articles; agent sends (AI-T7, P07) · D3</div></div>
+</div>
+<div class='stage'><h3>Escalate and approve</h3>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Cases that need a specialist are escalated with the full history, so the customer doesn&#x27;t repeat themselves.</div><div class='why'>Customers repeat their story at every hand-off.</div><div class='meta'>First-contact resolution: average ~69% (range 43–88%); 70–79% good; 80%+ world-class (~5% of centres); complaints ~48% (source: CORE pack v0.2 §4, SQM Group 2024, Strong) · Show: standard: case reassignment to a group with history and feed</div></div>
+<div class='line'><span class='chip standard'>standard</span><span class='chip first'>start here</span><div class='req'>Refunds or goodwill payments above a set amount go to a manager for approval, and the decision is kept on the case.</div><div class='why'>Approvals wait in inboxes and the SLA slips.</div><div class='meta'>Show: configure: approval step in the case process with the limit as data (as Navalo step 5) · D4</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Every case has one named owner until it is closed.</div><div class='why'>Cases with no clear owner are not resolved first time.</div><div class='meta'>Show: standard: case owner and assignee</div></div>
+</div>
+<div class='stage'><h3>After-contact work</h3>
+<div class='line'><span class='chip standard'>standard</span><span class='chip first'>start here</span><div class='req'>AI summarises a call or chat into the case and proposes follow-up tasks, and the agent confirms before anything is saved.</div><div class='why'>After-contact notes take agent time on every contact.</div><div class='meta'>After-call work: ~45–60 s per contact (vendor data, India); our estimate 30 s–2 min (source: CORE pack v0.2 §4, Weak) · Show: configure: AI skill writes the summary and tasks; agent confirms; confirmation logged (AI-T4, P07) · D3</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Follow-up tasks and callbacks are created with a due date and appear in the owner&#x27;s list.</div><div class='why'>Callbacks are promised and forgotten.</div><div class='meta'>Show: standard: tasks on the case with due dates</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Agents see every task and callback due today across all their cases in one list.</div><div class='why'>Follow-ups spread across cases are easy to miss.</div><div class='meta'>Show: standard: task list filtered to the agent and today</div></div>
+</div>
+</details>
+<details><summary>Service levels <small>· 9 lines</small></summary>
+<div class='stage'><h3>Set targets</h3>
+<div class='line'><span class='chip standard'>standard</span><span class='chip first'>start here</span><div class='req'>Response and resolution targets are set by case type, priority and customer, and the service team changes them without IT.</div><div class='why'>Service level rules are fixed in the system or tracked by hand.</div><div class='meta'>Show: standard: service agreements and SLA by priority; changed by a business user (D4) · D4</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Service deadlines count business hours and public holidays for each region.</div><div class='why'>Deadlines that ignore working hours give false breaches and false comfort.</div><div class='meta'>Show: standard: working-time calendars on service agreements</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Contracted service levels for business customers apply automatically to their cases.</div><div class='why'>Contract terms are checked by hand case by case.</div><div class='meta'>Show: standard: service agreement linked to the customer</div></div>
+</div>
+<div class='stage'><h3>Watch the clock</h3>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Agents see the time left on each case in their queue.</div><div class='why'>Agents work cases in the order they arrived, not by urgency.</div><div class='meta'>Show: standard: response and resolution times on the case list</div></div>
+<div class='line'><span class='chip standard'>standard</span><span class='chip first'>start here</span><div class='req'>Team leaders are alerted to cases close to breaching before it happens.</div><div class='why'>Breaches are found after the fact, not before.</div><div class='meta'>Show: configure: process alerts the team leader at a threshold of time left</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Overdue cases escalate automatically to the team leader.</div><div class='why'>Overdue cases sit with the same person until a customer complains.</div><div class='meta'>Show: configure: escalation process on breach</div></div>
+</div>
+<div class='stage'><h3>Report</h3>
+<div class='line'><span class='chip standard'>standard</span><span class='chip first'>start here</span><div class='req'>Managers see the share of cases resolved within target by team, channel and case type.</div><div class='why'>Service levels are reported by hand at month end.</div><div class='meta'>Show: configure: home page indicators and charts on SLA results (P05)</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Managers see first-contact resolution and repeat contacts by case type.</div><div class='why'>Without the number, nobody knows which issues bring customers back.</div><div class='meta'>First-contact resolution: average ~69% (range 43–88%); 70–79% good; 80%+ world-class (~5% of centres); complaints ~48% (source: CORE pack v0.2 §4, SQM Group 2024, Strong) · Show: configure: indicators on repeat contacts within a set window</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Every change to a case&#x27;s status, owner and deadline is kept for audit.</div><div class='why'>Regulators and customers ask what happened and when.</div><div class='meta'>Show: standard: change log on the case object</div></div>
+</div>
+</details>
+<details><summary>Self-service, feedback and improvement <small>· 9 lines</small></summary>
+<div class='stage'><h3>Self-service</h3>
+<div class='line'><span class='chip standard'>standard</span><span class='chip first'>start here</span><div class='req'>Customers raise and track their cases online and see the same status as the agent.</div><div class='why'>Customers call to ask &#x27;where is it?&#x27;.</div><div class='meta'>Issues fully resolved in self-service: ~14% (source: CORE pack v0.2 §4, Gartner Aug 2024, Strong) · Show: standard: self-service portal on the same case record · D2</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Customers search the same knowledge articles online that agents use.</div><div class='why'>Customers contact the service team for answers that already exist.</div><div class='meta'>Issues fully resolved in self-service: ~14% (source: CORE pack v0.2 §4, Gartner Aug 2024, Strong) · Show: standard: knowledge base published on the portal</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Customers can add information or documents to their open case online.</div><div class='why'>Information sent by email gets separated from the case.</div><div class='meta'>Show: standard: portal case page with messages and attachments</div></div>
+</div>
+<div class='stage'><h3>Close and feedback</h3>
+<div class='line'><span class='chip standard'>standard</span><span class='chip first'>start here</span><div class='req'>Customers rate the service when their case is closed, and low scores open a follow-up.</div><div class='why'>Service quality is only measured through complaints.</div><div class='meta'>Show: configure: standard satisfaction rating on closing plus a follow-up process for low scores</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>A case reopens when the customer replies that the problem isn&#x27;t fixed.</div><div class='why'>Unresolved issues come back as new cases and hide repeat contacts.</div><div class='meta'>First-contact resolution: average ~69% (range 43–88%); 70–79% good; 80%+ world-class (~5% of centres); complaints ~48% (source: CORE pack v0.2 §4, SQM Group 2024, Strong) · Show: standard: case reopens on customer reply</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Agents close each case with a resolution category and a root cause.</div><div class='why'>Root causes aren&#x27;t tracked, so the same issues keep coming back.</div><div class='meta'>Show: configure: required closing fields</div></div>
+</div>
+<div class='stage'><h3>Learn and change</h3>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Managers see the top root causes of repeat contacts each month.</div><div class='why'>Improvement work starts from opinions, not data.</div><div class='meta'>First-contact resolution: average ~69% (range 43–88%); 70–79% good; 80%+ world-class (~5% of centres); complaints ~48% (source: CORE pack v0.2 §4, SQM Group 2024, Strong) · Show: configure: chart of root causes on repeat cases (P05)</div></div>
+<div class='line'><span class='chip standard'>standard</span><span class='chip first'>start here</span><div class='req'>The service team adds a new case type with its own fields, steps and targets the same day, without IT.</div><div class='why'>Every process change waits in the IT backlog.</div><div class='meta'>Show: configure: live change of a case type and its rule row (M6 T1/T2) · D1</div></div>
+<div class='line'><span class='chip standard'>standard</span><div class='req'>Knowledge articles are reviewed on a schedule and flagged when they are out of date.</div><div class='why'>Outdated articles give customers and agents the wrong answer.</div><div class='meta'>Show: configure: review date on articles and a reminder process</div></div>
+</div>
+</details>
+<div class='foot'>"Start here" and "we can show you" lines are proven on a demo or standard in the product. Anything not on this card: "we'll confirm in writing". Claims only from the differentiator catalogue.</div>
+</div></body></html>

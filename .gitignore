@@ -1,0 +1,24 @@
+# Workspace repo (private, anzcreatio/ai-sales-motion). The plugin is its own repo.
+apac-sc-motion/
+
+# Deals live on SharePoint (link), never in git
+deals
+_deals-local-backup-*/
+
+# Build/stand working copies, caches
+.devkit/
+.clio-pages/
+node_modules/
+__pycache__/
+*.pyc
+~$*
+.DS_Store
+
+# Customer content: real deal transcripts and pricing
+tests/w2-v0.2-01-suntory-oceania/
+tests/w2-v0.2-02-perth-radiological-clinic/
+research/pricing-2026-11-13/BOM-EXAMPLE-*.xlsx
+
+# Never commit credentials
+CREDENTIALS.md
+**/CREDENTIALS.md

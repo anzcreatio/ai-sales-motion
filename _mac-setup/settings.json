@@ -1,0 +1,50 @@
+{
+  "enabledPlugins": {
+    "creatio-ai-app-development-toolkit@creatio": true,
+    "creatio-demo-toolkit@creatio-demo-lab": true,
+    "ai-driven-ai-studio@ai-driven-apps": false,
+    "ai-driven-atlassian@ai-driven-apps": true,
+    "ai-driven-delivery-assurance-review@ai-driven-apps": false,
+    "ai-driven-development-kit@ai-driven-apps": false,
+    "ai-driven-plugin-auditor@ai-driven-apps": true,
+    "ai-driven-project-estimation@ai-driven-apps": true,
+    "ai-driven-video-to-document@ai-driven-apps": true,
+    "apac-sc-motion@apac-sc": true
+  },
+  "extraKnownMarketplaces": {
+    "creatio": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/Creatio-Platform/creatio-ai-app-development-toolkit.git"
+      },
+      "autoUpdate": true
+    },
+    "claude-plugins-official": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/anthropics/claude-plugins-official.git"
+      }
+    },
+    "creatio-demo-lab": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/isavenkocreatio/creatio-demo-toolkit.git"
+      }
+    },
+    "ai-driven-apps": {
+      "source": {
+        "source": "git",
+        "url": "https://tscore-git.creatio.com/global-customer-success/ai-driven-apps/ai-driven-apps-marketplace.git"
+      },
+      "autoUpdate": false
+    },
+    "apac-sc": {
+      "source": {
+        "source": "directory",
+        "path": "<MAC PATH>/APAC Solution Consulting - Documents/Plugin/apac-sc-motion"
+      }
+    }
+  },
+  "autoUpdatesChannel": "latest",
+  "agentPushNotifEnabled": true
+}

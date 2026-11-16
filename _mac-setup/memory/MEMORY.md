@@ -1,0 +1,8 @@
+- [AI sales motion redesign](ai-sales-motion-redesign.md) — 3 SCs/8 AEs, SE optional, banking then manufacturing, process-first, two presales docs
+- [Challenge me](challenge-me.md) — call out better alternatives and wrong directions; don't just agree (all chats; also in global CLAUDE.md)
+- [Questions first](questions-first.md) — questions at the top of every message; 3 pre-build questions before any demo config
+- [Build plan before build](build-plan-before-build.md) — visual build plan (storyboard + wireframes) approved by the SC before any stand write
+- [Agenda: no questions-first slot](agenda-no-questions-first.md) — success criteria before the meeting, never an open slot on the agenda
+- [clio MCP reads a stale app copy](clio-register-outside-claude-app.md) — check BOTH appsettings files (PowerShell) before telling Renzo where to register; the MSIX copy comes back; never use show-web-app-list
+- [Build rules + Bank.AI log](build-rules-and-bank-ai.md) — ask before compile/restart (refresh first), token check on failures, rollback plan before custom/code, BFSI deals feed Bank.AI
+- [Demo depth first](demo-depth-first.md) — new deal: ask intro vs detailed demo first; detailed = pack best practice + Full demo plan

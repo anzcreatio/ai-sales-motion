@@ -1,0 +1,973 @@
+# Context handover log: history behind CONTEXT-HANDOVER.md
+
+Moved out of `CONTEXT-HANDOVER.md` on 12 Nov 2026 so that every session doesn't have to read ~27k tokens of
+history. Nothing was removed or reworded. Read the section you need, when you need it:
+
+| Need | Section |
+|---|---|
+| clio / Creatio build facts and gotchas | §2 |
+| What we built before the motion | §3 |
+| Why a motion decision was made ("§4 item N" in other files points here) | §4 |
+| Full history of a deal before 12 Nov 2026 | §5a (newer status lives in the deal folder) |
+
+---
+
+## 2. Toolchain and environment facts
+
+- **clio** is the Creatio CLI and MCP server. The clio MCP has resident tools (`get-page`, `list-pages`, `validate-page`,
+  `get-entity-schema-properties`, `get-tool-contract`, `get-guidance`); everything else goes through
+  `clio-run {"command": ..., "args": {...}}`. Always read `get-guidance core-rules` and `routing` first.
+- **Claude desktop is MSIX-packaged on Windows.** clio envs registered in a normal terminal are invisible to Claude
+  until `%LOCALAPPDATA%\creatio\clio\appsettings.json` is copied to
+  `%LOCALAPPDATA%\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Local\creatio\clio\appsettings.json` (back it up first) and
+  Claude is restarted. Renzo does the registration (`clio reg-web-app`) himself.
+- **Plugin conflicts** (startup hook warnings): `ai-driven-delivery-assurance-review` can block clio, `ai-driven-development-kit`'s
+  guard prompts on every stand write, and `ai-driven-ai-studio` duplicates the toolkit's AI Studio executor. For demo
+  work, tell him to disable them (`claude plugin disable <name>@ai-driven-apps`). Never change his settings yourself.
+- **creatio-demo-toolkit (v4.0.12 installed, 5 Nov 2026)** skills that matter for the sales-motion redesign:
+  | Stage | Skill |
+  |---|---|
+  | Stand prep (prefix, branding, flags) | `creatio-demo-prep` |
+  | Script → approved runbook | `creatio-demo-runbook` |
+  | SE review page (use cases, model, processes, open questions) | `creatio-demo-artifact` |
+  | Full autonomous build from a runbook | `creatio-demo-build` (orchestrator) |
+  | Small changes on an existing demo | `creatio-demo-spot` |
+  | Clone pages from proven donors | `creatio-golden-pages` |
+  | Move artefacts between demos / export packages | `creatio-demo-clone`, `creatio-cross-demo-page-copy` |
+  | Prove each use case end to end + reset | `creatio-uc-readiness` |
+  | Click-path doc and carousel | `creatio-demo-clickpass` |
+  | Recorded demo video (browser / phone) | `creatio-demo-video-browser`, `creatio-demo-video-phone` |
+  | AI Studio agents, AI skills | `creatio-ai-studio`, `ai-studio-*`, `creatio-ai-skill-prompts` |
+  | Effort estimates for partners | `ai-driven-project-estimation:*` |
+
+  The toolkit's workspace template (`README.md` in any demo folder) already defines `project-state.json`,
+  `components/manifest.json`, readiness verdicts, `PLAN.md` work packages and a hand-over folder. This is the
+  skeleton for standardising.
+
+### Build gotchas learned the hard way (clio 8.1, Creatio 10.0)
+- **Process formulas that read element results** (`[#ReadX.ResultEntity.Col#]`) are not expanded on create or modify.
+  First create with placeholders. Then run `describe-business-process` (save the output to a file because it is huge).
+  Then `setElement` the body in UId meta-path form. Flow conditions with names work on create but not on modify.
+- **Record-modified signals see the record before the new status.** Use one process per target status, each
+  filtered on that status.
+- **Change live processes** with `modify-business-process-as-new-version` and then `set-active-business-process-version`.
+  To roll back, activate the root version. Versions cannot be deleted.
+- **Timer starts cannot be built through clio.** Set them in the process designer, which is a manual step.
+- **clio bug:** the process filter `isNotNull` is saved as IS NULL, so avoid it.
+- **DIFF-body pages:** put list `dependencies` inside the ROOT merge op. A separate `merge path ["dependencies"]` is
+  silently dropped, and expanded lists then show all records.
+- **A custom quick filter** must repeat the chip `config` inside `_filterOptions.expose[].converters[].args[0].config`.
+  If it doesn't, the whole list breaks at runtime.
+- **Data bindings are snapshots.** `create-data-binding-db` adopts rows by **Name**, so duplicate names bind the wrong
+  Id. `upsert-data-binding-row-db` fails on RichText. The API user cannot delete SysPackageSchemaData.
+- **DataService datetimes** must be quoted `"\"yyyy-MM-ddTHH:mm:ss.000\""`. Insert records one per request when a
+  process triggers on insert, because batch inserts race.
+- **Package hygiene:** put new columns in the base package, not the app design package (otherwise you get cyclic
+  dependencies). Never add the server-built app package to a `clio push-workspace` folder, because it wipes the
+  server schemas. Selected-package Delete in Configuration removed **both** packages of the same name (incident
+  1 Nov 2026).
+- **Telephony emulator** needs a `SysMsgUserSettings` row per user (Profile → Call Center parameters → Save).
+- **After a UI (Angular) deploy**, browsers cache old chunks. Use a private window before a demo.
+- **Auto mode** blocks rights changes. Renzo must switch to manual mode for record-rights work.
+
+---
+
+## 3. What we have built together (portfolio, Sep–Nov 2026)
+
+Each project lives in its own folder under `C:\Projects\Workspaces\` (or the OneDrive `RH - Claude Local` folder).
+**Count the sandboxes.** Almost every deal got its own instance and was built from scratch. That is the inefficiency
+he now wants to fix.
+
+| Deal / prospect | Industry · country | Instance (clio env) | Package | What was built | Reusable asset? |
+|---|---|---|---|---|---|
+| **Pertamina** CRM + AI + Omnichannel tender | Energy SOE · ID | `11013739-demo` | `UsrTenant` | 90-scenario scored POC. Logical multi-tenancy (tenant object + org roles + rights processes), ticketing (routing/SLA, L1–L3 escalation, merge), bilingual KB, AI-interaction log + dashboard, tenant control centre. Voice AI = Velvetel (Marketplace). Self-scoring workbook passes 1–3 (95.3 best / 80.0 risk-adjusted). | Multi-tenant service pattern; scoring method for tenders |
+| **SJOG** Pastoral Care | Healthcare · AU | `11013231-demo` | `UsrPastoralVisit` | Pastoral visits, bereavement case + DCM, referrals, follow-up plan, dashboards | Healthcare case pattern. Used as a reference on the Pact call |
+| **GOC NSW Greek Schools** (partner-led) | Education / community · AU | `11014107-demo` | `UsrEnrolment` | Parent portal, enrolment + sibling/membership pricing, family order as one basket, payments, DCM, government funding claims, parish services, Creatio.ai skills. Decisions log: `G.O/Greek Schools - Build Decisions.md` | Enrolment + portal + order pattern |
+| **Sovico Group** C360 | Conglomerate · VN | `sovico-demo` | `labSovico360` | Customer 360 contact page, offer catalogue, churn, AI briefing skill | C360 + AI skill pattern |
+| **Ord Minnett → Profectus** | Wealth mgmt · AU | `11013904-demo` | `labOrdMinnett` → `labWealthMgmt`, `labClientDocuments` | Already the **team's reusable wealth sandbox**: practice workplace + home, households/holdings, documents lifecycle, paraplanning jobs, talk track. Rule: never write into `labOrdMinnett`; new work goes in a dependent package; reuse existing personas | **First attempt at a master industry sandbox. Learn from it** |
+| **IJN** | Healthcare (cardiac) · MY | (telephony demo) | `UsrTelephonyDemoModule` | Virtual CTI telephony demo: incoming, hold, warm transfer, outbound, patient workspace, presenter guide | Contact-centre/telephony pattern |
+| **Scentia (AIM)** Partner Pack POC | Education / training · AU | `11014147-demo` | `labPartnerPack`, `labPartnerPackUi`, `labScentia` | **Most complete example of the target process:** meeting transcript → attributed transcript → best-practice research → spec → build → rehearsal → click path → developer guide → hand-over to Codex. Employee + client-admin portals (custom Angular), 15+ no-code processes, **rules as data** (`labPackRule`), simulated Salesforce sync, in-app demo reset, dashboard, 10 email templates, **3 rehearsed live changes** (showing agility). Demo ~12 Nov 2026 | **Template for the standard workflow and partner spec** (`Scentia/partnerpack/CLAUDE.md`, `PROMPT-LOG.md`, `spec/PartnerPack_Portal_Spec.md`) |
+| **Conversation-to-Resolution Engine** (Module A) | Product / accelerator | `11013904-demo` (prefix `Rsw`) | `RswConversationCore/Ai/Workspace` | Marketplace-style accelerator research, spec, acceptance tests, partial build. AI blocked by an `invalid_client` identity error | Shows the "build once, reuse as product" idea |
+| **AI Campaign Assurance** (research) | Marketing · product | `11011710-demo` | none | Braze competitive research vs a Creatio Marketing extension | Competitive research method |
+| **Pact Group** | Manufacturing · AU | none yet | none | CIO intro 19 Oct. CRM is OUT of scope (Dynamics). She wants ONE use case (TGA compliance in contract manufacturing?) plus a coexistence architecture with SAP/Microsoft/existing agents. ~30-min slot end of Nov | Proof that differentiators ≠ CRM features |
+| **Mirae Asset** (ID), **PLN Icon Plus** (ID), **Vietjet CDP** (VN) | Finserv / utilities / airline | none | none | RFP answers and reviews only (churn scoring, solar aggregator portal, CDP replacement) | RFP answer patterns |
+
+**Patterns proven across these builds** (strong candidates for the differentiator catalogue and the master sandbox):
+1. **No-code agility, shown live**: change a field + process gateway in front of the customer (Scentia `CHANGES.md`).
+2. **Rules as data**: business people change behaviour without touching a process (`labPackRule`).
+3. **One platform, many apps**: CRM + workflow + portal + case/DCM + dashboards in one data model.
+4. **AI built in**: Creatio.ai skills on records, and AI Studio agents (chat/voice) calling Creatio processes as tools.
+5. **Coexistence**: Creatio on top of existing systems (Xplan/AdviserLogic, Salesforce sync, SAP), not rip-and-replace.
+6. **Speed of delivery with AI**: "Claude + clio built this in N days, and your team can do the same" (Scentia prompt log).
+7. **Composable patterns reused across industries**: portal + order basket, case + SLA + escalation, 360 + AI briefing.
+
+---
+
+## 4. The current discussion: redesign the SC demo motion
+
+### Renzo's description of today's process
+1. Discovery call, sometimes by the AE alone, who asks questions that don't tell us what to configure.
+2. A second discovery call, SC + customer. There is no standard format. It tries to get at business pains so the
+   demo isn't a feature dump that makes no business sense.
+3. Discovery notes are converted into a demo script.
+4. The script goes to a Solution Engineer (SE), who reviews it on a call with the SC.
+5. The SE builds with Claude.
+6. The SE sends the final demo plus video recordings of themselves demoing it to the SC.
+7. The SC reviews.
+
+### His goals
+- **Every customer interaction and every demo must showcase Creatio's differentiators.**
+- **Standardise** as much as possible.
+- **A single master sandbox.**
+- **What we build converts easily into a design specification for the partner.**
+
+### Claude's initial assessment (to discuss, not decided)
+
+**Diagnosis.** There are 7 steps, 3 people and 4 translations: notes → script → SE call → build → video → review.
+Each translation loses pain context, and nothing in the chain *enforces* differentiators, so coverage depends on the
+individual. Every deal starts from an empty sandbox, so nothing compounds. The SE is a per-deal builder. With the
+current tooling the SC can drive most builds directly, as the Scentia build shows.
+
+**Proposed shape: one artefact that flows end to end, three gates.**
+
+| # | Stage | Owner | Output (standard format) | Tooling |
+|---|---|---|---|---|
+| 0 | **Pre-call research** | AE + Claude | 1-page account brief + hypothesised pains + the 5 questions the AE must ask | Claude research; industry pain library |
+| 1 | **One structured discovery** (merge today's 1 + 2 where possible) | SC leads, AE present | Recorded. Claude turns the transcript into a **Discovery Brief**: pains → business impact/KPI → current systems → use cases → **mapped differentiator** → personas/data | Transcript attribution (done for Scentia), question bank keyed to differentiators |
+| 2 | **Brief → Runbook** | SC + Claude | Approved Demo Runbook. **Gate A:** every use case names its pain and its differentiator, and the demo covers the core differentiator set | `creatio-demo-runbook`, `creatio-demo-artifact` |
+| 3 | **Assemble from master** | SC + Claude (SE only for complex items) | ~80% from master-sandbox modules; customer layer = branding + data + thin package | `creatio-demo-prep`, `golden-pages`, `demo-clone`, `demo-spot` |
+| 4 | **Prove and record** | Claude, automated | Readiness verdict per use case (**Gate B**), click path, auto-recorded video | `uc-readiness`, `demo-clickpass`, `demo-video-browser` |
+| 5 | **Partner spec** | Claude, generated | Design spec (objects, rules, processes, pages, integrations, open items, estimate), produced from builder scripts and logs, not written after the fact. **Gate C:** spec matches the readiness-verified build | Scentia `CLAUDE.md` + spec as template; `project-estimation` skills |
+
+**Role shift:** the SE stops being a per-deal builder and becomes the **owner of the master sandbox and its
+modules**. That means harvesting reusable patterns from each deal, building the hard parts (custom components,
+AI Studio voice, integrations), and keeping the golden library green.
+
+**On "a single master sandbox": agree with the intent, but caution.** One literal shared instance breaks down on:
+- one brand at a time;
+- concurrent demos by several SCs;
+- resets colliding with other SCs' demos;
+- customers who need hands-on access (Scentia's developers are getting access);
+- upgrades that hit every live deal at once.
+
+Recommended instead: **one master (golden) sandbox as the source of truth** for modules, personas, seed data and the
+differentiator showcase, with every module exported to git as packages + builder scripts + reset. Per-deal stands
+are **disposable clones** installed from the master in hours, not built in days. The Ord Minnett/Profectus wealth
+sandbox (`labWealthMgmt` depending on `labOrdMinnett`, shared personas, manual reset) is the first live example of
+this layering, and its lessons apply directly.
+
+**Proposed standard building blocks (to agree):**
+- **Differentiator catalogue.** For each differentiator: the pain it answers, a discovery question that surfaces it,
+  a ≤90-second "proof moment", the master-sandbox asset that shows it, and the competitor it beats.
+- **Industry pain libraries.** Start with what we have: wealth, education, healthcare, energy/SOE service,
+  conglomerate C360.
+- **Fixed templates** for the Discovery Brief, Runbook, Readiness verdict and Partner Spec.
+- **Conventions:** `lab` prefix, fixed Id ranges, rules-as-data, an in-app reset, a prompt log, and PROJECT-NOTE.
+- **Metrics:**
+  - days from discovery to demo-ready;
+  - % of demos covering the core differentiators;
+  - module reuse %;
+  - SE hours per deal;
+  - stage conversion and win rate.
+
+### Open questions for Renzo (start the next conversation here)
+1. What is the **official differentiator list**: Creatio corporate messaging, or our own from what wins in APAC?
+   How many should be "must show in every demo"?
+2. Team shape: how many SCs, SEs and AEs? How many demos a month? Is the SE a separate team (global?), or do they
+   report to you?
+3. Which **industries** should the master sandbox cover first? Wealth and education already have assets.
+4. Can the AE be given a scripted pre-call pack, or do we push to merge discovery into one SC-led call?
+5. Partner spec: before or after contract? What format do partners need (Word, Confluence/Jira, Creatio package +
+   doc)? Does it need an effort estimate?
+6. Instance policy: can we get one long-lived master instance plus quick clones, and who in Creatio provisions demo
+   instances?
+7. Is the goal a pilot with your own deals first, or a proposal to APAC leadership (which would need a deck)?
+
+---
+
+### Renzo's answers (2 Nov 2026)
+1. **We define the differentiators ourselves.**
+2. Team: **3 SCs, 8 AEs.** SEs are a shared pool, not allocated, so we are not forced to use them → SC + Claude
+   build by default.
+3. Industries: **Banking first, Manufacturing second**, then it varies.
+4. Partner spec is used **before contract**. Partners are weak at delivery, but presales can never write a full
+   detailed spec. So the partner document must be good enough for a **handover**, after which the partner runs
+   proper discovery and requirements gathering. Also needed: a **standard customer-facing solution document** (sales
+   in nature), based on market best practice from research.
+5. **Pilot locally.**
+6. **No building now.** Design the process first.
+
+### Renzo's answers (2–3 Nov 2026, later in the same conversation)
+7. Customers rarely provide artefacts or detail, so the motion is **hypothesis-led**: our research, industry knowledge
+   and AI form the solution hypothesis, and the customer confirms or corrects it.
+8. Discovery calls are usually **30 min (max 45)**, with **≤20 min of actual discovery**. Minimise customer calls.
+9. Call 2 should be a configured demo (their language, roles and stages), not only hypothesis validation.
+10. AEs are weak at qualifying, so qualification questions are woven into discovery, plus an AI-scored go/no-go.
+11. A generic (not industry-specific) one-page 20-minute discovery card, forked by track. Draft: `TEMPLATE-Discovery-Card-v0.2.md` (v0.1 notes template archived in `_archive/`).
+12. **Industries in scope: BFSI, Manufacturing, General industry.** The motion must be ready for all three
+    (this supersedes "Banking first, then Manufacturing").
+13. Claude must **challenge** Renzo's ideas, not just agree (saved in the global CLAUDE.md).
+14. **AI Studio is bundled with every Business Studio licence** (since 1 May 2026; AI use via credit packages) and can
+    still be sold standalone if necessary. The BDR's CRM / AI Studio fork reflects the buyer's interest, not the licence.
+    (Revised 3 Nov; earlier wording was "sold separately from CRM".)
+15. **The Sales Director sponsors the go/no-go gate.**
+16. AI governance source today: the Creatio Academy "Creatio.ai data privacy" page (gaps mapped in
+    `AI-GOVERNANCE-PACK-LITE-v0.1.md`). **Creatio can host the LLM in-country wherever its cloud model provider has a
+    region, incl. Australia and Indonesia. Don't name the provider (Amazon Bedrock) to customers.** In-region routing,
+    fallback models and AI Studio coverage still need written confirmation.
+17. **W1 (pre-call pack) is run by AEs as well as SCs**, once per booked discovery; the SC always checks the pack
+    (decided 3 Nov, after Claude recommended SC-only for cost reasons).
+18. **Core differentiators approved:** D1 (change at the speed of business) + D3 (AI that acts, governed) in every demo,
+    plus D2 (one platform) for Platform deals or D5 (fits your landscape) for AI Studio deals. Catalogue:
+    `DIFFERENTIATOR-CATALOGUE-v0.1.md`. (AI Studio bundling: resolved, see answer 14.)
+19. **Manufacturing industry rule:** D5 (fits your landscape) in every manufacturing demo, P or A; an incumbent CRM
+    is assumed to stay (the Pact lesson). Packs: `packs/` (Core, BFSI, Manufacturing, all v0.1 drafts).
+20. **Proposal + Partner Pack:** templates in `templates/`, generated together by `workflows/W5-Close.md` (v0.2, blind-tested
+    on the Harbourline mock). Frameworks verified 3 Nov (`research/proposal-handover-frameworks-2026-11-03.md`):
+    Tell-Show-Tell is Demo2Win!, not Great Demo!; Command of the Message uses PBOs + Proof Points; MEDDPICC's I = Implicate the pain.
+21. **Status 3 Nov 2026: sign-off candidate.** Process v0.5 + `SIGN-OFF-PACK-v0.5.md` (8 decisions for Renzo and the
+    Sales Director, asks outside the team, risks, pilot plan) + `PILOT-GUIDE.md` (one page for BDRs/AEs/SCs). Next: sign-off,
+    then pilot readiness (shared Claude project, pack owners, baseline metrics, governance asks sent).
+22. **Pilot-readiness items 1 and 2 built (3 Nov 2026).** `CLAUDE-PROJECT-SETUP-v0.1.md` (paste-in instructions, 9 knowledge
+    files, per-deal use, a test against the GSB run; blockers: Team/Enterprise plan, security OK for transcripts, web search)
+    and `templates/TEMPLATE-Discovery-Slides-v0.1.pptx` (Creatio template: hypotheses slide + journey/task slide with likely
+    breaks, talk track in notes; GSB worked example in tests/; build script in templates/_build/). Still open from the
+    readiness list: the demo collateral (W3, runbook, modules, 🔴 video), customer-ready formats, AE/BDR enablement.
+23. **W3 demo design v0.2 (3 Nov 2026).** `workflows/W3-Demo-Design.md`: SC runs it in Claude Code after go/no-go; its demo
+    script feeds the toolkit's `creatio-demo-runbook` → `creatio-demo-build` (W3 doesn't duplicate the runbook). Blind-tested on
+    Harbourline (tests/09–11): predicted both live changes; missed the broker-portal adoption objection → new-user test.
+    Gate A now counts decision values only; module IDs stand in for the pattern catalogue. Still open: modules not built,
+    🔴 industry videos, customer-ready formats, enablement.
+24. **M6 live-change kit designed (3 Nov 2026):** `modules/M6-LIVE-CHANGE-KIT-v0.1.md`, harvested from Scentia's rehearsals.
+    Tiers T1 value ≤30 s · T2 row ≤1 min · T3 field ~1.5 min · T4 process 3–6 min (set piece only). Build requirement: one demo
+    rules object per stand (labPackRule pattern). D1's catalogue proof moment corrected. Nothing built; T1/T2 times unmeasured.
+25. **Video library plan + Red email (3 Nov 2026):** `modules/VIDEO-LIBRARY-PLAN-v0.1.md` (V1 General, V2 BFSI, V3 Manufacturing,
+    V4 AI Studio; 4–6 min, chapters, fictional data, recorded with the toolkit's video skills once modules are green; interim =
+    public Creatio videos) and `templates/TEMPLATE-Red-Followup-Email-v0.1.md` (W2 drafts it; day-0 email + day-7 nudge; reply
+    re-runs W2). Open: hosting/tracking tool, standard industry stands, voice-over presenter.
+26. **W1 v0.3 + Outbound branch (4 Nov 2026).** Meetings we generate ourselves (AE/SC/partner sourced) have no BDR trigger,
+    so W1 runs on a **signal** (why we reached out) instead. Missing trigger doesn't block; no signal and no attendee does.
+    The pack must say the booking threshold isn't met yet (P: trigger + business person; A: named task + business owner);
+    if the call doesn't meet it, the next step is nurture or an AI ideas workshop, **not a demo**. The BDR card's handoff
+    form gained a Source field (BDR / Outbound). The shared-project setup kit was updated to match.
+28. **W2 v0.2 (5 Nov 2026).** Renzo found W2 too much to digest and worried it extrapolated from thin calls. Agreed fix:
+    SC summary first (≤15 lines), call type + Short mode for intro calls, no empty rows, Assumed items only in quick checks
+    and gaps, claims-to-check table, scenes moved to W3. Blind-tested on Suntory and PRC, then tightened
+    (`tests/w2-v0.2-TEST-FINDINGS.md`).
+29. **Experiment E1: "first take" pre-read (5 Nov 2026).** For meetings that slip or are at risk: send the hypothesis
+    slide + journey as one page before discovery ("which is most true?" + an optional test of their enquiry
+    response, run only with their written yes). In the room it feeds Pick/Break/Size; corrected, it becomes the "What
+    we heard" one-pager and the demo's opening journey. Not standard: the process deliberately starts discovery in the
+    room. First run SAHE; pass/fail criteria in process §14 #11. Decide after 2–3 deals whether it becomes an optional
+    W1 output. Process file not renamed (v0.5 is out for sign-off; no process change yet). SAHE runs it without the
+    test enquiry (Renzo dropped it, 5 Nov), so the first run tests the pre-read alone.
+27. **First real deals (3–4 Nov 2026), in `deals/`:**
+    - `southern-academy-of-higher-education/` (SAHE, Sydney, private higher-ed provider): Track P, Core pack (no education
+      pack: content tagged A). W1 pack (W1 v0.2), discovery slides, and the discovery card with Part A pre-filled. Call
+      booked Wed 4 Nov with Stefan (CMO); incumbent GoHighLevel, ~20 users. **Part B (live notes) is empty**: get the
+      outcome from Renzo before running W2.
+    - `perth-radiological-clinic/` (PRC, WA imaging practice): Track A, outbound branch (first run of W1 v0.3), Core pack
+      (no healthcare pack). Signal: "investing in AI", "operational issues"; the CTO later named finance workflows (invoice
+      checks, payments), added as H2 + a second slide deck (`02b-discovery-slides-finance.pptx`). One attendee (Juanita,
+      BA). Flags: threshold not met; AI Studio governance gap on health data (send internal asks #1, #10 before any demo).
+      **Call held 4 Nov** (`03-call-transcript-2026-11-04.md`): it became a platform/architecture/licensing walkthrough;
+      hypotheses not tested. Juanita named "the OCR one" as the clear use case (back end, transient data); Chris (CIO)
+      decides; ~3 developer licences, ~1,310 business users (unclear), budget "70 to 85" a year (unclear); shortlist in
+      ~1 month; "let it sit". Renzo's concern: they do nothing. Plan: a two-week give-get proof on synthetic referrals,
+      readout with Chris in Perth. Solution hypothesis: `04-ocr-solution-hypothesis.md` (referral intake agent; evidence
+      of today's process from their website; illustrative value table). W2 v0.2 blind test (5 Nov) scored it **Red** (no pain above nice-to-have, IT-only, demo deferred); the proof plan needs a target-account call from Renzo (`tests/w2-v0.2-TEST-FINDINGS.md`).
+    - `suntory-oceania/` (Suntory Beverage & Food Oceania, AU + NZ, 335 field reps in 4 channels): **P+A**, Manufacturing pack
+      (gap: no FMCG field-sales journey). AE intro call 4 Nov (Andrew Morris + BDR Ayush; no W1, no hypothesis slide, no SC).
+      Scott McIver (Perth) + Tom Atkinson (Auckland) own a three-year tech-stack plan; SAP Sales Cloud + 7-year-old custom iPad
+      SFA app + data lake (Databricks?) stay; bigger decisions "come 2028". Hero idea is Tom's: a pre-visit voice briefing
+      ("top 10 things"). W2 run 5 Nov from the transcript: **P Amber, A Amber** (no economic buyer, no owner/data/AI policy) →
+      L2 reference demo, ~1 day. **Demo Wed 11 Nov 2026, 1 pm Sydney.** Unverified claims from the call to check (Hershey's
+      reference, "billion dollar", same-session build, "3–4 h/day per rep"). Files 01–04 in the folder.
+    - `hardware-and-general/` (H&G, Brookvale NSW, building/plumbing supplies to builders + frame & truss; 290 staff, ~15 reps):
+      Track P, Core pack (no trade-distribution pack: tagged A). Input was a **BDR call transcript** (5 Nov, BDR Ayush, contact
+      Geoffrey Macgregor, director), not a discovery. Claude filled the handoff form from it (`00-handoff-form.md`, incl. 6 BDR
+      promises to check: Sydney data centres, field-call voice agents, Frameworks "native" integration), then W1 v0.3 pack, slides,
+      card Part A. Geoffrey already described his model: site → build-type template → stage wish list → opportunity vs quote vs
+      sale → gaps = coaching; diary notes by site. ERP Frameworks (Sterland/DMSi), cloud move 3–6 months. Competitor 1CRM (cheap).
+      Power: CEO Andrew + strategist James (already searching); Geoffrey has pushed this ~15 years. Discovery **Tue 10 Nov pm, not
+      confirmed** (AE Aaron). Asks before the call: James attends; Geoffrey sends his 7–8 page CRM document (re-run W1 if it arrives).
+      Expected go/no-go today: Amber.
+    - `telkomsel/` (Telkomsel, Indonesia; with Deloitte Indonesia): **first run of FM v0.1**, from a **partner prep call** (5 Nov,
+      Deloitte: Hans, Imam, Dody; Creatio: Renzo, Willy, Maria, Desz). Track P (Business Studio) + AI part, Core pack. All rows P,
+      no C. Customer meeting **Thu 12 Nov 2026**, 1 h on site, Deloitte-led, Creatio slot 10–15 min; Pak Wira (VP IT) + GMs Pak Roy
+      (HR/corporate) and Maskur (B2B apps). Incumbent OutSystems (Moana employee super-app, mobile; spend unclear 300K–1M ARR);
+      Moana already has a Vertex AI employee agent, so Deloitte's use case #10 is a risk. Files `01-fm-prep.md`,
+      `02-first-meeting-slides.pptx`, `slides-fm.json`. Recommendations to Renzo: playback slide to Deloitte's discussion section;
+      no Telkomsel config, one generic 2–3 h live change (onboarding checklist row); sprint offer only if booking rule met;
+      no Unlimited plan name/number on slides (backup only).
+    - Slides are built with `templates/_build/build_hypothesis_slides.py` from each deal's `slides-data*.json`.
+    - Lesson so far: three of the first three deals fall outside BFSI/Manufacturing (education, healthcare, trade supplies). Watch whether
+      "General" via the Core pack is enough, or whether a new pack is needed. H&G also shows the Core J1 journey has no
+      **site/project-based selling** variant (builders, projects, stages); harvest one if H&G proceeds.
+    - Lesson (H&G): BDRs go deep and make promises; W1 should read the BDR transcript, fill the handoff form and list
+      BDR promises to check.
+30. **BDR / AE call card v0.2 (5 Nov 2026).** Renzo simplified the front of the motion. Cold outreach opens with three
+    generic pains and the customer picks one: (1) full customer picture needs three teams → CRM; (2) the business moves
+    faster than the systems → no-code (chosen over "IT queue" and "spreadsheets": fits enterprise and small orgs);
+    (3) AI: still working out where it pays off, or agents that never got past the pilot → AI agents. Raised hands open
+    with "What prompted it?". Then 5 core questions for everyone, then the track add-on. Generic, not by industry (word
+    swap only). Booking rule: pain in their words + owner attending + timeframe. v0.1 archived.
+31. **BDR call sheet v0.3 (5 Nov 2026).** Still too complex, said Renzo. Now one page of questions only: record →
+    open (cold: three pains · raised hand: "What prompted it?") → 5 questions (+1 for AI: "which job first?") → book on
+    pain + owner + timeframe. **No form: the transcript is the handoff**; W1 step 0 extracts it. Unrecorded calls: 3 lines.
+    Dependency: every BDR call recorded (consent first) and Creatio security OK for transcripts in Claude. v0.2 archived.
+32. **Simplified flow adopted (6 Nov 2026, Renzo + team; process decision 16, §4.0).** Reason: AE maturity. BDR identifies
+    CRM / Business Studio / AI Studio and asks the 6 questions (recorded; an SC who joins goes one layer deeper). SC + Claude
+    run `workflows/FM-First-Meeting-Prep.md` on the transcript → **playback slide** ("you told us" / "we understand" /
+    "we think" kept apart; partner words never presented as the customer's) + **solution-hypothesis slide** (headline +
+    3 parts, "you'll see this today") built by `templates/_build/build_first_meeting_slides.py`, plus a **light-config
+    brief** (≤ half a day, confirmed pains only, one prepared live change) and a meeting plan. Indonesia expects to see
+    something in the first meeting. Booking rule still applies. First test: Telkomsel (Indonesia), from a partner call.
+
+33. **Telkomsel FM decisions (6 Nov 2026, Renzo accepted all four):** (1) in a partner-led meeting our playback slide goes to the
+    partner's open-discussion section; Creatio's slot = hypothesis slide + one live change. (2) No customer-specific config without
+    a customer-confirmed pain; a **generic** live change (2–3 h, onboarding checklist row, labelled "an example") is allowed to meet
+    Indonesia's "show something" expectation. (3) The one-week sprint offer stays out of the deck; offered in the room only if the
+    booking rule is met (service + owner + date). (4) No Unlimited plan name or number on slides; "pricing that doesn't charge more
+    as you build"; ballpark in backup, shown only if asked.
+
+34. **BDR call sheet v0.4 (9 Nov 2026).** Renzo's team didn't have the sheet on the Suntory call; read against that transcript, the six questions held up. Changes: Q6 (AI) for everyone (a specific job adds the AI track); Q4 drops "this year" so a long-horizon account isn't sent to nurture; Q5 = who runs it + who signs off; Q2 adds what has to stay; role at the start; sizing follow-up; "can it do X?" captures the idea; never name other customers or quote their numbers; AEs use the same six before any slides. Still six questions: competition, budget, data and AI policy stay with the SC meeting. Not yet tested on a real BDR call.
+35. **Solution summary slide + closing question (9 Nov 2026, FM v0.2).** Team decision: every demo has a clean summary slide of
+    the solution so far, with no question on it (numbered parts, shown / not yet shown). The close is spoken. Renzo's draft was
+    "did we meet your requirements?"; recommended instead: "Thinking about [top pain], could this fix it for you?", then "Is it
+    worth working out what it would take and cost? Who needs to be part of that?". A yes needs a named person and date to count.
+    "Want to know more" → summary slide → they pick the numbers to go deeper on.
+36. **Team rollout plan + shared SharePoint (11 Nov 2026).** After SAHE, Suntory and H&G first meetings went well, Renzo wants
+    the motion rolled out to the APAC SC team. Agreed direction: one git repo `apac-sc-motion` (Claude Code plugin with skills
+    `sc-first-meeting`, `sc-demo-plan` (Business Studio first, then AI), `sc-demo-build`, `sc-clickpath`, `sc-harvest`,
+    `sc-meeting-review`, `sc-weekly-lessons`; standards; shared library) + a SharePoint site for deals and binaries. Finding:
+    presented decks are larger recompositions (H&G 23 slides, Suntory 10, Telkomsel 3), not edits of the generated 3 slides, so
+    deck learning works per slide type (generated / corporate / hand-made). Capture = `sc-meeting-review` picks up the presented
+    deck from the synced deal folder (one click); weekly digest proposes ≤3 changes, needing 2+ deals or 2+ SCs. Deck builder must
+    move to layout/placeholder roles so new corporate templates plug in. **SharePoint site created 11 Nov:**
+    `https://creatiocom.sharepoint.com/sites/APACSolutionConsulting` (classic team site, no M365 group; private; Renzo sole owner
+    so far; Documents has `Deals`, `_inbox`, `Slide-library`, `Lessons`). Members (Edit), checked 11 Nov: Ferdhi Adrian, Willy
+    Noviandy. Second owner (Renzo's manager) not yet added. Synced on Renzo's PC (all files kept locally) at
+    `C:\Users\r.huruiti\OneDrive - Creatio\APAC Solution Consulting - Documents`. **Deals moved 11 Nov:** 339 files copied to
+    `Deals` and verified identical (names + sizes); Suntory's `node_modules` (464 MB, 47,532 files) and `.angular` cache left out
+    (rebuild with `npm install`). Full original kept in `_deals-local-backup-2026-11-11`. `deals` in the project folder is to become
+    a junction to the SharePoint `Deals` path; after a PC restart cleared a lock on an empty leftover folder, `deals` in the
+    project folder became a **junction** to the SharePoint `Deals` path (done and tested 11 Nov: 339 files visible, FM deck build
+    runs through `deals/`). Delete `_deals-local-backup-2026-11-11` after ~18 Nov if nothing is missing.
+37. **Phase 0 done (11 Nov 2026): plugin repo `apac-sc-motion/` v0.1.0** (local git, not committed, host still to decide).
+    Skills `sc-setup`, `sc-first-meeting` (FM v0.3), `sc-deck`; `standards/DECK-STANDARD-v0.1.md`; template
+    `creatio-2026` (`template.json` = frame shapes, area, colours: a new corporate template is a new folder, not code);
+    `knowledge/` copies of packs/catalogue/governance (now the canonical copies). One builder `build_deck.py` (12 slide
+    types incl. `component` = Business Studio then AI, `screen`, `library`) + `office_deck.ps1` (PowerPoint insert/render/
+    extract, always quits). **Test passed:** H&G (23 slides incl. 8 library slides), Suntory (10) and Telkomsel (3) rebuilt
+    from each deal's new `deck.json` and compared slide by slide with what was presented. Field edits found and logged
+    in `apac-sc-motion/lessons/2026-11-11-presented-decks.md` (red cover adopted: 2 deals). First Slide-library file:
+    `creatio-ai-studio-overview-2026-11.pptx` (H&G slides 4–11). Renzo's `~/.apac-sc-motion.json` points at the SharePoint
+    root. **Open for Renzo:** standard look (plain frame vs Suntory's designed style), repo host, library stand + owner.
+    Next: Phase 1 `sc-demo-plan`.
+38. **Designed look + Knowledge Hub intake (11 Nov 2026), plugin v0.2.0.** Renzo pointed to `deals/suntory-oceania/Suntory
+    Introduction Nov 2026.pptx` (the Suntory deck as actually presented, 18 slides) → new default template
+    `creatio-designed-2026` (frame from its slide 12, 26 orange icons, cover photo, timeline next steps);
+    `DECK-STANDARD-v0.2.md`. Suntory `deck.json` rebuilt to all 18 slides and compared: matches except 3 hand-made layouts
+    (logged). **PowerPoint refuses automation on 'Confidential'-labelled decks**, so library slides are copied in Python;
+    `office_deck.ps1` is render/extract only. SharePoint `Slide-library` now has `creatio-platform-overview-2026-11.pptx`
+    + `catalogue.json` (7 duplicate slides with the H&G file flagged). **Knowledge Hub intake:** Renzo downloads new
+    decks into SharePoint `_inbox`; skill `sc-inbox` (`inbox_scan.py`) compares every slide with the library and proposes
+    library/catalogue/governance updates for approval; originals then go to `_inbox/_done/<date>/`. Decided 11 Nov: the
+    Knowledge Hub is not synced; Renzo downloads new decks by hand into `_inbox`. A hidden PowerPoint (started 13:06, two labelled
+    presentations) was left by a failed insert; Renzo to end it in Task Manager.
+39. **First Knowledge Hub intake (11 Nov 2026).** 4 decks (Hello, Hello Telecom, Technical Jun 2026, AI Advisory) scanned;
+    Renzo approved **library only**. Slide-library: `creatio-platform-overview-2026-11.pptx` (merged, 9; the standard
+    platform/AI section), `creatio-hello-2026-11.pptx` (19), `creatio-telecom-2026-11.pptx` (9),
+    `creatio-technical-2026-06.pptx` (85), `creatio-ai-advisory-packages-2026-11.pptx` (11); `catalogue.json` per slide;
+    old files in `_old/` (H&G and Suntory deck.json point there). Originals in `_inbox/_done/2026-11-11/`. **Pending
+    Renzo's OK:** catalogue items (Howdens 3.5 months vs 12 weeks, Digi Malaysia as first APAC reference, telecom refs,
+    scale facts, analyst ratings) and governance flags (technical deck slide 37 "data never leaves the zone" → ask Creatio
+    security; extra certifications; "only Visionary"). List: `apac-sc-motion/lessons/2026-11-11-inbox-knowledge-hub.md`.
+40. **`sc-meeting-review` + blind test (11 Nov 2026).** New skill `sc-meeting-review` (`deck_diff.py`: presented vs
+    generated deck → SharePoint `Lessons/deck-edits/`; transcript scorecard; living summary update; next-session
+    enhancements). First run: H&G old 3-slide kit = 43% of the presented deck. **Blind test** of `sc-first-meeting` by two
+    fresh agents (transcript only): both found the right top pain; H&G hypothesis near identical to presented; Claude rates
+    11/13 (H&G) and 10/13 (Suntory) slides presentable after wording edits. H&G run contaminated (standard cites H&G).
+    10 defects fixed the same day (title fitting, overflow, `ai_shown`, rules). Open: FMCG field-sales journey and a
+    trade-merchant pack; per-track slide set in the library catalogue. Renzo to judge the blind decks
+    (`apac-sc-motion/tests/blind/<deal>/blind-deck-v2-png/`). Details: `apac-sc-motion/lessons/2026-11-11-blind-test-fm-v0.3.md`.
+41. **Natural language + screens (11 Nov 2026), plugin v0.3.0.** Renzo: blind decks sounded "too AI"; he'd present
+    most of it if it had screenshots and summaries of the demo configuration. Added `standards/WRITING-STYLE-v0.1.md` +
+    builder style check (vendor words, colon titles, >12-word titles, semicolons, em dashes); `DECK-STANDARD-v0.3.md`:
+    deck has two stages (components before the build; `build` slide "What we've set up for today" + 1–2 `screen` slides
+    per part after); `row` layout for before/after screens; `sc-first-meeting` step 7 = second pass after the build.
+    Both blind decks redone as v3 with stand screenshots (`apac-sc-motion/tests/blind/<deal>/blind-deck-v3-sheet.png`).
+    Renzo, same day: every deck always has the whole platform set incl. 03 Business Studio and 04 AI Coding Agent →
+    `platform` slide type reading `standard_sets.platform` in the Slide-library catalogue (slides 1, 2, 3, 6, 8, 9 of
+    `creatio-platform-overview-2026-11.pptx`, speaker notes per slide; '10x' on 03: don't say it, use the Nucleus 68%).
+42. **Goal (a) accepted (11 Nov 2026).** Renzo: he would use the v3 decks (natural wording, `build` slide, stand screens,
+    full platform set) for customers. FM v0.3 + DECK-STANDARD-v0.3 + WRITING-STYLE-v0.1 are the deck standard for the
+    team. Still to do before Ferdhi and Willy use it: first git commit + repo host; install the plugin; onboarding.
+    Next design phase: Phase 1 `sc-demo-plan` (goals b and e).
+43. **Plugin published (11 Nov 2026).** Hosting decision: **SharePoint now** (`Plugin/apac-sc-motion` on the APAC Solution
+    Consulting site), company GitHub later when IT allows; never a personal GitHub. Local git repo `apac-sc-motion/`
+    (first commit 11 Nov; identity set for this repo only; `tests/blind/` ignored because it holds customer content).
+    `publish.ps1` mirrors committed work to SharePoint and refuses an unchanged version. Installed on Renzo's Claude
+    Code (marketplace `apac-sc`, plugin `apac-sc-motion` 0.3.1, update path tested). SC install steps in the README.
+    Rule: only Renzo publishes; nobody edits the SharePoint Plugin folder. Next: Ferdhi and Willy install + `sc-setup`.
+44. **Phase 1, demo configuration (11 Nov 2026), plugin v0.4.0 published.** Renzo's brief: a minimum benchmark, not a
+    rigid recipe; SC creativity; best practice from competitors and our collective knowledge; don't cut things just
+    because no pain was named. Built: `standards/DEMO-BAR-v0.1.md` (8 items; Light/Full/Proof; labels Pain, Asked,
+    Asked (must), Differentiator, SC idea; nothing banned, pain scenes first; C builds, P/I only after a customer
+    check, A = question; track core D2/D5 per catalogue; 6 h/day + 20% buffer), `patterns/` (16 patterns; screenshots
+    in SharePoint `Patterns/`, new ideas via `Patterns/_inbox` → `sc-inbox`; competitor patterns still to gather with
+    sources), skill `sc-demo-plan` (Business Studio then AI, reuse, custom only where it earns it, open space for the SC,
+    proof mode, demo script for the toolkit). Tested on PRC (plan in `apac-sc-motion/tests/demo-plan/`, git-ignored):
+    12 findings fixed. PRC risks it raised: on the 4 Nov call we said the database is "all hosted in Australia" and the
+    AI toolkit is "not a licensed product… not charging you"; neither is a "can say" line. The governance pack has no
+    health-data lines. Images may not reach the Creatio.ai document tool (spike first).
+45. **Two working rules from Renzo (11 Nov 2026), plugin 0.4.1.** (1) Before any demo build, ask the three pre-build
+    questions (competition with names, anything else from the customer such as an RFP or email, anything else to know)
+    and record the answers: `sc-demo-plan` step 0, `sc-first-meeting` step 5b. (2) Every message puts its questions at
+    the top, numbered ("No questions" if none), because a long reply may only be read at the top before accepting.
+    Both in CLAUDE.md and in every skill.
+46. **Demo library + click paths done (11 Nov 2026), plugin v0.5.0.** Every demo is harvested to **L1 within 2 working
+    days** (package export + build log + screenshots + customer-specific list + manual steps); L2 on first reuse, L3
+    after 2+ deals; master stand = new library-only instance when available, `11011710-demo` until then; owner Renzo.
+    Demo bar item 9 + §6b **build for reuse** changes how Claude configures (own packages, module/customer layers,
+    neutral schema names, seed data in package). Library (SharePoint `Library/`, catalogue in `apac-sc-motion/library/`):
+    `site-selling` (H&G), `field-sales-visit` (Suntory; its account tab depends on the Ord Minnett package; agent not
+    exported), `enquiry-recruitment` (SAHE; cleanest). **Click paths:** skill `sc-clickpath` builds two HTML pages per
+    demo, SC practice and customer-safe recap (DRAFT until the SC approves; text check + mandatory screenshot review;
+    crop/hide in `clickpath-customer.json`). Built for H&G and Suntory (`deals/<deal>/click*/<deal>-click-path-*.html`).
+    Screenshot review caught: Ord Minnett agent name, other demos' accounts and orders (Profectus), a "TEST … (delete
+    me)" record, placeholder images. New Suntory files seen in the deal folder (`13-call-transcript-2026-11-11-demo.md`,
+    `14-demo-plan-mobile-first.md`): candidates for `sc-meeting-review`. Same day (0.5.1): click path pages restyled on the Creatio Workflow Explorer navigation (Renzo's
+    preference, from `General CRM Workflow Explorer - 23-Oct-26.html`): stat strip, demo-flow strip, tabs, sticky filter
+    rail, collapsible use cases/steps, Creatio logo, one light brand theme.
+47. **Weekly lessons loop live (11 Nov 2026), plugin v0.6.0.** Skill `sc-weekly-lessons` + `collect_week.py`; digests in
+    SharePoint `Lessons/weekly/`. First digest `2026-W46.md` proposed, and **Renzo approved all three (applied, v0.7.0)**: (1) Full/Proof demos on a clean stand, never next
+    to another customer's demo; (2) rehearse on the presenting device, network and login (Suntory mobile AI sign-in
+    failed live); (3) field-sales and project-selling journeys in the Core pack. Now `DEMO-BAR-v0.2.md` and
+    `knowledge/packs/CORE-PACK-v0.2.md` (J4, J5). **Scheduled** (Renzo's OK, 11 Nov): desktop task `sc-weekly-lessons`, every Friday 3 pm Sydney, drafts the
+    digest only (no changes, commits or publishing; Renzo approves in a normal session). Runs while the Claude app is open;
+    if closed, it runs on next launch. Saved in Auto mode. **12 Nov: Claude account switched; scheduled tasks are
+    account-bound**, so it was re-registered as `sc-weekly-lessons-2` (same prompt, Fri 3 pm). The old folder
+    `~/.claude/scheduled-tasks/sc-weekly-lessons` is orphaned (not run by this account). Same day: creatio-demo-toolkit
+    updated 4.0.12.0 → 4.1.1.0.
+48. **Suntory demo reviewed (11 Nov 2026, `sc-meeting-review`).** `deals/suntory-oceania/15-meeting-review-2026-11-11.md`:
+    pains confirmed ("nailed it"), briefing idea landed (Tom 40:00), mobile AI sign-in failed live, live change not done,
+    closing question not asked; next step late January (Andrew), no system changes Dec–Jan. New C facts: ~320 iPad
+    users, ≤10 Studio users, central routing team. Deck review: drafted v2 presented almost unchanged (9 kept, 1 edited,
+    8 platform slides added). `deck.json` is now the **January draft** (`16-january-session-draft.pptx`; presented
+    version kept as `deck-2026-11-11.json`). Commitments: Andrew sends slides PDF (+ the customer recap, **approved by Renzo 11 Nov**: 15 screens reviewed, 9 hidden, 3 cropped; the H&G recap was approved the same day as a format test only, not to be sent to H&G) and
+    FMCG stories (none in the catalogue: ask marketing). Lessons: `apac-sc-motion/lessons/2026-11-11-suntory-oceania.md`. Kit rule for Phase 0: any Word/PowerPoint COM export must quit the app when done. Rule added to CLAUDE.md:
+    build workspaces with `node_modules` live in `C:\Projects\builds\`, never in a synced deal folder. Next: everyone clicks Sync; move `deals/` into `Deals/` and update paths; then Phase 0 (repo skeleton + standard
+    deck builder). Open: repo host, library master stand, library owner.
+
+49. **Goal (b) configuration quality: kept as is (Renzo, 11 Nov 2026).** Demo bar v0.2 + `sc-demo-plan` + pattern book
+    stay as they are. **Parked as future enhancements:** (1) a pre-demo gate on the SC practice page (device/network/SSO,
+    live change rehearsed, AI fallbacks, first screen, no other customer's names, closing question written; evidence:
+    Suntory 11 Nov); (2) library master stand / clean stand per deal (Renzo to source); (3) first real `sc-demo-plan`
+    run by Ferdhi or Willy, reviewed after; (4) competitor pattern set once a second deal names the same competitor.
+    Don't raise these again unless new evidence comes in (the weekly digest may).
+
+50. **Goal (e) AI-first: no process change needed (Renzo, 11 Nov 2026).** AI-first already runs through BDR Q6,
+    `sc-first-meeting`, the deck platform set, `sc-demo-plan` Part 2 and demo bar item 5. **Added (plugin v0.7.2):**
+    `sc-harvest` step 3b saves the AI as text in `Library/<id>/ai/` (agent instructions, skill prompts, MCP tools, tests).
+    Backfilled `field-sales-visit/ai/`, complete: the agent's instructions were read read-only from AI Studio (v0.7.3).
+    **Parked:** AI Studio governance answers (governance pack ask #10).
+
+51. **Onboarding by Claude (11 Nov 2026, plugin v0.8.0).** Ferdhi and Willy start from SharePoint `Plugin/START-HERE.md`:
+    paste its prompt into Claude (installs the plugin), restart, say "start the sc-guide". `sc-guide` runs 8 steps (setup,
+    motion map, Suntory walk-through, practice first meeting and demo plan in `Deals/_practice/<name>-suntory/`, rules,
+    feedback, first real deal at stage shadow → paired → solo; Renzo moves them on). Progress: `Lessons/onboarding/`;
+    feedback: `Lessons/feedback/`; both feed the Friday digest. After onboarding: "what's next on <account>".
+
+52. **RFP fit-gap (11 Nov 2026, plugin v0.9.0, skill `sc-rfp`).** Bid team writes RFP responses; SCs give the fit-gap,
+    a bid / no-bid recommendation (Bid ≥ 90% must-have fit; with conditions 75–90% or custom/partner must-haves; no-bid
+    < 75% or a must-have we can't do) and a consistency check of the bid team's answers. Examples copied to
+    `Deals/{mandiri-sekuritas,adira-finance,pegadaian,valiram}/rfp/`. Mandiri (blank, 190 ours): must-have fit 94.4%,
+    **bid with conditions**; deciding condition = all data in Indonesia (F-133, A-9) unconfirmed for SaaS; 27 low-confidence
+    lines to check. Adira FR test: 17 of 87 submitted "Comply" lines flagged (4 over-claims: FR-6.7, 7.1, 8.07, 8.13;
+    13 depend on integrations). Pegadaian (12 Nov, Bahasa, 49 of 112 ours): must-have fit 91.5%, bid with conditions; gaps = ISO/IEC 27701 (only 27001
+    confirmed) and a true CDP (Creatio is a CRM: data warehouse or CDP alongside); 19 of 49 submitted "Comply" lines flagged
+    (4 over-claims: P-1, P-64, P-77, P-92). Open: Mandiri codes NV and M1 meaning; POC hand-off built 12 Nov (v0.10.0: `rfp.py poc` → `05-poc-brief.md`,
+    `rfp.py coverage`, `sc-demo-plan` proof mode reads it); end-to-end test 12 Nov: `Deals/pegadaian/01-demo-plan-poc.md` (6 scenes,
+    90-min readout, ~84 h vs ~60 h for one SC: needs SC + SE for 8 days; coverage 16/16); 6 skill gaps fixed in v0.10.1.
+53. **Workshops for Australia (12 Nov 2026, plugin v0.11.0, skill `sc-workshop`).** Renzo: 2 hours per workshop, one journey
+    each. Design: start from a draft journey the room corrects ("what's wrong with this?"); pre-work email for files,
+    systems, roles, volumes; agenda 10 why · 15 outcomes · 55 journey walk (five prompts per step: who, thing/status,
+    system/channel, rule + number, pain + cost) · 15 AI moments · 13 playback + vote · 12 next steps. From the transcript:
+    register (same format as RFPs, refs `W1-01`) + **solution model in Creatio terms** (objects mapped to standard objects,
+    fields, stages with end states, roles, rules with values, systems, channels, AI moments, example data, outcomes) so
+    `sc-demo-plan` and the toolkit runbook can build from it; `workshop.py check` drafts the follow-up email from the
+    gaps; `workshop.py playback` writes the sign-off .docx. Fit-gap via `rfp.py` with no bid decision ("gaps and effort");
+    only voted musts count as must. Between workshops: Light playback build on a clean stand (pre-build questions first).
+    Blind test on fictional Kestrel Facility Services (`apac-sc-motion/tests/workshop/sample-fictional/`): every trap
+    captured (disputed rule, branching job, offline mobile, MYOB must, commercial asks as bid); 14 issues fixed before publishing.
+    First real use: Suntory late-January session = workshop 1 (12 Nov: `Deals/suntory-oceania/workshop/w1-00-prework-email.md`,
+    `w1-01-draft-journey.md`; journey = a Territory Manager's week, routing plan → briefing → visit → order → debrief →
+    follow-ups; partner orders and sell-through = workshop 2 with IT). Open: Renzo to confirm journey, persona channel,
+    and replacing the demo-style `16-january-session-draft.pptx` with a short opening for the workshop. **Parked by
+    Renzo 12 Nov** ("skip this") in favour of the rollout (item 54).
+54. **Self-serve rollout, Windows and Mac (12 Nov 2026, plugin v0.12.0).** SharePoint `Plugin/` now holds `START-HERE.md`
+    (one prompt: Claude finds the synced folder on either OS and installs the plugin; falls back to in-chat `/plugin`
+    commands when the `claude` CLI isn't on PATH) and `APAC-SC-Motion-Overview.pptx` (9 slides, built with `sc-deck` from
+    `apac-sc-motion/rollout/overview/deck.json`); `publish.ps1` copies both. Announcement text: `rollout/ANNOUNCEMENT.md`.
+    `sc-setup` covers Mac paths (`~/Library/CloudStorage/OneDrive-Creatio…`), `python3`, PyMuPDF; new
+    `sc-deck/scripts/render_deck.py` renders on both (Mac: PowerPoint export in its sandbox container, else LibreOffice;
+    exit 2 = look by eye). Blind walkthrough as a Mac and a Windows SC found 2 blockers + 9 issues, fixed before publishing.
+    **Not tested on a real Mac**: the first Mac SC's setup is the test (ask them to log "feedback:" on anything odd).
+    Next: Renzo sends the announcement to Ferdhi and Willy.
+55. **AE alignment, agenda slide, AE brief, requirements checklist (12 Nov 2026, plugin v0.13.0).** Renzo mapped the
+    motion to the AE "Demo Session" playbook (60 min; AE opens, recaps, asks "does it cover your requirements?", closes
+    with a dated next step). Decisions: demo 50 min + 10 for the AE; the agenda slide is in our deck (`sc-deck` type
+    `agenda`, deck standard 1b) with no open "what would make this a success?" slot (ask success criteria before the
+    meeting). AE brief: interactive page, no opening line, no durations (https://claude.ai/artifact/UUqHeXXRseTrDeSTMDeyKV,
+    Suntory example; not yet a `sc-demo-plan` output). Sales Director slides: `Deals/_examples/sales-director-brief/`.
+    New skill `sc-requirements`: after the build, a neutral requirements checklist the AE sends before any RFP (Suntory
+    example `Deals/suntory-oceania/17-requirements-checklist.xlsx`, 46 lines, 10 Must; internal file never sent).
+56. **AE brief standard; flow and outputs slides (12 Nov 2026, plugin v0.14.0).** Renzo: the AE brief is a standard
+    output from now on. `sc-demo-plan` step 13 builds `NN-ae-brief.html` from `ae-brief.json` (template
+    `templates/ae-brief.html`; Suntory: `Deals/suntory-oceania/ae-brief.json`, `18-ae-brief.html`, live link
+    regenerated from the template). Rollout deck now has an 8-step flow diagram and a "what each step produces"
+    slide (new `flow` and `outputs` slide types). The 10-slide deck is in `Plugin/` (copied 12 Nov after publish).
+57. **Transcript intake by Teams channel (12 Nov 2026, pilot on Renzo's PC).** Problem: AEs and BDRs tell SCs about
+    calls too late. Decision: AEs drop the Teams transcript in the private channel **GTM Team → APAC Transcript
+    Submission** (SCs + AEs + BDRs; channel, not email or form, because it's the fewest clicks for them). The channel's
+    files are synced as `OneDrive - Creatio\GTM Team-APAC Transcript Submission - Documents`. Claude scheduled task
+    `sc-transcript-intake` (every 30 min, 07:00–19:59 weekdays, runs only while the Claude app is open, saved in Auto
+    mode) follows `workflows/W0-Transcript-Intake-v0.1.md`: new transcript → new deal folder → `sc-first-meeting`
+    steps 1–6 only (never builds, never touches a stand), with a log and status in `Deals/_intake/`. Existing deals
+    just get the transcript copied in. Pinned post for the channel: `templates/TEMPLATE-Transcript-Submission-Post-v0.1.md`.
+    Still to do: Renzo pins the post and adds the AEs and BDRs; get the sales lead to agree the 24-hour rule; ask IT
+    for auto-transcription by default; after 2 real deals, decide who runs the task for Willy and Ferdhi (and
+    whether it becomes a plugin skill).
+58. **Deal folders carry the creator's initials (12 Nov 2026, plugin v0.15.1).** Claude can't see which Claude account
+    is signed in, so `sc-setup` stores the SC's initials once as `"sc"` in `~/.apac-sc-motion.json` (`rh` Renzo, `wn`
+    Willy, `fa` Ferdhi; suggested from the computer login, confirmed by the SC). New deal folders: `<account>-<sc>`.
+    Renzo's calls: suffix on the deal folder only; existing folders are not renamed. Claude's guardrails, accepted: one
+    folder per account (reuse it whatever its suffix), the suffix marks the creator and never changes on handover. W0
+    intake runs on Renzo's PC, so its folders get `-rh`.
+59. **Release changelog and weekly release message (12 Nov 2026, plugin v0.15.2).** `apac-sc-motion/CHANGELOG.md`
+    already had every release. Added enforcement: `publish.ps1` refuses a version without a changelog entry and tags
+    the commit `v<version>` (v0.15.1 tagged by hand). `release-notes.ps1` prints entries by `-Version` or `-Since`.
+    Scheduled task `sc-release-message` (Mondays 08:00, Renzo's PC, runs only while the Claude app is open, saved in
+    Auto mode) drafts a short Teams message for Willy and Ferdhi into SharePoint `Plugin/release-messages/<date>.md`,
+    covering only published versions. **Draft only: Renzo posts it.** No Teams or email connector in this setup;
+    if he wants it posted automatically, a Power Automate flow on that folder → Teams channel is the next step.
+60. **Update notices inside each SC's Claude (12 Nov 2026, plugin v0.16.0).** Claude can't post into another user's
+    chats, so the plugin does it: SessionStart hook `apac-sc-motion/hooks/hooks.json` → `hooks/whats_new.py`
+    (startup/resume/clear, `python3 … || python …` so it runs on Mac and on Windows past the Store `python3` stub,
+    15 s timeout, never fails the session). Behind the SharePoint version → `systemMessage` with the update command;
+    first session after an update → changelog since `seen_version` (in `~/.apac-sc-motion.json`), once, with any
+    "Each SC:" action as a question. **Seen working live in the desktop app on Renzo's Windows PC (12 Nov 2026); not
+    yet tested on a Mac.** Willy and Ferdhi must update by hand once to get it. Keep the Monday task until both have seen it work.
+61. **Token efficiency without lowering quality (12 Nov 2026, plugin v0.16.1).** Renzo approved 2 of 5 proposals.
+    (a) Handover split: `CONTEXT-HANDOVER.md` is now a ~3k-token read-first file (who, status table, resume point,
+    next steps); everything else moved verbatim to this log (checked line by line: only the old header and §5
+    framing lines were rewritten). `CLAUDE.md` reads the process doc only when the motion or §8 is needed.
+    (b) Deck checks: every slide on the first build, then only changed slides unless the change can touch all of them.
+    Not done (Renzo's call): turning off plugins unused in this folder (~5–8k per request), a script pre-check for
+    scheduled tasks (matters if the W0 intake task returns), a new session per job (habit). Cheaper models for heavy
+    steps were not recommended without testing against `tests/` first.
+62. **Navalo UX pass WP6, WP8, WP9 (13 Nov 2026, stand 11014108).** Three calls made during the build, each recorded in
+    the deal's `05-ux-runbook.md`: (1) menu keeps **Contacts / Accounts**, not Customers / Intermediaries: those captions
+    are shared section captions on a shared stand, so renaming would change other demos; (2) chart palette is Navalo teal
+    for normal states but **amber / red stay** for arrears, hardship, approval required and declined, because those
+    colours carry meaning; the palette line lives in `04-build-notes.md` and the toolkit audit is run with
+    `--plan 04-build-notes.md`; (3) the workplace order is live-only (the package binding ships no Position). Trap
+    learned: a user's saved list layout hides a new column order after a page save; fix with list ⋮ → Restore default
+    settings.
+63. **Navalo custom components approved (13 Nov 2026).** Renzo approved `07-components-build-plan` as recommended: two
+    reusable no-code components join the shared `labUiKit` (UI kit standard from East West Bank): Group holdings
+    (customer across group businesses) and Decision checks (why a record went straight through or to approval). ~20.5 h,
+    built after the 16 Nov demo, first shown at the shortlist demo. Positioning: Navalo scores "configuration over
+    customisation", so these are labelled custom development (set up with no code) in the RFP, never native. Checklist
+    tiles and lending-desk widgets rejected (native does the job). Runbook: deal file `08-components-runbook.md`.
+64. **Navalo components live for Monday; UI kit standard promoted (13 Nov 2026).** Renzo changed item 63's timing:
+    labUiKit 0.1.2 installed on 11014108 and both components placed on the Navalo pages before the 16 Nov demo
+    (deck 06 slides 15, 16, 19 show them; still labelled custom, set up with no code). Never install the kit on the
+    EWB stand (`ewb-pain`) without Renzo. Export test done on Navalo only (clean clone rebuilds, package pulled to
+    SharePoint `Library/ui-kit/`, L1); first install on a fresh stand deferred until a second deal or the library
+    harvest needs it (Renzo agreed: no test for its own sake before a demo). Standard promoted to
+    `apac-sc-motion/standards/UI-KIT-STANDARD-v0.2.md` (two deals use the kit); demo bar §6 points at it. Lessons:
+    Creatio's `--crt-*` variables aren't set at page level, so components use kit tokens with measured native values;
+    a pending SysApproval can't be deleted (answer it first). Kit source: private GitHub `anzcreatio/lab-ui-kit`.
+65. **Navalo application flow plan approved (13 Nov 2026).** Renzo asked for flow components on the loan application
+    (a form with four tabs). Approved "as recommended" (`09-flow-components-build-plan`, ~14 h, runbook
+    `10-flow-runbook.md`): ONE custom component, Flow timeline (`usr.FlowTimeline`, labUiKit 0.1.3: each step with time,
+    who, time between, target), plus NATIVE next-step banners (page rules per stage) and tabs in flow order. Not built:
+    document checklist (native row menu works), custom next-step card, custom stepper. Reason: Navalo weighs
+    configuration over customisation, so native wherever it does the job well. Build after the 16 Nov demo; first shown
+    at the shortlist demo; labelled custom, set up with no code. Pre-build questions asked, not answered.
+66. **Navalo application flow built and live before Monday (13 Nov 2026).** Renzo moved the 09 plan forward step by step
+    ("install now", "place it now", "do FWP3/FWP5/FWP6/FWP7 now"): labUiKit 0.1.5 with Flow timeline on the application
+    page (side column), native next-step banners (4 banners, 8 page rules) and tabs Documents-first, demo morning
+    seeded for Mon 16 Nov (reset 19 rows), rehearsed (frames 04e, 05h, 05i, 07b; deck 06 slides 16 and 18), stand reset
+    and read back. Standard → UI-KIT-STANDARD-v0.3. Lessons: seed demo dates relative to the demo day and rehearse on
+    today's date; a pending approval blocks its own delete; clio discards a `move` on an inserted component; page
+    rules leave clio's page baseline stale (re-read, verify, pin checksum with the SC's OK).
+
+66b. **Build rules and the Bank.AI log (13 Nov 2026).** Renzo: (a) compile and restart only with his OK, after
+    checking whether a browser refresh is enough; (b) when calls suddenly fail, check and refresh the OData token
+    first. Both in `apac-sc-motion/standards/BUILD-RULES-v0.1.md`; `sc-setup` adds a short block to each SC's demo
+    toolkit local notes for `creatio-demo-build` (done on Renzo's PC). (c) New skill `sc-bank-ai-log`: on BFSI deals,
+    the customer's requirements (their words + English), area, priority, our proposed configuration, fit and gaps go
+    to SharePoint `Bank-AI-Requirements/` (shared with the Bank.AI team only; bank named, people and competitors
+    removed, no demo, meeting or commercial content; guarded by the script). Backfilled 13 Nov: Pegadaian 47,
+    Mandiri Sekuritas 186, Adira Finance 87 (FR only) = 320 lines, 17 gaps; `INDEX.md` across banks. Renzo still has
+    to share the folder with Bank.AI. Navalo and East West Bank are BFSI: run the log on them next. Released in 0.17.0 (13 Nov).
+67. **Deal dates on every deal (13 Nov 2026).** Renzo: track when the first call happened (BDR/AE/discovery), when the
+    SC got the transcript, and when the demo is, on every deal, for statistics. `<deal>/deal-dates.json` via
+    `skills/sc-guide/scripts/deal_dates.py` (`show`/`set`/`stats`); sc-guide, sc-first-meeting, sc-demo-plan and
+    sc-meeting-review record them and ask only for missing dates; the weekly digest reports the medians
+    (`Lessons/stats/deal-timing.md`). No deal has dates yet (backfill not done). Released in 0.17.0 (13 Nov).
+
+69. **Rollback plans (13 Nov 2026).** Renzo: where relevant, and always for custom components or code, build a rollback plan in case things break. `BUILD-RULES-v0.2.md` §3: back up first (package export, page body, settings) into the deal's `build/` folder, write the step-by-step undo, how to check, and the demo's plan B in the build log; custom work in its own package. Toolkit local-notes block updated (on Renzo's PC too); other SCs get it by running `sc-setup` again after the next release. `sc-demo-plan` lists the rollback for every custom element. Released in 0.17.0 (13 Nov, tag v0.17.0).
+
+68. **Demo depth asked first on every new deal (13 Nov 2026).** Renzo: some bookings expect more than an intro, and
+   customers often don't state their pains because they expect us to know best practice. `sc-first-meeting` FM v0.5
+   step 0b asks "introduction to Creatio, or a detailed demo on their pains?"; detailed → rule 7b (pack best-practice
+   pains tagged I, success-criteria email so the customer ranks them, Full demo plan via `sc-demo-plan`, <3 working
+   days → hero journey only or move the meeting). `sc-guide` asks it on a new deal. Released in plugin 0.17.0
+   (published 13 Nov 2026 15:16, tag v0.17.0).
+
+70. **"Our idea" steps stay in the demo even if the customer doesn't answer first (13 Nov 2026).** Renzo agreed: a planned
+   blind-spot step isn't dropped when the customer hasn't answered its question before the demo. We show it after their
+   own scenes and open it with the question. To write into `sc-demo-plan` (rule) and the SC click path after the
+   0.17.0 release, together with a "where we win" strip at the top of the build plan (theirs vs ours, D1-D7 coverage,
+   warn when the demo bar's required set D1/D3/track core is missing; not yet approved).
+
+71. **The SC click path page teaches the demo (13 Nov 2026).** Renzo: the SC click path is what the team memorises the
+   demo from, so it must say what to click and which record, and keep what the customer said, what matters and what to
+   highlight at each step. Agreed caution: memorise the beats (record, moment, value line), not a word-for-word script.
+   Built on branch `sc-clickpath-descriptive` (worktree `C:\Projects\builds\apac-sc-motion-clickpath`, not merged, not
+   published; waits for 0.17.0): per step Open / Click / You'll see / They said (C only, who + when, "Partner said") /
+   Land this (point, why, KPI, D-ID from the catalogue) / Say / If they ask (sourced, else "we'll confirm in writing") /
+   Watch out / Signed in as; per use case value story, pain, bridge; practice mode hides Say, Land this, value story
+   and answers. Content in `clickpath-sc.json`. **Logins on the SC page only** (Renzo's decision): passwords behind a
+   Show toggle, read from a credentials file the SC names at build time (Claude never opens it); the customer page
+   build stops on any login or password; the `--fragment` copy carries no passwords (recommended, awaiting Renzo's
+   yes). New `scripts/second_browser.py` for two-user screenshots (Chrome on port 9223 + own profile, Playwright
+   `connect_over_cdp`, CDP `Browser.close`; tested 13 Nov). CHANGELOG 0.18.0 drafted. First test: Navalo
+   (`Deals/metrics-credit-partners/clickpath/`: `cards.json` written from the runbooks, 10 steps, 5 use cases, "our
+   idea" hardship step last and opened with the question per item 70); customer page DRAFT, text check clean, UC2-6
+   hidden (shows "Waiting on Supervisor"). Added the same day (Renzo, via the walkthrough session): every step shows
+   its build-plan label as a chip (Pain · Asked · Asked (must) · Differentiator · SC idea · Our idea, read from
+   `build-plan.json` via `"plan"`), the stat strip counts "from them · our ideas" (Navalo 9 · 1), an Our idea step
+   opens with its question and "Why we're showing this" (I, not their words, no They said), Land this carries the
+   competitor angle; none of it on the customer page. Logins (Renzo, same day): one team file on SharePoint
+   `Stand-logins/stand-logins.json` (`{"<stand>": {"<user>": "<password>"}}`; `.json.txt` accepted), read by the builder
+   by stand; a click path with no logins listed gets all of its stand's logins automatically; usernames and passwords
+   shown in plain view on the SC page and its phone copy (demo stands hold no confidential data); the customer page
+   build still stops on any login. Renzo creates and fills the file; Claude never opens it. File filled by Renzo
+   13 Nov; Navalo SC page shows the login. **Renzo approved the SC page (13 Nov). Committed d6dcf78 on branch
+   `sc-clickpath-descriptive`** (changelog text in the commit message; CHANGELOG.md untouched), to be merged into
+   `release-0.18` by the release session. Not published. Feedback file marked DONE.
+
+71b. **SC feedback loop (13 Nov 2026).** Renzo: probe the SC for feedback as we go. Decided: (a) one short question at
+   the end of each skill run, not after every step; (b) Claude logs SC corrections and overrides made in chat without
+   asking; (c) `sc-meeting-review` puts the SC's own rating (1-5) beside the customer's reactions from the transcript.
+   All go to SharePoint `Lessons/feedback/` with `Source` (asked / chat / transcript) and skill + step. The Friday
+   digest groups by skill and step, acts only on what's seen on 2+ deals or from 2+ SCs, and reports **patterns, not
+   people** (files keep the name for 1:1 coaching). Practice folders excluded. Build after 0.17.0:
+   `standards/FEEDBACK-LOOP-v0.1.md`, one line + the end-of-run question in each skill, `sc-guide` mode C fields,
+   `sc-weekly-lessons` grouping. Until then, CLAUDE.md tells every session to log chat corrections.
+
+72. **Pain Point Discovery becomes a reusable module (13 Nov 2026).** Renzo asked whether the East West build can be a
+   fully configurable, exportable no-code module; Claude said yes in three layers (custom components = code built once,
+   set up in the designer; the module = configured without code; one data package per customer or use case) and
+   recommended doing it after the EWB session. Renzo chose **start now**. Done the same day (EWB `08-build-log.md` rows
+   60–72): no SQL view (the board totals scores itself), stage rule as data ("needs every criterion scored" + fallback),
+   scale 2–5 per criterion, board axes as a lookup, instruction defaults that a customer row can replace, a wording setting
+   on every component, roles/workplaces/setting inside the module, East West wording only in the customer package
+   (replacing pages). Renzo then approved the compile: unit rights on new cards are automated by a small script task
+   (`labPdGrantUnitOnCard`). Clean-install test passed the same day on `pd-clean` (11014933-demo): everything travels except the
+   record-permissions switch on cards (admin setting; one manual install step, in `09-module-install-guide.md`). Use cases to test against (Renzo asked Claude to choose, 13 Nov): (1) bank AI use-case portfolio
+   (Bank.AI intake), (2) RFP requirement fit-gap scoring, (3) manufacturing quality / improvement triage. All three ran on `pd-clean`
+   the same day without code; the RFP test at 300 cards drove a kit fix (0.3.1: merged bubbles + short list). 14 Nov:
+   Renzo chose to add the Programme field now (Claude had suggested waiting): built and tested two programmes side by
+   side on `pd-clean`, plus a default programme from a system setting so no card is left without one (rows 84–87).
+
+72b. **Meeting goal opens the deck, in the closing question's words (13 Nov 2026).** Renzo: the customer deck opens with
+   the meeting's key goal; for a first demo, whether what they see today meets what they need, asked so a yes
+   progresses the deal and a no pins down what to do next. The `agenda` slide already carries a decision (DECK-STANDARD
+   v0.3, Navalo has one). Agreed fixes (after 0.17.0): `sc-first-meeting` builds `agenda` after `cover` for every demo
+   meeting; a `goal` line ("Today: ..." with the top pain in their words); "not yet" asks "which part, and what would it
+   need to do?" and `sc-meeting-review` turns the answer into the next plan; **the opening goal and the closing question
+   use exactly the same words** (builder warns if `next_steps` differs); decision wording by meeting type (first demo /
+   value demo / proof). DECK-STANDARD v0.3 -> v0.4.
+
+73. **Requirements library and meeting card (13 Nov 2026).** Renzo: customers often want us to tell them what their
+   requirements should be, not be asked "what do you need". Decided: a shared `knowledge/requirements-library.json`
+   (industry -> journey -> stage; plain-words requirement, why/KPI, how we show it, fit, proof level Proven / Standard;
+   "check first" lines never in the meeting view), owned by `sc-requirements`; a one-page **meeting card** per deal
+   (5-8 lines per stage, top 3 to recommend, the question back: "what we see at peers" -> "for you I'd start with" ->
+   "which matter most?"), shown as a tab on the SC click path and as a private artifact for the phone. Grows from
+   `sc-requirements`, `sc-meeting-review`, `sc-harvest`; **Renzo approves new lines in the Friday digest**; only approved
+   lines show in the meeting view. Seed industries (Renzo): **banking, multifinance lending, omnichannel customer
+   service**. Build in 0.18.0 (item 7 of the batch).
+
+74. **Bill of materials: SKUs, no prices, no user counts (13 Nov 2026).** Renzo: the SC identifies the product SKUs and
+   the gotchas; no users per module; **no dollar amounts** (SC owns scope; AE + Deal Desk own price; FY27: Unlimited
+   pricing shared only after internal approval, CEO approves every Unlimited quote). Output `NN-bom.md` + a
+   **spreadsheet version** (Renzo). Sources: FY27 Unlimited Pricing Model deck and 10x AI Pricing Update deck win over
+   the Pricing Deep Dive (talk tracks only); Growth / Enterprise / Unlimited are all still priced (per seat Studio
+   editions + AI Platform, and Unlimited as default from 1 May 2026); also creatio.com/products/pricing and its
+   sub-pages. Open: Unlimited AI allowance (500 AI actions vs 10,000 AI credits per org) -> Deal Desk. Gotcha register
+   `knowledge/BOM-GOTCHAS` (dedicated blocks, DB vs file storage, VPN tunnel, Marketplace connectors, Freedom-only BYO
+   LLM / on-prem AI, no AI discounts, 3-yr minimum, 5% uplift) grows from `/sc-lessons`. Plugin 0.19.0.
+75. **`/sc-lessons` chat (13 Nov 2026).** A separate chat any SC opens to paste lessons (commercial, functional,
+   process, deal). Registers keep id, source, date, status, supersedes. **R&D-confirmed product limitations go live
+   immediately** (they only make us more careful); anything that expands claims waits for Renzo's Friday approval.
+   Same store as the feedback loop (item 71b). Plugin 0.18.0.
+76. **Release notes digest (13 Nov 2026).** `sc-release-notes` reads Academy release notes
+   (academy.creatio.com/docs/8.x/resources/category/release-notes): backfill the **last 12 months**, then a **monthly**
+   scheduled check. Proposes catalogue / governance / pattern changes (Friday approval), closes limitations it fixes,
+   flags SKU or name changes. Plugin 0.19.0.
+77. **Knowledge Hub decks go in SharePoint `_inbox` (13 Nov 2026).** Drop now; `sc-inbox` processes. Fixes (0.19.0):
+   pricing files route to internal pricing knowledge instead of "ignore"; customer use cases become reference stories
+   by industry tagged public / internal only (feed "peers like you" and the requirements library); subfolders per type
+   allowed. Release split agreed: 0.17.0 as is; 0.18.0 = walkthrough items; 0.19.0 = commercial + knowledge.
+
+78. **Plugin 0.18.0 built on branch `release-0.18` (13 Nov 2026), not yet released.** Worktree
+   `C:\Projects\Workspaces\AI Sales Motion\apac-sc-motion-018`, 5 commits after f2c69ef (0.17.0). In it: DECK-STANDARD
+   v0.4 + builder checks (agenda "Today's goal" = closing question, demo deck needs an agenda, "not yet" pins the next
+   step), FM v0.6, meeting review (goal answer, SC 1-5 rating, card ranking), `standards/FEEDBACK-LOOP-v0.1.md`, new skill
+   `sc-lessons` + `registers.py` (SharePoint `Lessons/registers/`), end-of-run question in 10 skills, collector reads
+   registers, our-idea rule in `sc-demo-plan`, `knowledge/requirements-library.json` seed (121 lines: banking 46,
+   multifinance 39, service 36; 23 proven on Navalo; all `approved: false`) + `sc-requirements/scripts/meeting_card.py`.
+   Draft cards to review: `research/requirements-library-2026-11-13/`. Tested: sample deck with agenda (no warnings,
+   rendered), Navalo deck (warns: closing question differs, "not yet" vague), registers script, collector, cards.
+   Still to do before release: publish 0.17.0 first; merge `sc-clickpath-descriptive` after Renzo reviews the Navalo SC
+   page (add the "Feedback as you go" paragraph and the meeting-card tab to sc-clickpath then); Renzo approves the seed;
+   at release update CLAUDE.md (FM v0.6, DECK-STANDARD v0.4) and process §8/§15. "Where we win" strip not approved yet.
+
+79. **0.18.0 complete on `release-0.18` (13 Nov 2026), not released.** Renzo approved the "where we win" strip (built:
+   build plan header shows steps from them vs our ideas, D1-D7 by step, demo bar required set D1/D3/track core, optional
+   `track`; builder warns; Navalo correctly flags D3 because its AI was parked) and the Navalo SC click path. Merged
+   `sc-clickpath-descriptive` (d6dcf78) into `release-0.18` (a51d1b3); added the meeting-card tab (iframe, from the deal's
+   `meeting-card-*.html`) and the feedback paragraph to `sc-clickpath`. Note: the click path shows logins in plain view
+   and in the phone copy (decided in that session: demo stands hold no confidential data). Left before release:
+   0.17.0 published first; Renzo approves the requirements seed; then merge `release-0.18` into main, update CLAUDE.md
+   (FM v0.6, DECK-STANDARD v0.4) and process §8/§15, publish.
+
+80. **Plugin 0.17.0 published (13 Nov 2026 15:16).** Renzo asked the walkthrough session to publish it; `publish.ps1`
+   from main f2c69ef, tag v0.17.0, `Plugin/apac-sc-motion/PUBLISHED.txt` reads 0.17.0. Items 66-69 and 68 (demo depth)
+   are released in 0.17.0. Next: 0.18.0 from `release-0.18` (items 78-79).
+
+81. **Plugin 0.18.0 published (13 Nov 2026 15:17).** Renzo: "Yes, ship 0.18". `release-0.18` fast-forwarded into main
+   (0d84925, tag v0.18.0); `PUBLISHED.txt` reads 0.18.0. Items 70-79 released (today's goal / DECK-STANDARD v0.4 / FM
+   v0.6, feedback loop + `sc-lessons`, our-idea rule, where-we-win strip, richer click path, requirements library seed +
+   meeting card). The requirements seed ships **unapproved**: cards need `--draft` until Renzo approves lines on Friday
+   (approval = `approved: true` in `knowledge/requirements-library.json`, then a release). CLAUDE.md and process §8/§15
+   updated. Release worktree removed. Next: 0.19.0 (BOM + gotcha register, `sc-release-notes`, `sc-inbox` routing;
+   items 74-77; BOM drafts in `research/pricing-2026-11-13/`).
+
+82. **Approve upfront, build non-stop (14 Nov 2026).** Renzo: builds shouldn't need him at the laptop. `BUILD-RULES-v0.3.md` section 4: one approval pack with the build plan (`<deal>/build/approval-pack.json`: scope, stand, compiles, restarts pre-approved on our own clean stand only (max 3), custom code once the rollback is written, auto-rollback, demo data, small decisions logged with defaults in `build/decisions.md`); six hard stops (out of scope or Custom/other deal's packages, shared-stand restart, a sign-in he must do, deleting non-demo data, same failure twice, anything to a customer); keep-awake, notify, build report. Permission allowlist written to `C:/Projects/Workspaces/AI Sales Motion/.claude/settings.local.json` (clio tools, python, node/npm run, browser, edits in the workspace, builds and Deals; clio destructive and recursive deletes still ask; git push and CREDENTIALS.md denied); loads in the next session. Team: `standards/build-permissions.json`, installed by `sc-setup` after asking. Toolkit notes block updated (Renzo's PC done). Published in 0.18.1 (14 Nov).
+
+83. **Non-stop builds refined, safety first (14 Nov 2026).** Renzo asked to make builds as autonomous as possible without adding risk. Evidence: scanning every past session on his PC, only 6 commands were ever refused (Android tooling, an Angular build); most build commands are chained (`cd … &&`), so allowlists don't match and auto mode decides. `BUILD-RULES-v0.4.md` section 4: approval pack via `sc-demo-plan/scripts/approval_pack.py` (plan fingerprint, time budget plan h × 1.5, custom items detected); pre-flight with the SC before leaving; restore point (all deal packages) before `start`; per-item check, two tries then give up and carry on (fail soft); reversible decisions on defaults, irreversible = hard stop; scope check in `build/build-report.md`. Auto-mode rules (`autoMode` hard_deny/soft_deny) in `standards/build-permissions.json` and Renzo's `.claude/settings.local.json`; edits limited to Deals and builds. Dry run on a copy of the EWB plan (19 items, 47 h, budget 70.5 h): every stop fired correctly; two bugs fixed ("customer" counted as custom; refused restart shown in the report). Published 14 Nov 21:16 as plugin 0.18.1 (tag v0.18.1).
+
+84. **Navalo pre-Monday polish + broker plan approved (14 Nov 2026).** Renzo's PC moved to Sydney time and the stand
+    users had no time zone, so every date shifted 4 h: demo morning re-seeded in Sydney time (consent 7:05), reset
+    updated, 16 other applications' dates spread, "Verified" docs → Received, approval banner text fixed, Supervisor
+    profile date format English (Australia). Plan `11-broker-view-build-plan` approved "as recommended" (~36 h, after
+    Monday): dealer/broker view on Creatio portal (not an internal workplace), two new labUiKit components (Stage funnel,
+    Request checklist), Creatio.ai skills (summary; dealer request sent only after the officer confirms), named approver
+    role, UsrReadyOn + STP KPIs, field history. Runbook `12-broker-runbook.md` (BWP1–BWP11; build rules v0.4 approval
+    pack before the build). Renzo creates the portal users. Bank.AI log updated (4 lines). Pre-build questions still
+    unanswered.
+
+85. **Navalo banners restyled; re-routing incident fixed (14 Nov 2026).** Renzo: banners "look cheap" → option A, native
+    slim white strips with a state pill and one line (same 8 page rules); custom next-step card optional in runbook 12
+    BWP10b. Incident: bulk-changing document status to "Received" fired the routing process on 7 finished applications
+    (re-routed, 20 pending approvals). Fixed by cancelling the approvals (process ends with no change) and restoring the
+    7 records from the seed script; stage counts back to the rehearsed 5/7/3/5/5. Rule: on a stand with record-triggered
+    processes, never bulk-change a trigger column; change dates only or switch the process off first.
+86. **Broker components built locally (14 Nov 2026).** Renzo: "start the broker components locally now". labUiKit 0.2.0
+    (`C:/Projects/builds/ui-kit`, commit `dc6206f`, pushed by Renzo 14 Nov): `usr.StageFunnel` (counts by stage, page-field filter,
+    clicked stage to a page field) and `usr.RequestChecklist` (requested items, N of M meter, button emits actionClicked and
+    can mark received). Upload stays native: bind actionClicked to `crt.UploadFileRequest`. 55 tests, build clean. Not
+    placed on a page; installed on 11014108 14 Nov 21:46 (backup zip in Library/ui-kit/packages, existing three components
+    re-checked). Runbook 12 BWP1-3 ticked. Portal live on 11014108; Creatio.ai still unknown.
+87. **Safe subset + full rehearsal (14 Nov 2026).** Renzo: "Safe subset now" (BWP4 prep, BWP5, BWP10; audience = two dealer
+    organisations only, record permissions and portal users after Monday). Built `UsrNavaloPortalApp_FormPage` and
+    `UsrNavaloDealerHomePage` (funnel click filters the list, checked). BWP10 not done (change log screen needs the pane).
+    Then "run the whole demo flow": all 10 steps pass, reset clean (5/7/3/5/5). Findings and 9 ranked enhancements in
+    `Deals/metrics-credit-partners/13-rehearsal-2026-11-14.md`; before Monday only: click-path time-zone line, meeting
+    time after 8:30 am Sydney, Daniel dates in the reset.
+88. **Existing customer match (14 Nov 2026).** Renzo: "do the existing customer match enhancement now", plan 14 approved
+    ("go"; pre-build questions: no changes). Group holdings reused on the lender application page, Application tab, bound
+    to Customer, hidden until picked; no code or install. Checked on an unsaved new application with Mia. Not on the
+    portal (privacy). Backup body in the deal's `build/pkg-backup/2026-11-14/`.
+    SC click path updated the same night (Renzo "update the clickpath guide for sc"): optional step UC1-2b with a stitched
+    frame `02c-new-application-already-with-navalo.jpg`, reset 23 rows, Australian dates, FAQ native/custom line; hidden on
+    the customer page unless shown. Backups `*-2026-11-14.json` in `clickpath/`.
+    Deck 06 updated too (Renzo "update the deck with the new step too"): new screen slide after Mia (deck.json slide 11,
+    PNG 16) with frame 02c; build slide line "All her loans, also on every new application". 22 slides, no warnings;
+    backup `deck-2026-11-14.json`. Notes say: optional step 2b, hide the slide if skipped.
+89. **Navalo goals dashboard + no-code kit 0.5.0 (14–15 Nov 2026).** Renzo approved plan 15 v4 upfront (build pack: install
+    before Monday, old panels in this build, roll back at once if Monday pages change). labUiKit 0.5.0 (commits 9405d59,
+    2a3c7de, 847bb88, not pushed): shared pickers in every panel (objects, columns by type, values, ordered lists,
+    colours, page fields, condition rows), all five old panels moved, three new components (Group overlap, Rate against
+    target, Cycle time). Installed JS only; Monday screens unchanged. Page `UsrNavaloPerformancePage` (not in a menu): KPI
+    band, 4 goal sections, 4 our-idea sections; numbers checked against data. Fixes found while checking: person-level
+    exclusion for "offer next" (responsible lending), "Direct" label, Date conditions. Pickers not yet opened in the live
+    designer. Report `Deals/metrics-credit-partners/build/build-report.md`; library README 0.5.0.
+90. **Home pages polished (15 Nov 2026).** Renzo: lending overview "looks cheap"; "any text that has the transparent
+    background ... looks cheap". Native fixes on the lending overview (Monday step 1), dealer home and performance page:
+    white header card, headings on white cards, metrics first, quiet lists (no numbering, navy accent), palette chart
+    colours, fitted heights. Record pages were already on white cards. Deck slide 14 and click path step 1 re-shot
+    (`01b-lending-desk-polished.jpg`). Rule logged in `Lessons/feedback/2026-11-15-...-home-pages-look-cheap.md`: no
+    text on the grey page; candidate for the UI kit standard.
+91. **UI kit standard v0.4 (15 Nov 2026).** Renzo: "add the rule to the UI kit standard". `standards/UI-KIT-STANDARD-v0.4.md`
+    (renamed from v0.3): new section 2b page look (no text on the grey page background, header card, metrics first,
+    quiet lists, one accent, palette colours by meaning, slots fit cards, full-page check); section 1 lists the eight
+    0.5.0 components; pickers and person-level exclusion rules. DEMO-BAR section 6, library README and runbook 12 point to
+    v0.4; CHANGELOG "Unreleased" entry. Committed 0a7b32f on main (15 Nov); not published yet.
+
+87. **sc-academy: a training course that keeps itself current (14 Nov 2026).** Renzo approved the design: one module per skill area on fictional Kestrel (path P1, 9 modules ~10 h: A0 setup + lab stand, A1 first meeting, A2 demo plan + approval pack, B1 prep + object model, B2 pages, B3 data + home page, C1 processes, C2 Creatio.ai skill, D1 readiness/click path/harvest dry run/reset; P2 planned: AI Studio, landing/campaigns, packages, videos/translation, RFP/workshop/review, app-dev). Each module: why, skills, guided lab, check Claude verifies, traps from our build logs. `scripts/academy.py`: progress (`Lessons/training/<sc>.json`), stand guard (refuses a stand named in any real deal's notes; `--renzo-ok` only on his yes), three feedback questions → `Lessons/feedback/` (`Source: training`), `refresh` (sha256 of every toolkit/app-dev/plugin SKILL.md, snapshots, stale modules, diff drafts in `Lessons/training/_drafts/`), `stamp` (`--authoring` = pending; `--by "Renzo Huruiti"` only after his yes), `weekly` tips, `pages`. Wired into sc-guide (map + step 8) and sc-weekly-lessons step 1c. Renzo (14 Nov): **each SC trains on a stand of their own**, so labs are built the real way (stand prep, stock Case reused, replacing copies of stock pages) in app Academy Kestrel / package `Acad<initials>`; guard also refuses another trainee's stand; D1 resets the stand (commit 1b4a0b9). All modules stamped **pending**: Renzo to read and approve. Dry run on a scratch team root passed (guard refused a deal stand, fail x2 hint, feedback file read by collect_week, simulated toolkit change → B2 stale with diff, weekly tips). Committed in the plugin repo with 0.19.0 (unpublished, with sc-coach).
+
+88. **sc-customer-academy: teach customers to build on Creatio (14 Nov 2026).** Renzo chose (all recommended): Creatio's **public** AI App Development Toolkit + clio only (never our demo toolkit or plugin in front of a customer); two tracks (T1 business builders: B0 kit + ground rules, B1 Business Plan first, B2 extend CRM data, B3 app + pages, B4 extend CRM pages safely, B5 brand + mobile, B6 capstone on their own use case; T2 developers/IT: D1 environments + packages, D2 source control/deploy/rollback, D3 Classic to Freedom, D4 governance), ~14 h; SC-led sessions then a customer pack (workbook pages + `creatio-build-coach` skill, DRAFT until the SC's check); labs only in the customer's dev/sandbox (`prep` refuses anything that looks like production unless the customer confirms). Progress, plan and full feedback in `<deal>/enablement/`; team feedback copy names role not person (`Source: customer-training`). Upkeep reuses the sc-academy engine (`academy.py --course`, new `state_dir` and `watch_docs`: fingerprints the toolkit's runbooks and context docs too) → `Lessons/customer-training/`. Planned T3 (processes, Creatio.ai/AI Studio, integrations) waits until the public toolkit covers them. All 11 modules stamped pending. Dry run passed on fictional Harbourline Credit Union. **Later 14 Nov (Renzo: 'as simple as possible', a 1-hour and a ≤3-hour version):** formats `1h` (F0 pre-work + F1 'Your first Creatio app in an hour': rules, ask, approve plan, build, extend the account page) and `3h` (F0 + F1 + F2: own idea, make it yours (mobile/brand/rule), getting it live); exact prompts to copy, glossary, mini scenario; install moved to pre-work checked the day before; full course kept as the follow-on. `prep --format`. Timing not yet rehearsed on a real site: SC rehearses and keeps a pre-built copy.
+
+The working draft is **[SC-MOTION-PROCESS-v0.5.md](SC-MOTION-PROCESS-v0.5.md)**. Continue from it.
+
+89. **sc-desk: the SC's work desk (14 Nov 2026).** Renzo approved the design: commitments ledger per deal (`commitments.json`: what, owner, side us/them, due, source, status; captured as a dry run from meeting-review Commitments tables, deck next steps, AE brief, "we'll" promises in follow-up drafts; the SC picks what was agreed; "done: <what>" closes one), stall checks (no activity 7 days excluding `deal-dates.json`/`bank-ai.json`/ledger writes; commitment overdue; demo ≤3 days with no approved build plan; harvest >2 working days; approved recap not sent; no next meeting; 21+ days idle with nothing ahead → "park it?"), daily brief (top 5 by deadline + closeness to decision, worked out fresh and never stored; today's meetings + prep gaps; ≤3 follow-up drafts to the AE, never sent), weekly desk view (deals by health per SC, load, team quality trend; per-SC coaching only in Renzo's local `--private-out`), load check (3 demos, 8 meetings, 24 build h from approval-pack items not logged done, 2 same-day demos, 8 commitments). Rule: **task desk, not a CRM** (no stage, forecast, value). Microsoft 365 connector exists but isn't connected: optional, read-only (calendar + sent mail via `--calendar` JSON and `touch`). Hooks: sc-meeting-review step 5, sc-guide mode B, sc-weekly-lessons 0b, sc-setup 2b. Scheduled task `sc-desk-daily-brief` (weekdays 8 am) created on Renzo's PC. Tested read-only on the real deals (no ledger written) and on a temp team root. Plugin commit 3ccc007, CHANGELOG 0.20.0, **not published**.
+90. **Private per SC: desk briefs and feedback (14 Nov 2026).** Renzo: "make sure the daily briefs are private and specific to the SC; SCs should not be able to ask about the work other SCs are doing. Same with the feedback." Done: briefs written only on the SC's PC (`~/.apac-sc-motion/desk/`), never SharePoint (Renzo's first brief moved there); `desk.py` refuses another SC's deal, ledger, brief, workload and the Friday view (lead `rh` excepted; only Renzo sets deal owners; deals with no SC count as his); the Friday team page shows totals only, the per-SC view goes to his local `SC-Coaching`. FEEDBACK-LOOP v0.1 → **v0.2**: feedback in `Lessons/feedback/<sc>/` (Renzo's 2 files moved to `rh/`), §5 who sees what, Claude's rule in every skill ("that's <name>'s to share"); readers (`collect_week`, `coach_board`, `academy`, `customer_academy`) read both layouts; writers (`sc-guide` C, academy, customer academy) write per SC. Limit stated to Renzo: Claude's rule is a courtesy, not a lock; real privacy needs SharePoint permissions on `Lessons/feedback/<sc>/` and `Lessons/coaching/<sc>/` (SC + Renzo), which Renzo sets. Deal folders stay team-readable by design. Also 14 Nov: Adira, Mandiri Sekuritas, Valiram closed (lost) and Pegadaian closed (won) on the desk; all unsuffixed deals set to rh.
+91. **East West go-live testing (14 Nov 2026).** Renzo asked for extensive testing before opening Pain Point Discovery to East West's users. Ran `deals/east-west-bank-rh/11-go-live-test-plan.md` on ewb-pain; report `12-go-live-test-report.md`. Verdict: not ready, 3 blockers (no role members; failed saves look successful because devkit `Model.update` resolves on failure; cards editable after Send). Recommended kit 0.5.2 (writer throws on failure, read-only when the user can't edit, Keep ticks stored on the card). Lesson for every kit: **test a failed save by faking the server reply in the page (fetch, not XHR); never trust that `Model` calls throw.**
+92. **East West kit 0.5.2 built (14 Nov 2026).** Renzo approved the 9-item pack upfront; **ewb-pain only** ("we will just send customer the 11014930 stand"). Locked cards: a card locks once sent; a lead reopens it by moving it back to "Our draft" (Renzo: ok). Fixes 2–4 done and retested; no compile or restart. Kit commit `a3b6049`. pd-clean and the module export stay on 0.5.1 until the module is reused. Lesson: **lock must also close any editor already open** (found in retest).
+
+91. **Coaching for the SC, not about the SC (14 Nov 2026).** Renzo: "I don't want this to become a control exercise and I don't want to violate privacy; I want them fully honest and to provide their recordings." Supersedes the per-SC feedback folders in item 90. Feedback about the skills and Claude: **global** again (`Lessons/feedback/`, flat; Renzo's 2 files moved back). SC performance is **private to the SC**: `sc-coach` writes coaching to `~/.apac-sc-motion/coaching/` on the SC's PC, says "for you, not about you" on first use, asks once whether to share (nothing / top 3 habits / full note; the SC sends it), team lessons only with the SC's yes and anonymised (`Lessons/explaining-it/_proposed/`); Renzo coaches a recording only when the SC sent it and asked, result back to them, no copy kept. `coach_board.py` removed; the digest no longer counts coaching; desk Friday view drops coaching (now "approved answers added"); per-SC deal view default folder `~/SC-Desk`. `sc-meeting-review`: no SC self-rating or habits in the deal folder; "Better answers to their questions" only. `sc-academy` results on the SC's PC (`~/.apac-sc-motion/training/`); only `Lessons/training/stands.json` (stand → initials) shared. Onboarding unchanged (Willy and Ferdhi don't need it now). Tested on a scratch team root as two SCs. Plugin commit ff25f72.
+
+92. **Learn from past deals at every deal start (14 Nov 2026).** Renzo: "while Willy's deals are only his, can we all learn from the lessons… when we do a new deal, we want our approach to be better based on what we've learnt (deck, messaging, stand configuration)". Found: configuration already flowed (library + pattern book read by sc-first-meeting/sc-demo-plan) but no deal-start skill read TEAM-LESSONS.md or the registers, and deck lessons only reached decks via Friday standard changes. Built `sc-lessons/scripts/learn_from_deals.py` (`brief` per stage: team-lessons sections, registers Q/L/E, similar deals by industry + pain words with their learnings only: repo lessons keep/change/stop without evidence quotes, meeting reviews' What landed without who-said-it times, deck-edit reviews, library modules; `applied` → `<deal>/lessons-applied.json`; `stats` for Friday). Step added first in sc-first-meeting, sc-demo-plan, sc-deck, sc-rfp, sc-workshop; output gets "Applied from past deals"; weekly-lessons measure row. Two speeds kept: questions/limits live now, standard/skill changes on Fridays. Tested on the real deals read-only (Navalo picks up East West Bank and Suntory) and on a scratch root. Registers not started yet on SharePoint.
+
+93. **Second machine: Mac + git on `anzcreatio` (16 Nov 2026).** Renzo now has a Windows PC and a Mac, each a Creatio Claude seat. Found: only Deals and the published plugin were on SharePoint; the workspace and the plugin repo were local to the PC (plugin repo had no remote). Renzo can't create repos on tscore-git; decided to use the existing GitHub account `anzcreatio` (Creatio-owned, already holds `lab-ui-kit`), which revises item 43's "company GitHub later". Two private repos: `ai-sales-motion` (this folder; `.gitignore` leaves out the plugin, deals, `.devkit`, the local deals backup, `.clio-pages`, the Suntory and Perth test transcripts, the Navalo BOM) and `apac-sc-motion`. The handover and log still name deals and stand ids: accepted for a private repo. Willy and Ferdhi get no git access for now (they use the SharePoint publish; revisit when they write skills, with their own logins, ideally on tscore-git). Rule: pull at start, commit + push + handover §3 before switching; one machine per deal; publish and scheduled tasks on the PC only. Setup kit `_mac-setup/` (MAC-SETUP.md, global CLAUDE.md, memory snapshot, settings with the Mac plugin path to fill in).
+
+## 5a. Deal status detail (moved from the handover's §5 on 12 Nov 2026)
+
+- **East West Bank, Philippines (12 Nov 2026):** new deal, folder `Deals/east-west-bank-rh/`. Discovery (pre-motion, Deszantara
+  + Dodong Montino, CDAO) and the intro meeting (12 Nov, 5 business heads) saved as `00-`/`01-`. The first meeting is past, so no
+  `sc-first-meeting` deck; `02-meeting-review-2026-11-12.md` instead: two tracks (enterprise AI/agent platform with banking
+  guardrails is the one buying now; CRM exploratory), recommended first pain = the RM's next best action plus manager activity
+  view (Ivy, Ray, Zen), draft email to Dodong (SC check pending), claims to check, PH AI hosting not covered by the governance
+  pack. Waiting on: Dodong's consolidated pain point. Next: `sc-workshop` step 1 for a 60-min session, then `sc-demo-plan`.
+- **H&G (9 Nov): solution summary slide added** as slide 3 of `05-first-meeting-slides.pptx` (six parts: wish list, gaps, site diary shown; balances and invoices, AI on field notes, Frameworks not yet shown). Content and the H&G closing question: `04-fm-prep.md` Output 2b. Added to the existing deck, so its custom speaker notes are intact; a rebuild from `slides-fm.json` would lose them. Internal scope view (four phases, dependencies, rep numbers, not sized, not for the customer): `06-internal-scope-view.pptx`. Full customer deck with Creatio intro and screenshots (15 slides, SC check still to do): `07-creatio-and-hg-deck.pptx`, source `_build_intro_deck.py`.
+- **H&G (9 Nov): UI upgrade live on `11011710-demo`.** Custom Build board (`usr.HgBuildBoard`, package `UsrHgBuildBoard`, source
+  `.devkit/scratch/hg_board_ws`, JS only: `npm run build` then `clio push-pkg`, no compile) is the site page's first tab; rest native
+  (tabs, Builder/Rep panels, Sites quick filters, home "Biggest items to chase"). Log, presenter notes, rollback: `04-fm-prep.md` Output 3.
+  Gotchas: on this template, moving the toggle-panel tabs into `Tabs` with diff `move` works and frees about 370 px; a list's
+  `filterAttributes` merge replaces the array, so re-list the template's five; a component's status menu needs `position: fixed` inside a
+  scrolling row. Open: Renzo to rehearse the live change; meeting unconfirmed; `04-fm-prep.md` Output 2 slide wording is stale.
+  Click-path guide (9 Nov, private, stamped DRAFT): https://claude.ai/artifact/FHVmWrDLC2ce7qv1jF9EGs, source `deals/hardware-and-general/clickpass/`.
+  List pages tidied 9 Nov (explainer lines, noise hidden, section renamed Build templates; log in `04-fm-prep.md`). The click path's three list frames were re-shot the same day. Build templates then became a custom Template builder (`usr.HgTemplateBuilder`, package `UsrHgTemplateBuilder`; log and rollback in `04-fm-prep.md`), and section 4 of the click path and deck 07 slide 12 now show it (the Garage door result frame is still a stand-in). Block of units had no template items; on 9 Nov it was filled with the builder's Copy from Townhouses (12 rows, $398,000, same placeholders; first real use of that button; template rows now 45). `UsrHgSite_AddWishListUnits` was tested the same day through New site: 12 items, $398,000 on the board, then the test site and its items were deleted. The builder frames still show that tab at 0. A fourth site, "13 Example Street" (Four-bedroom house, 12 items), appeared on 9 Nov and was deleted with its 12 items on Renzo's OK on 10 Nov. Stand now: 3 sites, 30 wish items, 45 template rows.
+  Meeting confirmed by Renzo 9 Nov. "Identified in time" is built and tested on the stand (On time / Late / Never stamped by the board, chart by rep on the home page, Table view read-only; log, limits and rollback in `04-fm-prep.md` Output 3). Click path updated with the new frames and a Hunters and order takers step. Click path (Version 5) and deck 07 now carry the new board and home frames; deck rendered and checked 10 Nov, SC check still to do. Other additions (real quote and sale values, chase before due, builder roll-up, whole-house measure, Frameworks site reference, phone flow, oldest-first diary) wait for the meeting and Geoffrey's document. Meeting goal (10 Nov): James's criteria, the 7–8 pages, a 20-site Frameworks export and a dated second session; sheet and Aaron's data request email in `deals/hardware-and-general/08-meeting-sheet-and-data-request.md`. File transfer and retention wording still needs the SC, since the governance pack has none. Home page rebuilt 10 Nov as custom `usr.HgSalesOverview` (whole-house map; log and rollback in `04-fm-prep.md`); click path and deck 07 updated to match. Deck 07 restyled 10 Nov to read as hand-built (notes in `04-fm-prep.md`); its 9 screenshots re-captured about twice as sharp the same day (`clickpass/shots_hd/`, stand left unchanged at 3 sites, Dee Why stage 3). Slide 2 redone the same day as "Our current understanding": Today → where H&G wants to be, plus a timing line, no call quotes (Renzo's request); the "can't check balances on site" line is inferred, to confirm.
+  Gotchas: list-page aggregate columns (`[Child:Parent].Column` with `aggregationConfig`) saved but rendered blank; quick-filter `defaultValue` is ignored for lookups; ESQ can't compare a child column with a parent's forward path inside Exists `subFilters`; `update-app-section` with a caption regenerates the section icon's image Id.
+- **H&G (6 Nov): re-run through FM** (`04-fm-prep.md`, `05-first-meeting-slides.pptx`, `slides-fm.json`); files 01–03 (W1) are
+  background only. Config = Geoffrey's own model (site → build type → stage wish list → identified/quoted/sold gap view;
+  live change = add a template row), ~4 h. **Built 6 Nov on Renzo's call** (he overrode the "wait for confirmation" advice) on
+  stand `11011710-demo` (shared stand: Field Sales, Sales, Syntech add-ons, Campaign Assurance, Panel Membership), app "Sites",
+  package `UsrHgSite`, workplace "H&G Site Sales" (admins, live-only). Build log + live-change script: `04-fm-prep.md` Output 3.
+  Pages browser-checked 6 Nov (all render; inline status edit works). UX batch from the UI audit done the same day
+  (dropdowns, site metric tiles, status-only edit, auto-filled template Item, home page with "Gap by rep", seeded site diary):
+  see `04-fm-prep.md`. Stage progress bar done 6 Nov (DCM `UsrHgSiteCase` in package `UsrHgDcm` + new page
+  `UsrHgSite_StageFormPage`; list and New open it). Open: profile cards, pop-up add form.
+  DCM recipe (no clio tool): write the case package (`.devkit/scratch/dcm/hg/UsrHgDcm`), `clio push-pkg`, insert a
+  SysDcmSettings row (SysModuleEntity, StageColumnUId, DefaultSchemaUId); the progress bar needs a fresh page load.
+  Swapping a section's record page: update the related-page add-on AND `SysModule.CardSchemaUId` (the section setting
+  wins over the add-on), then log out/in. H&G done: list and New open the stage page (checked 9 Nov). Progress bar is PARKED (Renzo, 6 Nov): a DCM package `UsrHgDcm` (case `UsrHgSiteCase`, files in `.devkit/scratch/dcm/hg/`) was installed with `clio push-pkg` (verified 6 Nov: package present on the stand, push log "Package installation finished"). Still needed: SysDcmSettings row + site page on `PageWithTabsAndProgressBarTemplate`. Presenting deck: `05-first-meeting-slides.pptx` (notes = talk track + demo path).
+  Gotchas: changing an existing page resource key doesn't update it (use a new key); DataService datetimes need `"\"…\""`. After a page save, hard-reload (Ctrl+Shift+R) to see it. Stand advice given: one shared stand for FM light configs, each customer
+  in its own package/workplace/demo user; own stand when a demo changes standard objects or global settings (not yet a decision).
+  Gotcha: on this stand page edits default to the shared `Custom` package; write with `target-schema-uid` of the app's own page.
+- **H&G (5 Nov):** W1 pack done from the BDR transcript (`deals/hardware-and-general/`, files 00–03). Waiting on: Geoffrey's
+  callback (Fri 6 / Mon 9 Nov) to confirm Tue 10 Nov; James attending; his CRM document. SC still to check the pack and
+  confirm the Creatio cloud hosting region before "Sydney data centres" is repeated. After the call: W2.
+- **SAHE (5 Nov):** first meeting moved (new date TBC); one "keep warm" email drafted (`05-keep-warm-email.md`) with a
+  one-pager (`04-keep-warm-one-pager.pptx` editable 16:9 slide in Creatio POV-deck style + `.pdf`, built by
+  `build_04_one_pager.py`): journey + H1–H3 with one question
+  each; call to action "Pick one. We'll bring the plan." (reply 01/02/03 → we bring a half-page plan for that one to
+  the meeting; owed if he replies). **Approved by Renzo for use (5 Nov)**; needs real dates + AE name, then the AE
+  sends. Test-enquiry offer dropped by Renzo (5 Nov); don't run one. Demo clip
+  dropped (shows the build before discovery). No higher-ed reference in the catalogue; ask APAC marketing. Fallback demo sandbox `11013018-demo` is built and browser-checked: app/package `UsrStudentRecruitment`
+  on Lead, workplace "Student Recruitment", assignment process `UsrLead_AssignCourseAdvisor`, student quick-add form,
+  home page "Student recruitment overview", 11 demo students. Standard B2B lead rules (Contact/Account/Customer need
+  required) switched off on that sandbox only. Standard "Lead processing" process (`LeadProcessing`) switched off
+  (SysProcessDisabled row + app restart; retested: new enquiry gets only our follow-up task). Open: Creatio.ai not
+  configured on the sandbox; Home button opens the sales desktop; old `LeadProcessing` runs cancelled (13, via
+  ProcessEngineService CancelExecutionBySchemaId) so all "Get to know…" tasks are now Canceled; test lead deleted; Lead form and quick-add edits sit in
+  vendor-app design packages (`UsrCrtOrderContractMgmtApp_oyzxij2`, `UsrCrtLeadOppMgmtApp_qfbpxjg`), not in
+  `UsrStudentRecruitment`.
+- **Suntory Oceania (9 Nov):** demo Wed 11 Nov, 1 pm Sydney; W3 not run yet. Recommended angle: sell a small pre-visit briefing-agent pilot alongside SAP and the iPad app, and use it to earn a place in the 2028 decision. Expect Scott's unanswered question (23:07): where does this live, in their SFA tool or ours? Likely real competitor: building it in-house. Ask on the day: what would need to be true to start before 2028, and who would approve it? **Open:** two one-pager lines overstate what they said ("the insight doesn't come back to the field": Scott said they're *trying* to get it back; "above all for licensed reps": our emphasis). Fix them unless it has already been sent (not known).
+- **Suntory W3 (9 Nov):** `deals/suntory-oceania/06-W3-demo-design-pack.md` written; **Gate A open**: ~20 SC h vs 8 h Amber budget, 8 of 14 decision values C/I (57%), no peer reviewer named. Tests on the stand: scheduler and planner service both create visits with the rule's actions; activity category must stay "Visit"; Territory management installed (fixes planner data). Renzo says AI calls now work (not yet proven by an agent run). Unchecked: planner page, mobile/offline, voice.
+- **Scentia Phase 1 build (12 Nov, 11014147-2-demo):** clio updated 8.1.0.135 → 8.1.0.149 (needed for portal tools). New package `labPartnerPackAccess`. Functional roles under All external users: Partner Pack employees `d00000a0-…01` (Emma, Chloe, Ryan, Daniel), Partner Pack client admins `d00000a0-…02` (Daniel); users are external (portal) users created by Renzo, linked to the seeded contacts. Portal workplaces My training `d00000a1-…01` (home = labPP_PortalHome) and Client admin `d00000a1-…02` (home = labPP_PortalAdmin), bound in the package; role grants live-only (roles not packaged). `labPPViewAsContactId` made personal. Object rights for All external users on 24 lab objects (booking r/c/e, extension r/c, rest read), record permissions OFF (Phase 3). Open: sign-in test as Emma/Daniel, timer on DailyHealth, mailbox, rehearsal + click path.
+- **Scentia direction (12 Nov, Renzo):** OK for the sandbox to become partly a free implementation: giving Scentia packages they can start from is a win. No email or timers. Scope inferred from the use case (no Epic 2 stories). Next build: client separation (record-level security by client account), chosen because it is the hardest part to vibe-code. Needs its own build plan before any stand write.
+- **Scentia client separation built (12 Nov, 11014147-2-demo, plan `deals/scentia/11-build-plan-client-separation.html`, approach A no-code):** CrtProcessBuilder updated (site restart, approved). External orgs (VwSspAdminUnit, PortalAccount = client Account) Harbourview `d00000a3-…01` (Emma, Daniel), Coastline `…02` (Chloe, Ryan), Northstar `…03`, Southern Allied `…04`; users added by role membership (native SspUserManagementService call was blocked; PortalAccount on users not set). Record permissions ON for labPartnerPack, labPackMember, labPackCourse, labPartnerBooking, labExtensionRequest; default rules All employees→All employees r/e/d and All external users→All employees r/e; applied to existing records. On-insert processes labPartnerBooking/labPartnerPack/labExtensionRequest/labPackMember_GrantClientAccess (read pack → client org → Change access rights, role mapped by UId expression). One-off processes run: labPP_GrantClientAccessExisting, labPP_GrantClientAccountContacts. No labPackCourse process (0 records). Gotcha: clio create-business-process drops the `column` of an elementParameter filter source; fix with setFilter using the UId expression incl. [EntityColumn:…]. Not yet tested as real users.
+- **Suntory runbook (9 Nov):** `deals/suntory-oceania/07-Suntory_Demo_Runbook.docx` (+ PDF), 4 use cases, 25 steps, DRAFT for Renzo's approval. Renzo accepted ~2.5 SC days. Gate A still open on the peer reviewer and the 57% evidence share. Next: approve runbook → `creatio-demo-build` on `11013904-demo`.
+- **Suntory build (9 Nov):** runbook approved; data, rules, visits, tools and the AI Studio agent "Suntory Visit Briefing" are on `11013904-demo`. Agent passed in Studio preview (ranked briefing, confirmed save + log, refuses another rep's outlet). Logos and `ProductName` back to Creatio. Agent deployed to Studio environment "Demo 11013904 Demo", the one the stand's panel uses (every new version must go there too). Creatio.ai panel test passed 9 Nov (six ranked items, save not confirmed). Demo as Mia Tran: Ord Minnett's agent and old chats show under the current login. 10 Nov: `08-architecture-two-options.pptx` (bolt on vs end to end) and `09-voice-clip-harbourlight.wav` made; live priority change proven in the panel; Home page `RswFieldSalesHomePage` redesigned (tabs My day, Territory, Distribution partners; hero fills in when a briefing is saved; native only, no compile) and set as the home page of "Field workplace" (live on this stand only; the workplace ships in Creatio's `Field` package). Still open: reset step, mobile/offline, Mia Tran login, peer reviewer. Build log: `deals/suntory-oceania/build/PROJECT-NOTE.md`.
+- **Suntory build (9 Nov):** sandbox `11013904-demo` (clio registered; Field Sales `CrtFieldForceApp` 1.15.48 installed). Scope proposed, not started: Field Sales configured with no new pages + a visit-briefing agent in AI Studio. Design grounded in Suntory's Australian model in `deals/suntory-oceania/05-business-model-and-demo-design.md`: alcohol is indirect through four named distribution partners, non-alcohol is direct with a 4pm cut-off. Own package, `lab` prefix (stand default is `Rsw`), nothing in `labOrdMinnett`. Unverified: AI on this stand (`invalid_client` on 3 Nov), voice telephony, mobile/offline, existing data.
+- **Suntory reset (10 Nov):** `rsw_suntory_reset_demo()` on `11013904-demo`, proven on a faked rehearsal (real tablet visit not tested). Now on the ▶ button as "Run before demo" (process `RswSuntoryRunBeforeDemo`, compiled and site restarted 10 Nov, pressed once and proven). See `deals/suntory-oceania/build/run-before-demo.md`. Runbook line updated. Ord Minnett's ▶ entries removed (rows only, backed up); the menu shows only ours.
+- **Suntory demo held (11 Nov):** transcript in `deals/suntory-oceania/13-call-transcript-2026-11-11-demo.md` (key points at the top). Pains confirmed; ~320 field users on iPads; <=10 Studio users; central routing team; they want a guided process ending in a conversational debrief; offline a minor issue. No system changes Dec-Jan; Andrew to book re-engagement late Jan; send slides PDF + FMCG stories. Mobile AI auth failed live (SSO/VPN on the phone). SC view after Academy research: solid production field app yes, "best in class" mobile-first conversational AI not yet provable; open questions for Creatio product (Field Sales on Freedom mobile UI, mobile voice input, tablet layout) and a proof sprint before promising it.
+- **Suntory click paths (10 Nov):** DRAFT `deals/suntory-oceania/10-Suntory-CLICK-PATHS.docx` + artifact https://claude.ai/artifact/KqpaS5CzV9cfRdjohvz18y (24 cards, web steps shot live, tablet/voice/log as placeholders). Account page and Orders list fixed 10 Nov evening and checked on screen (cards UC3/7 and UC4/3 re-shot, docx + artifact v2 rebuilt). New workplace "Suntory Field Sales" holds every section the demo uses (Home, Visits, Accounts, Orders, Briefing priorities, Territory management; `build/suntory-workplace.sql`); the priorities section was renamed from "Suntory Field Demo". Decided 10 Nov: present the whole demo as Administrator 1 (John Best); a Mia Tran login (Administrator 2) passed every web step but the Creatio.ai panel would not load for her. Night of 10-11 Nov: mobile SKU panel + SKU edit page (mobile end-to-end proven on a Jakarta test outlet, since deleted); Harbourlight venue contacts; two custom web components (Briefing card with Read aloud, Range shelf) in new package RswSuntoryOutlet360 on a new first Account tab "Outlet 360" (outlets only) with a native KPI band (sales, visits, open cases, simulated partner sales) and Ask Creatio.ai / Open next visit buttons, checked on screen. Still open: one agent warm-up before the demo, Harbourlight run on the phone. Full list in `build/PROJECT-NOTE.md`.
+- **Suntory positioning deck (10 Nov):** `deals/suntory-oceania/11-Suntory-Creatio-positioning.pptx`, 10 slides built from the Creatio Hello Deck (cover, what we heard, TM day, briefing, licensed visit, direct vs partner, systems stay, why Creatio, Howdens, next steps). Stand screenshots + Tabler line icons; claims only from the differentiator catalogue (Nucleus 68% attributed). Inherits the template's "Confidential" sensitivity label. Build script in session scratchpad only. Not yet SC-checked.
+- **Suntory positioning deck v2, pain-led (10 Nov):** `deals/suntory-oceania/11-Suntory-Creatio-positioning-v2.pptx`. Slide 2 = five themes (tool fallen behind, licensed is a different job, right information right time, one source, insight from indirect sales); slide 3 = where today's model strains; demo slides carry a small theme label. Renzo: pains as themes/statements, never visible transcript quotes or speaker names. Howdens dropped. v1 kept. Not yet SC-checked.
+- **Suntory solution summary slide (10 Nov):** `deals/suntory-oceania/12-Suntory-solution-summary.pptx`, one slide: 8 items configured on the stand vs 8 solution-hypothesis items to validate (SAP feed, data lake/partner sales, briefing on the drive, iPad app delivery, voice debrief, image recognition, offline at scale, measured trial). Not yet SC-checked.
+- **Scentia joins the motion (12 Nov):** new deal folder `deals/scentia/` (intro transcript 11 Sep, 29 Oct transcript, both demo scripts, Partner Pack spec, rehearsed live changes, old click path, `07-deal-state-and-gaps.md`). Demo of the current solution already held. Renzo: make the sandbox real and later build customer collateral; agreed not to rerun sc-first-meeting or sc-demo-plan. Stand copy `11014147-2-demo` registered by Renzo. Next: three pre-build questions + scope of "real", then a visual build plan, no stand writes until approved. Missing: demo transcript for sc-meeting-review.
+- **Scentia build plan (12 Nov):** pre-build answers recorded in `deals/scentia/07-deal-state-and-gaps.md` (competition = their own developers building with AI, who are also the evaluators; team sceptical; build on `11014147-2-demo`, Scentia builds on the original). Walkthrough transcript of 2 Nov saved as `08-…`. `09-build-plan.html`: Phase 1 (~4.25 h: workplaces with portal home pages, roles, real users, personal view-as setting, rights check, email, timer, rehearsal) and Phase 2 (~5 h: waitlist/seat detail, designer settings on the custom components). Renzo creates the 4 logins himself. Awaiting approval.
+- **Suntory Oceania (5 Nov):** W2 outputs redone to v0.2 rules (`03-W2-brief-score-gaps.md` ~800 words, one-pager `04-…` ~350 words), awaiting Renzo's SC check.
+  Next: AE sends the one-pager + slides; SC checks for a field-sales/visit app on the stand and decides live voice vs recorded;
+  then W3 for the 11 Nov demo. After the demo, harvest an FMCG field-sales journey into the packs.
+- **Telkomsel (6 Nov):** FM prep done from the Deloitte partner call (`deals/telkomsel/`). Four calls accepted (§4 item 33). Next: Renzo's SC check;
+  generic live change being built by Claude on `11014108-demo` (app `UsrOnboardingRequest`; status table in `01-fm-prep.md` Output 3; process built, 2 example requests seeded, live change rehearsed green in the browser 6 Nov; UI pass 6 Nov: progress-bar request page with DCM stage bar, timer, counters, owner card; list dashboard; rules mini page; onboarding desktop (glassmorphism) + Employee services workplace; start state 6 requests, 5 rules, 30 items; custom timeline component: being built in another conversation (Renzo, 6 Nov). State handed over: clio workspace `.devkit/scratch/timeline_ws`, package `UsrOnboardingTimeline` (new, separate), UI project `projects/onboarding_timeline` (newer deferred-remote template) with npm deps installed; guides in node_modules `@creatio-devkit/common/REMOTE_COMPONENT_RUNTIME_AI_GUIDE.md` and `@creatio/interface-designer/REMOTE_COMPONENT_DESIGN_TIME_AI_GUIDE.md` (properties panel = Designer settings panel). Update 9 Nov: the component in that workspace (built 6 Nov; inputs bound to the page's checklist collection and start date, properties panel with attribute mapping) is installed on `11014108-demo` as package `UsrOnboardingTimeline` and placed on the request page Checklist tab; browser and Designer checks passed 9 Nov (palette item, properties panel, live title edit). Remote-module colours must use `--crt-color-*` tokens (the `--crt-palette-*` names do not exist on 10.0.0.858). Discard on an inline list edit raises no collection callback, only row `events$` (`change-attribute-value`, `finish-load-model-attributes`): remote components must watch those too (done here). Update 9 Nov (later): superseded on the request page by the no-code `usr.CountdownTimeline` (package `UsrCountdownTimeline`, project `projects/countdown_timeline`), which follows this design: dropdown configuration in the Designer, loads its own items, proven from a blank copy; details in `deals/telkomsel/01-fm-prep.md`. Original design note: Design: settings Title, Target date, Items object, link/label/days/done columns; runtime loads items itself; dots on a day axis (done green, due soon amber, overdue red, today marker). Install as its own package with `clio push-pkg` (gz name must equal the package name); Creatio section deck `03-creatio-section-slides.pptx` (4 slides + 3 backup) built 6 Nov); Deloitte's editable deck (Fri 6 Nov); touchpoint Mon 9 Nov pm; dry run Wed 11 Nov pm; meeting Thu 12 Nov.
+  After it: re-run FM on the meeting transcript (first C rows), then the real light config for the use case they pick.
+  FM lesson to watch: in partner-led meetings the playback slide duplicates the partner's opening; FM may need a partner variant.
+- **Telkomsel deck (9 Nov):** 5-minute Creatio intro `deals/telkomsel/05-creatio-intro-5min-hello.pptx` on the Creatio Hello master, 6 slides (3 adapted Hello slides, 3 new; about 4 min 20 s; positioning: Deloitte has the blueprint, Creatio makes it run; supersedes 04; kept standalone, not merged into Deloitte's deck, per Renzo 9 Nov); replaces Deloitte slides 6–17. Issues to fix in Deloitte's deck and points to confirm with Hans are at the end of `01-fm-prep.md`.
+- **Telkomsel solution slide (9 Nov):** "New employee services in weeks, not months" added as slide 3 of `deals/telkomsel/02-first-meeting-slides.pptx` (Output 2b in `01-fm-prep.md`): H&G's at-a-glance content, set as a plain ruled table because the numbered-card layout looks AI-made. Built by `build_02b_solution_glance.py`. It replaces slide 2 in the meeting (slide 2 hidden, not deleted; Renzo 9 Nov). Awaiting Renzo's SC check.
+- **Telkomsel AI slice (9 Nov, dropped by Renzo; demo on 11014108 unchanged for 12 Nov):** Renzo had approved a thin slice of Deloitte's onboarding TO-BE on 11014108: a Business Studio Creatio.ai skill drafts the IT access request, a named person approves or rejects, IT tasks appear. Nothing was built. A test message failed: `IncorrectConfiguration`, `IdentityServer auth failed with [BadRequest] invalid_client`. 11014108 has never completed an AI request. The fix needs the stand's identity client id and secret (system settings `IdentityServerClientId` / `IdentityServerClientSecret`), which Claude must not enter. Same test on spare stand 11013739 (empty, 9 Nov) failed with the same error, so it looks like a demo-stand provisioning fault, not a one-off. Both stands point `IdentityServerUrl` at accounts.creatio.com with their own client ID. AU1 AI Studio has the Business Studio MCP server active and connected to 11013739 only (17 tools; discovery doesn't prove data access). That is the AI Studio-to-Creatio direction and doesn't explain the Creatio.ai error. AI Twin test on Demo 11013739: the model answers and picks `creatio_list_records`, but keeps asking for consent even after Renzo clicked Provide access. Likely cause (toolkit prerequisite, unproven): the stand's Supervisor has no email, and it must match the AI Studio login. Real counts for the check: 222 contacts, 60 accounts. Then set Supervisor's user and contact email on 11013739 to Renzo's AI Studio login (were blank); consent then reported "Authorization completed", but the AI Twin test panel in Studio still asks for consent. Data access is unproven and the cause unknown. Not yet tried: the same question in the stand's own AI panel. Third stand (craigs-invstmnt-prtnrs-demo, 9 Nov): same `invalid_client`, with no successful AI request on record; same `IdentityServerUrl`, own client ID. Three of three stands fail, so stop trying stands and raise it with the stand team. EU1 AI Studio for Craig's: its Creatio Generative AI test against accounts.creatio.com succeeds (token acquired, 36-character client ID), so the service is up and the stands' own client credentials are the likely fault. Its CRM connection test first failed ("Couldn't reach Creatio"), then passed after Renzo updated the credentials with the `-is` URLs. AI Twin now makes real tool calls, but its consent link goes to the `-is` host, which has no login page (404). **Resolved for AI Studio on Craig's (10 Nov):** AI Twin returned the correct 196 contacts and 60 accounts as Administrator 1 (John Best). Three things were needed: CRM connection on the `/0` address (credential "Craigs v3"), Administrator 1 added to the Craig studio OAuth app's allowed users (OAuthAppAllowedUser row 5bd78a84-f229-46bd-804b-4bc9a6e186ee, delete to undo), and Renzo's consent. Consent grants full account rights to Craig studio; revoke in the user profile. Business Studio AI still fails with `invalid_client` on all three stands. AI Studio is not proven on 11013739 (consent completed there but didn't take; cause unknown). Thursday runs on 11014108 without AI.
+- **Telkomsel slice on Craig's (10 Nov, base app installed):** Renzo approved building the slice on craigs-invstmnt-prtnrs-demo with AI Studio. `UsrOnboardingRequest` installed. The stand then stopped responding (502 or timeout) from about 00:30 and was back by 04:48; the install may be related, cause unconfirmed (nobody has seen the server logs). On retry, `UsrCountdownTimeline` and `UsrOnboardingDcm` installed one at a time and the site stayed up after each (C). Confirmed by data read: 4 stages, 5 rules, 14 onboarding schemas including the stage case; 0 requests and 0 checklist items. Pages not seen in a browser yet (the browser session on that stand has expired). The sample requests, AI step, approval and button are not built. On install, leave a few minutes and check the site between packages. **Later on 10 Nov (Renzo: build it):** the stand dropped out again from about 07:02 to 07:08 with no install running since 04:53, so the stand itself looks unstable and the install is a weaker explanation. 2 sample requests added; the process added 5 checklist items each (C). `UsrOnboardingRequest` is locked (installed from file), so the slice is a separate app, `labUsrItAccess` "IT Access Requests" (My applications, admins only), depending on `UsrOnboardingRequest`, with lookup `labAccessDecision` (Awaiting draft, Awaiting approval, Approved, Rejected) and columns `labOnboardingRequest`, `labJobRole`, `labAccessDraft`, `labApprover`, `labDecision`, `labDecisionNote` (C). No button goes on the locked request page. Approver: John Best (Renzo, 10 Nov) = Creatio user "Administrator 1" (SysAdminUnit 268b5da7-2ede-4b32-8bbe-9af04721ebba). CrtProcessBuilder updated to 1.6.6.24 on Craig's with Renzo's OK (site restarted and came back). Process `labItAccessApproval` built (C): labDecision → Awaiting approval starts an Approval for Administrator 1; Positive → Approved + 2 IT checklist items on the linked onboarding request; Negative → Rejected; Canceled → end. Form page `labUsrItAccess_FormPage` shows all fields (C, saved; not seen on screen). Records: "Ayu Lestari: IT access" (Awaiting draft, for the AI) and "Budi Santoso: IT access" (sample draft, sent for approval; approval raised, C). AI Studio (eu1 tenant `craigs-invstmnt-prtnrs-demo-aistudio`, executor profile `craigs-telkomsel-eu1`, signed in as the stand's shared account): agent "Telkomsel IT Access Drafter" (2e414204-9776-4269-9fce-8cc871d166cb, builder), prompt in `deals/telkomsel/ai-studio/01-agent.md`, 9 Creatio tools incl. update, delegated access, v1 deployed to Sandbox (C). A stray sdk-mode agent "IT Access Drafter" (9b4cc5bb-7234-4206-bd44-7cde9ada6d08) was created by mistake; delete only with Renzo's OK. Tooling notes: the session's clio server reads a sandboxed settings copy, so Claude ran a short-lived `clio mcp-server` from the shell (`scratchpad/clio_mcp_call.py`); the Studio executor needs `$env:PSModulePath=''` for DPAPI. **End to end working (10 Nov, C):** the agent was deployed to Studio Production (Renzo OK) and bound to the shared "Creatio.ai Twin" channel via `POST /channels {creatio_assistant_chat, "Creatio.ai Twin", agentId}` (Renzo OK; a PUT on the channel is silently ignored); it then shows in Creatio's AI panel. Each user consents once (delegated). `creatio_search_records` is not available on this tenant, so prompt v2 uses the open record / list tool (v2 live in Sandbox + Production). Test: drafted Ayu's access from her real record, saved draft + "Awaiting approval" only after "Yes". Native Approval did NOT work: Creatio's approvals panel and `crt.ApprovalList` disable Approve/Reject for `SysApproval` visas on this custom object, so (Renzo: switch) the approval is now **Approve / Reject buttons** on the IT access page, running process `labItAccessSetDecision` (RecordId, DecisionId). `labItAccessApproval` new version 1 (activated with Renzo's OK; the old version kept) = on labDecision → Approved, add 2 IT checklist items. Tested: Approve on Budi → Approved + "Network, email and system accounts created" and "Laptop and SIM configured and handed over" (IT) added at 05:24:42. Demo start state: Ayu reset to Awaiting draft, empty draft; Budi Approved with 7 items. **Leftovers cleaned (Renzo OK, 10 Nov, C):** the 2 old-version runs waiting on approvals finished via their "Cancelled" branch (ProcessEngineService CancelExecution did nothing; setting the SysApproval status to Canceled did), then both SysApproval rows were deleted; 0 IT access approvals remain, records and 12 checklist items unchanged. Prompt v3 (live in Sandbox + Production, C) saves the draft as plain text ("Proposed access:" with "- " items, ending "Drafted by AI for review by <approver>"); tested on Ayu, then Ayu reset to Awaiting draft. Stray sdk agent 9b4cc5bb-7234-4206-bd44-7cde9ada6d08 deleted (Renzo OK). **Click path (10 Nov):** private artifact https://claude.ai/artifact/PysjAEFGtoXEb83ntRpSa7, 8 cards from one headless run at 1440×900 (Playwright, session from `clio get-browser-session -e craigs-demo`), stamped DRAFT — UNVERIFIED because no toolkit readiness verdict exists; data checked by Claude. Source: scratchpad `clickpass/` (cards.json, run_flow.py). After the run Ayu was reset (Awaiting draft, empty draft) and the run's 2 IT items deleted (Renzo OK): Ayu 5 items, 12 in total. **Telkomsel workplace (10 Nov, C):** live-only SysWorkplace "Telkomsel" (29baea8b-242a-437c-8f00-6eb21eeeab5a, web, position 24) with Employee Onboarding, IT Access Requests, Checklist rules, granted to System administrators; not packaged (clio 8.1.0.135 has no place-section-in-workplace, so rows were written by hand without data bindings). The sections also stay in My applications. Present from this workplace: My applications also shows Sovico 360. Re-login to see workplace changes. **IT access page redesign (10 Nov, C on screen):** following creatio-ui-guidelines: left column = request island, "New hire" island (crt.Timer countdown to the onboarding start date, start date, department, request type via ForwardReference from the linked request), "Approver" island (read-only crt.ContactCompactProfile + lookup); main area = "AI-drafted access request" panel and "Onboarding checklist" expanded list of the linked request's items (dependency UsrRequest → PDS.labOnboardingRequest; refresh, export, search; add/import deliberately left out because the process manages the items). Page business rules BusinessRule_c9415dd / BusinessRule_30a3b4e show Approve/Reject only while Decision = Awaiting approval. Not done: stage progress bar (needs a DCM case on labUsrItAccess and recreating the page on PageWithTabsAndProgressBarTemplate). At 17:13 local someone ran the flow on Ayu (not Claude); with Renzo's OK Claude reset Ayu, re-shot the click path on the new page (17:34 local, data checked) and republished it as version 3, then reset Ayu again: 5 items, Awaiting draft, empty draft, 12 items in total. The AI's wording varies slightly between runs. Reset recipe: delete Ayu's two IT items ("Network, email and system accounts created", "Laptop and SIM configured and handed over"), set labDecision = Awaiting draft (77fea878-630a-4ded-a9f0-4045c03046e9) and labAccessDraft = "". Craig's logs users out quickly and was slow (about 1 min shell load) at times. Demo script: open Ayu's IT access record → AI panel → @Telkomsel IT Access Drafter → "Draft the IT access for Ayu Lestari" → "Yes" → reload, decision Awaiting approval → Approve → reload → open Ayu's onboarding request: 2 new IT items. To remove: delete app `labUsrItAccess` (incl. processes `labItAccessApproval`, `labItAccessSetDecision`), the 2 requests and their items, both Studio agents, and the agent's entry on the Twin channel. Note: `clio pull-pkg` saves a ZIP named `.gz`; the real packages are extracted in `.devkit/scratch/craigs/real`. Thursday runs on 11014108 without AI. **People Hub home page (10 Nov, C):** Telkomsel workplace now opens on `labTelkomselPeopleHub` (BaseHomePage, package labUsrItAccess, uid 2b3c93cb-84ef-4ac3-8ba2-582500cfc8d2; set via `SysWorkplace.HomePageUId`). All native Freedom UI, no custom components: welcome banner with 4 quick links (New hire request, IT access requests, Onboarding, Ask Creatio.ai prompt), 4 live metrics (starting in 30 days, day one at risk, IT access awaiting AI draft, awaiting approval), "Waiting for my decision" list (IT access where approver = logged-in user's contact and decision = Awaiting approval; shows Dewi for John Best), "Day one at risk" list (starts within 14 days and has open checklist tasks; shows Dewi and Ayu), New joiners list with stage progress, Open tasks by team chart, IT access requests list, New joiners by stage chart. Seeded 3 fictional joiners (Dewi Kartika, Rizky Pratama, Sari Wulandari) plus Dewi's IT access record (Awaiting approval). Body generator: `deals/telkomsel/ai-studio/build_people_hub.py` (writes hub-body.js + hub-resources.json; save with clio update-page mode=replace plus resources). Personal list and at-risk widgets added 10 Nov on Renzo's call (best-in-class gap review; AI prompt buttons skipped). Demo effect: once the agent drafts Ayu's request it appears under "Waiting for my decision"; after approval the counts update. **IT access record page v5 (10-11 Nov, C):** next-action banner above the tabs, one per decision state, shown by 8 page business rules: purple "Next step: let Creatio.ai draft the access" with an **Open Creatio.ai** button; amber "Your decision is needed" with Approve/Reject (moved here from the header); green "Approved. IT tasks are on the checklist"; red "Rejected. See the decision note". AI draft shown as a "Proposed access" card (read-only text, "Drafted by Creatio.ai for review" badge hidden while awaiting draft, 2 more rules). Job role and Onboarding request moved into the New hire island; tab renamed "Request". Tested: `crt.CopilotActionRequest` on this stand opens the AI Twin panel with the record attached but does NOT post the prompt and does not pick our agent, even with `useCurrentSession` (C). So the presenter still picks "Telkomsel IT Access Drafter" and types the ask; the banner says so. With the panel and its chat list open the page is narrow: collapse the chat list (toggle top-left of the panel) before the AI step. Removed "Sample draft for the demo." from Dewi's and Budi's drafts. Files: `deals/telkomsel/ai-studio/build_itaccess_v5.py` (builds v5 from `itaccess-form-body-v4.js`; v4 kept for rollback), `itaccess-form-body-v5.js`. **Click path re-shot on v5 (11 Nov 00:11 local, C):** ClickPass artifact https://claude.ai/artifact/PysjAEFGtoXEb83ntRpSa7 now version 4, 10 cards: People Hub (before) → Ayu record (purple banner) → Open Creatio.ai + pick drafter + collapse chat list → AI draft → Yes → reload, amber banner + draft card → Approve → reload, green banner → onboarding timeline → People Hub (after: awaiting AI draft 1→0, IT open tasks 7→9). Still stamped DRAFT, UNVERIFIED (no readiness verdict). Script and cards: `deals/telkomsel/ai-studio/run_flow_v5.py`, `make_cards_v5.py`, `cards_v5.json`. Ayu reset after the run (2 run items deleted, Awaiting draft, empty draft; 5 checklist items). Not built: status stepper, day-one readiness block, structured access lines, custom component (deferred until after 12 Nov). Option B extras (calendar, feed, articles) not built. Click path still starts on the IT access record; starting from the hub is optional.
+- **Navalo / Metrics Credit Partners (12 Nov):** new deal `deals/metrics-credit-partners/`. FM v0.3 run on Ayush's BDR intro call
+  (~10 Nov, Claudio and Chris, unsecured lending): `00-bdr-transcript-2026-11-10.md`, `01-fm-prep.md`, `deck.json` →
+  `02-first-meeting-deck.pptx` (17 slides, rendered, no warnings). Navalo = ex-Payright + BC Invest + Taurus, being merged
+  under one brand. Pre-RFP demo: preferred vendor before Christmas. Coverage 3/6, Platform track, BFSI pack. Top pain:
+  single view of customer. Light config 4.0 h (customer + Loans 360, application stage bar + product rules table, Creatio.ai
+  summary skill, AI missing-docs step). **Update 12 Nov (later):** meeting confirmed Mon 16 Nov; competition assumed
+  Salesforce, Microsoft, Zoho, HubSpot; Navalo's overview email saved (`00-customer-email-2026-11-12.md`: CRM + workflow
+  + integration/middleware, 9 weighted criteria, 10-business-day RFP response). Deck reworked to it: hypothesis = one view
+  of every customer · straight through by the rules (approval limits as data) · every decision on the record; campaigns
+  to notes only. Light config still 4.0 h, live change now a T1 limit change. Biggest risk: no AU lending reference
+  (their top criterion). Next: build the light config Fri 13 Nov on a stand Renzo names; Renzo's SC check of the deck.
+  Process: FM v0.4 / plugin 0.14.1 (website + customer documents as inputs), committed and published 12 Nov.
+  **Build stopped 12 Nov (Renzo): new rule, visual build plan approved by the SC before any stand write.** Only the empty
+  app shell `Navalo Lending` (package `UsrNavaloApplication`) exists on 11014108. Build plan `03-build-plan.html` from
+  `build-plan.json`, rendered by the new `sc-demo-plan/scripts/build_build_plan.py` + `templates/build-plan.html`
+  (wireframes from JSON, cheap per deal). v2 same day (Renzo): per scene the customer's verbatim quote, checked by the
+  builder against the transcript/email, or a sourced "our idea" blind spot (max 2, after their scenes; Navalo step 8 =
+  hardship visible across the three businesses); minutes vs demo slot; differentiator + competitor angle; reuse chip;
+  their criteria vs our demo. Plugin 0.15.0 committed (b75db1b) and published 12 Nov; Renzo approved the Navalo plan
+  with all 6 recommended decisions.
+  **Build on 11014108 (12 Nov, in progress):** package `UsrNavaloApplication`; lookups, objects, example data and 4
+  processes built and proven on data (checklist, straight-through/approval with the native Approval element, hardship
+  across the group, Lodge). Ids, traps and the reset file are in the deal's `04-build-notes.md` / `04-reset-demo.json`.
+  Pages, dashboard, Lodge button and workplace "Navalo lending" (home page `UsrNavaloLendingHomePage`) built by
+  the demo-builder agent by ~17:02 12 Nov (confirmed by clio read; not yet seen on screen). DCM case "Application"
+  (`UsrCase_7c5a45a`) finished by Renzo; the stage bar shows on applications (checked on screen). The "Navalo
+  lending" workplace, application page, Documents tab, home page and policy list were also checked on screen.
+  **RESUME HERE (12 Nov evening, session hit its usage limit):**
+  1. **Customers page (in progress, state unknown).** The stock Contacts_FormPage shows another demo's hospital
+     branding ("Patient contact", "IJN service directory") from package `UsrCrtLeadOppMgmtApp_octzos1`, so Renzo
+     chose a Navalo **Customers** section: our own list + form pages on Contact in `UsrNavaloApplication` (header,
+     mobile/email/customer since, Hardship group, tab "Loans across the group" with Loans + Loan applications lists;
+     list filtered to contacts with a loan or application), replacing Contacts in workplace "Navalo lending"
+     (SysWorkplace c2166db2-693b-4dc3-bd48-b3a4e73f6f7d). The agent building it was cut off: FIRST audit what exists
+     (`list-pages` in UsrNavaloApplication, workplace section rows), then finish. Also check Accounts_FormPage for the
+     same foreign branding (report, don't build). Our replacing layer on Contacts_FormPage (tab + hardship group)
+     still exists; removing it is Renzo's call. Page generators/backups: scratchpad of session 9de16787 (may be gone).
+  2. **Rehearse the 8 build-plan steps** in the browser pane (Renzo signs in as Supervisor; `UserSessionTimeout`
+     set to 700 min), take screenshots for the deck (FM step 7), then reset with `04-reset-demo.json`, extended for
+     Aisha (CL-24060), Grace (CL-24062), the car loan limit back to 40,000 and anything lodged. No rehearsal data
+     has been changed yet.
+  AI parked (Support ticket on Creatio.ai invalid_client).
+
+
+- Start in `C:\Projects\Workspaces\AI Sales Motion` (this folder: the handover, the process draft and the templates).
+- First reply: briefly confirm you've read this and `SC-MOTION-PROCESS-v0.5.md`, then ask Renzo where the live deals
+  and the sign-off stand. Give recommendations, not surveys.
+- **Where things stand (6 Nov 2026):** design done (process v0.5, W1 v0.4, W2 v0.2, W3 v0.2, W5 v0.2, packs, catalogue,
+  templates). Sign-off with the Sales Director pending (`SIGN-OFF-PACK-v0.5.md`). Workflows are being used on real
+  deals (§4 item 27) before the formal pilot.
