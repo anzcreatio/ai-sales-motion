@@ -71,7 +71,7 @@
 
 - **16 Nov: build on top of master stands** (§4 item 109): demo bar v0.3 §6c, build rules v0.5, register `apac-sc-motion/library/stands.json` (first master `11011710-demo`, H&G layer off first; `11013904-demo` off limits). Plugin 0.23.0 committed, not published. Next: register Renzo's new clean sandboxes as masters (names + industries), then publish.
 
-- **16 Nov: Delivery Assurance knowledge** (§4 item 108): `apac-sc-motion/knowledge/DELIVERY-ASSURANCE-v0.1.md` (internal; packages, partner-risk signals, can say). Plugin 0.22.0. Open: currency + APAC DA contact; consider DA in the IQumulate delivery model.
+- **16 Nov: Delivery Assurance knowledge** (§4 items 108, 110): `apac-sc-motion/knowledge/DELIVERY-ASSURANCE-v0.2.md` (internal; owner Alex Klochkov; no prices in any output, chat only with a warning). Hooked into first meeting, deck, workshop, meeting review, RFP, W5. Plugin 0.22.0 (not published). Open: currency; consider DA in the IQumulate delivery model.
 
 - **16 Nov: IQumulate** (§4 item 107): `deals/iqumulate-rh/` prep, internal risk plan `02-cost-risk-plan.md`, workshop 1 draft journey, agenda, invite email. Waiting on Aaron (Steadfast Life facts, delivery model, call to Wai-Lum) and a workshop date.
 
