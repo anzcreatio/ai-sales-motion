@@ -12,6 +12,9 @@ Claude sessions, memory and artifacts never cross between the two accounts. Deci
 | Deals, published plugin, Lessons, Slide-library, Bank-AI-Requirements | SharePoint `APAC Solution Consulting` → Documents | OneDrive sync |
 | Global CLAUDE.md, memory, settings | Each machine's `~/.claude` | One-time copy from this folder |
 
+**First-time install from nothing (tools, toolkits, plugins): use `MAC-BOOTSTRAP-PROMPT.md`.** The short prompt below
+is for when the repos are already cloned.
+
 ## Paste this into Claude on the Mac (after the two clones)
 
 ```text
