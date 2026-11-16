@@ -56,8 +56,9 @@
 
 | Deal | Folder | Where it is |
 |---|---|---|
-| Navalo / Metrics Credit Partners | `metrics-credit-partners` | Meeting Mon 16 Nov. Build on `11014108` in progress: **see Resume here below** |
+| Navalo / Metrics Credit Partners | `metrics-credit-partners` | **Meeting 2 held Mon 16 Nov: informal RFP briefing, no demo** (review `18-meeting-review-2026-11-16.md`, log §4 item 96). Lending platform Aryza via middleware; CIO Sal; group CEO endorses; POC sprint offer accepted. **Next: RFP criteria ~Wed 18 Nov → `sc-rfp`, then `sc-demo-plan` for the sprint. Hold BWP4+ broker build until then.** Stand `11014108` clean. Build history: `build/build-report.md` |
 | East West Bank (PH) | `east-west-bank-rh` | Plan v5 (47 h) **approved 12 Nov; Phase 1 build in progress on `11014930-demo` (clio `ewb-pain`)**. Done 13 Nov: prefix `lab`, cliogate, CrtProcessBuilder; packages `labPainDiscovery` / `labUiKit` / `labPainDiscoveryEwb`; full `labPd*` object model; live score view `labPdCardTotal`; stage bar (DCM via import-schema); guard process; module + EastWest seed (6 cards, 25 steps); roles + record rights; UI kit 0.2.0 (5 components, branch `ewb-components` in `C:\Projects\builds\ui-kit-ewb`) installed; card page, board, cards list, scoring rules, units' home, leads workplace, configurable "How this works" help panels on every page — all re-checked on screen 13 Nov after the restart (board fix: unscored cards off the plot, kit `c66150e`). **Reusable module (13 Nov, Renzo "Start now")**: module exports cleanly with no SQL view and no East West wording (customer wording via replacing pages + instruction "Replaces"); scale, board axes, stage rule, all kit text configurable; kit 0.3.0 `d9fcbf8`. Unit rights on new cards automated (script task, compiled 13 Nov). Clean-install test passed on `pd-clean` (11014933-demo); one manual step (record permissions on cards). Install guide `09-module-install-guide.md`. Tested on 3 other use cases (bank AI portfolio, RFP fit-gap at 300, manufacturing quality): all work; board now merges bubbles at volume (kit 0.3.1). **Programmes (14 Nov, kit 0.4.0):** several use cases on one stand, default programme from a system setting. Limits: axis names and stages shared across programmes, scales ≤5. Log rows 60–87. **UI polish (14 Nov, kit 0.5.1):** short card titles + quotes, slim help, visual system, card tiles home; brand step waits for EWB's logo. Plan `10-polish-plan.html`, rows 89–94. **Resume: `Deals/east-west-bank-rh/08-build-log.md` "Resume here"**. Logins 24 Nov, session 27 Nov or early week of 30 Nov |
+| Abbe (packaging, AU) | `abbe-rh` | AE intro 11 Nov (Ayush ↔ Will Purcell, data and AI). **Detailed first demo Tue 1 Dec**: voice visit recap → right Kiwi account and fields → Monday (simulated). Deck 02 built; build plan 03 + demo plan 04 (22.5 h) **await Renzo's approval + stand** (log §4 item 97) |
 | Scentia | `scentia` | Phase 1 + client separation built on `11014147-2-demo`; not yet tested as real users |
 | Telkomsel | `telkomsel` | Meeting 12 Nov (Deloitte-led). Next: re-run FM on the meeting transcript, then the light config they pick |
 | Suntory Oceania | `suntory-oceania` | Demo held 11 Nov; Andrew re-engages late Jan; send slides PDF + FMCG stories |
@@ -65,6 +66,10 @@
 | SAHE | `southern-academy-of-higher-education` | First meeting moved (TBC); keep-warm email approved, needs dates + AE name |
 
 ## 3. Resume here
+
+- **16 Nov: Abbe first-meeting pack** (§4 item 97): `deals/abbe-rh/`. Next: Renzo answers the 5 build-plan decisions (stand, phone, voice route, hours, step 8) and approves → approval pack → build in a new session; Ayush sends the success-criteria email (text in `01-fm-prep.md` Output 5).
+
+- **16 Nov: customer chats grouped and numbered** (§4 item 95): rule in `CLAUDE.md` ("Customer chats"); `00-chats.md` in 11 deal folders, 17 chats renamed into 9 new + 2 existing sections. To do: trial on 2–3 deals this week, then add to the plugin (`sc-guide` / `sc-setup`) for Willy and Ferdhi.
 
 - **16 Nov: second machine (Mac)** (§4 item 94): workspace + plugin are git repos for GitHub `anzcreatio`. Workspace pushed to `anzcreatio/ai-sales-motion` 16 Nov. To do: Renzo pushes `apac-sc-motion` himself (`git push -u origin main --tags`; Claude's push was blocked by auto mode), then Mac setup per `_mac-setup/MAC-SETUP.md`.
 

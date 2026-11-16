@@ -55,6 +55,21 @@ up for sign-off on 3 Nov 2026. It is now being tried on real deals.
   discovery), when the SC got the transcript, and when the demo is (planned, then done). Use
   `apac-sc-motion/skills/sc-guide/scripts/deal_dates.py` (`show`, `set`, `stats`). Take dates from the handoff or the
   transcript; ask at the top only for the missing ones; never guess.
+- **Customer chats: one sidebar section per customer, numbered titles** (16 Nov 2026, log §4 item 95). As soon as a
+  chat is about a customer (first message names the account, or a deal skill runs on it):
+  1. **Number from the deal folder, not the sidebar.** Read `<deal>/00-chats.md` (create it if missing: header with
+     the short customer name + section name, then a table `No · Date · Machine · Stage · Topic · Outcome`). Next
+     number = last row + 1. Write the row straight away (outcome blank) so a parallel chat can't take the same number.
+     The sidebar is per machine; this file is shared across the PC, the Mac and the other SCs.
+  2. **Section:** `list_sections`; if the customer has none, `create_section` named `<Customer full name> (<SHORT>)`
+     only when a short name is in use, else just the name (e.g. `Bussan Auto Finance (BAF)`, `Navalo`). Then
+     `move_sessions` with `self`. Never a near-duplicate section.
+  3. **Title:** `set_session_title` self → **`<Customer> NN · <Stage> · <topic>`**, under ~50 characters.
+     Customer = the short name from `00-chats.md` (same in every chat). NN = two digits. Stage = one of: `Intake`,
+     `FM prep`, `Meeting review`, `Demo plan`, `Build`, `Deck`, `RFP`, `Workshop`, `Click path`, `Proposal`, `Admin`.
+     Topic = 2–4 words on what this chat is for. E.g. `Navalo 04 · Build · performance page`.
+  4. **At wrap-up**, fill the row's outcome (one line) and fix the topic if the chat drifted.
+  Not for scheduled tasks (transcript intake, digests, desk brief) or motion/plugin work; those stay ungrouped.
 - He wants a recommendation, not a menu. Plain Australian English, tables, short steps, no long prose. He types
   fast, so typos are normal.
 - **Process first:** don't build Creatio modules or touch Creatio stands for this work unless he asks.
