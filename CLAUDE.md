@@ -46,7 +46,7 @@ up for sign-off on 3 Nov 2026. It is now being tried on real deals.
 - **Log SC feedback as you go** (13 Nov 2026): when the SC corrects, overrides or rejects an output, or adds a rule,
   write a feedback file in SharePoint `Lessons/feedback/` (about the skills and Claude: shared with everyone; never about how the SC performed. Coaching, meeting self-ratings and training results stay on the SC's own PC and are shared only by their choice; never show one SC another's) (format: `sc-guide` mode C, plus `Source: chat` and the
   skill + step) without asking. At the end of each skill run, ask one short "how did that go?" question. Not for
-  practice folders. Full loop: `apac-sc-motion/standards/FEEDBACK-LOOP-v0.2.md` (plugin 0.20.0, §4 items 71b, 90); lessons in a chat of their own: `/sc-lessons`.
+  practice folders. Full loop: `apac-sc-motion/standards/FEEDBACK-LOOP-v0.2.md` (plugin 0.20.0, §4 items 71b, 102, 105); lessons in a chat of their own: `/sc-lessons`.
 - **BFSI deals** (bank, lender, multi-finance, pawn, securities, insurer): after first-meeting prep, RFP fit-gap,
   workshop, demo plan or a meeting with new requirements, run `sc-bank-ai-log`. It writes the customer's requirements
   and our proposed configuration to SharePoint `Bank-AI-Requirements` for the Bank.AI team. Requirements only: no
@@ -110,7 +110,9 @@ up for sign-off on 3 Nov 2026. It is now being tried on real deals.
   account (reuse it whatever its suffix); never rename. Folders made before 12 Nov 2026 have no suffix. Rule: `sc-setup`.
 - **Never put `node_modules`, build caches (`.angular`, `dist`) or videos in a deal folder**: it is synced to every SC.
   Custom-component workspaces live in `C:\Projects\builds\<account>\`; only their source and a README go in the deal folder.
-- When a decision is made or work is finished, add the decision to `CONTEXT-HANDOVER-LOG.md` §4 (next number) and
+- When a decision is made or work is finished, add the decision to `CONTEXT-HANDOVER-LOG.md` §4 (next number: re-read
+  the last item number right before you write, in the same step, because parallel chats write here too; items 99–106
+  were renumbered on 16 Nov after three chats reused 87–93) and
   update `CONTEXT-HANDOVER.md` §2–§3 (status, resume point; keep it short, deal detail goes in the deal folder), so any
   Claude account, on any machine, can continue from this folder alone.
 

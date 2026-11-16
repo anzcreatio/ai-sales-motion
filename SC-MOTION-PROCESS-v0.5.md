@@ -433,7 +433,7 @@ per deal · SE hours used · demo → next-stage conversion · partner feedback 
   not a CRM. `standards/FEEDBACK-LOOP-v0.2.md`: feedback about the skills and Claude stays global; the SC's performance
   (coaching, meeting self-ratings, training results) stays on their own PC, shared only by their choice ("for you,
   not about you"); no per-person scores anywhere; desk briefs private; Friday team page totals only.
-  Source: Renzo, 14 Nov (log §4 items 89-91).
+  Source: Renzo, 14 Nov (log §4 items 101, 102, 105).
 - **13 Nov 2026: plugin 0.18.0 published.** FM v0.6 + DECK-STANDARD v0.4: every demo deck opens with an agenda whose
   "Today's goal" is the closing question, word for word; "not yet" pins down the next step; the builder checks it.
   New `standards/FEEDBACK-LOOP-v0.1.md` (feedback as you go in every skill, patterns not people on Fridays), new

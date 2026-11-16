@@ -77,14 +77,14 @@
 
 - **15 Nov: Navalo performance page + labUiKit 0.5.0 (no-code pickers) live on 11014108** (§4 item 89). To do: open the pickers in the designer; Renzo pushes the kit; page into the menu after Monday.
 
-- **14 Nov: East West go-live** (§4 items 91–92): test run found 3 blockers; kit 0.5.2 fixed two (failed saves, lock after send) plus Keep ticks, on 11014930 only. Left before opening: Renzo creates the unit + Dodong logins and role members, SC check of the 6 titles, then F tests with real logins. Report `deals/east-west-bank-rh/12-go-live-test-report.md`.
+- **14 Nov: East West go-live** (§4 items 103–104): test run found 3 blockers; kit 0.5.2 fixed two (failed saves, lock after send) plus Keep ticks, on 11014930 only. Left before opening: Renzo creates the unit + Dodong logins and role members, SC check of the 6 titles, then F tests with real logins. Report `deals/east-west-bank-rh/12-go-live-test-report.md`.
 
-- **14 Nov: `sc-desk` built** (log §4 item 89): commitments ledger, stall checks, daily brief (8 am task on Renzo's PC), weekly desk view, load check; plugin commit 3ccc007 for 0.20.0, unpublished. Privacy (log items 90-91): desk briefs, coaching and training results stay on each SC's PC; skill feedback global; no per-person scores. **0.20.0 published 15 Nov 2026** (3be2868, tag v0.20.0). Open: Renzo picks commitments to capture, connects Microsoft 365 if wanted, approves the Friday task prompt update (steps 0b, 1b, learn stats); parked ideas: win/loss debriefs, missed-review nudge, day-before readiness, stand clashes, AE weekly note, claims check, where we win.
+- **14 Nov: `sc-desk` built** (log §4 item 101): commitments ledger, stall checks, daily brief (8 am task on Renzo's PC), weekly desk view, load check; plugin commit 3ccc007 for 0.20.0, unpublished. Privacy (log items 102, 105): desk briefs, coaching and training results stay on each SC's PC; skill feedback global; no per-person scores. **0.20.0 published 15 Nov 2026** (3be2868, tag v0.20.0). Open: Renzo picks commitments to capture, connects Microsoft 365 if wanted, approves the Friday task prompt update (steps 0b, 1b, learn stats); parked ideas: win/loss debriefs, missed-review nudge, day-before readiness, stand clashes, AE weekly note, claims check, where we win.
 
 - **14 Nov late: Navalo full rehearsal passed, stand reset** (§4 item 87). Portal pages built (not in Monday demo). Pre-Monday fixes a–c done (meeting after 8:30 am; Daniel in the reset, 23 rows). Stand ready.
 
-- **14 Nov: `sc-customer-academy` built** (log §4 item 88): customer enablement on Creatio's public toolkit, 2 tracks, 11 modules pending Renzo's approval; same release.
-- **14 Nov: `sc-academy` built** (log §4 item 87), committed for 0.19.0 with sc-coach, unpublished. Open: Renzo reads
+- **14 Nov: `sc-customer-academy` built** (log §4 item 100): customer enablement on Creatio's public toolkit, 2 tracks, 11 modules pending Renzo's approval; same release.
+- **14 Nov: `sc-academy` built** (log §4 item 99), committed for 0.19.0 with sc-coach, unpublished. Open: Renzo reads
   and approves the 9 modules (stamped pending), then releases. Each SC trains on their own stand (Renzo).
 
 - **14 Nov: Navalo broker components BWP1-3 done locally** (labUiKit 0.2.0, `dc6206f`, on GitHub, installed on 11014108 14 Nov but not placed on a page; §4 item 86). Next: BWP4 after the Mon 16 Nov meeting; runbook `Deals/metrics-credit-partners/12-broker-runbook.md`.
