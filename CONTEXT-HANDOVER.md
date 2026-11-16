@@ -69,6 +69,8 @@
 
 ## 3. Resume here
 
+- **16 Nov: `sc-bom` built, plugin 0.25.0 on branch `sc-bom`, not published** (§4 item 116): which licences a deal needs (SKUs, candidate tier, extras, gotchas, sizing questions; no prices, no users). Catalogue `knowledge/BOM-CATALOGUE-v0.1.json` (that's the "untracked" file in item 115). Next: Renzo reviews, merge `sc-bom` into `main`, publish; first real run on Navalo once the RFP criteria land; Deal Desk to close OPEN-1 to OPEN-4.
+
 - **16 Nov: EDB + plugin 0.24.0 published** (§4 item 115): `deals/edb-rh/` (existing customer, session Tue 17 Nov, deck `02-session-deck-2026-11-17.pptx`). Plugin 0.24.0 published (also ships 0.22.0 Delivery Assurance and 0.23.0 master stands): confidential terms, existing-customer path (`sc-guide` mode D), roadmap owners. Open: EDB's five archetype names for `confidential.json` (ask Renzo); the untracked `apac-sc-motion/knowledge/BOM-CATALOGUE-v0.1.json` belongs to another chat.
 
 - **16 Nov: build on top of master stands** (§4 item 109): demo bar v0.3 §6c, build rules v0.5, register `apac-sc-motion/library/stands.json` (first master `11011710-demo`, H&G layer off first; `11013904-demo` off limits). Plugin 0.23.0 committed, not published. Next: register Renzo's new clean sandboxes as masters (names + industries), then publish.
@@ -79,7 +81,7 @@
 
 - **16 Nov: plugin 0.21.0 published** (tag v0.21.0 = 386ae3f): chat section rule, UI kit standard v0.4, **DECK-STANDARD v0.5** (no title kickers, card agenda, owners and minutes in the notes; log §4 item 98). Navalo meeting 2 reviewed (item 96): next = RFP criteria ~Wed 18 Nov.
 
-- **16 Nov: Abbe first-meeting pack** (§4 item 97): `deals/abbe-rh/`. Build plan v2 approved, stand `11014981-demo` (clio `abbe`) registered, approval pack confirmed 16 Nov; deck rebuilt on DECK-STANDARD v0.5. Next: start the build session "Abbe 02 · Build" (pre-flight, restore point, day-1 voice test on the iPhone mirrored to the Mac); Ayush sends the success-criteria email (`01-fm-prep.md` Output 5) with `05-ae-brief.html`; meeting time, format and attendees TBC.
+- **16 Nov: Abbe first-meeting pack** (§4 item 97): `deals/abbe-rh/`. Build plan v2 approved, stand `11014981-demo` (clio `abbe`) registered, approval pack confirmed 16 Nov; deck rebuilt on DECK-STANDARD v0.5. Next: start the build session "Abbe 02 · Build" (pre-flight, restore point, day-1 voice test on the iPhone mirrored to the Mac); Ayush sends the success-criteria email (`01-fm-prep.md` Output 5) with `05-ae-brief.html`; meeting time, format and attendees TBC. Voice: browser call from the phone, voice captures and a text step drafts; runbook + 29-failure research + proof gates G1–G6 in `06-voice-agent-runbook.md` (go/stop Fri 20 Nov).
 
 - **16 Nov: customer chats grouped and numbered** (§4 item 95): rule in `CLAUDE.md` ("Customer chats"); `00-chats.md` in 11 deal folders, 17 chats renamed into 9 new + 2 existing sections. Sections rule **published in plugin 0.21.0** (16 Nov, tag v0.21.0, commit 386ae3f; also carries deck standard v0.5 + UI kit v0.4). To do: Renzo pushes `apac-sc-motion` with tags; trial the numbering on 2–3 deals this week, then add numbering to the plugin.
 

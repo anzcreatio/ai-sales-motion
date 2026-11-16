@@ -46,7 +46,9 @@
 3. Pick the differentiators: the core set (D1 + D3, plus D2 for P, D5 for A; **P+A and manufacturing include D5**; P+A
    adds D2 too when one platform was a hot button), max 4. Proof points from the catalogue; **where the catalogue has
    none, "what you saw in the demo" is the proof**, and the gap is reported to the catalogue owner.
-4. Build the value case (benefits from the Brief's numbers, costs from the price book or placeholders).
+4. Build the value case (benefits from the Brief's numbers, costs from the price book or placeholders). Which
+   licences and products to cost comes from the deal's BOM (`sc-bom`, `NN-bom.xlsx`): run `bom.py check --final`
+   first and send it to Deal Desk; the proposal's licence lines follow Deal Desk's quote, never the BOM alone.
 5. Draft the Proposal.
 6. Draft the Partner Handover Pack.
 7. **Consistency check (Gate C):** run the checklist below and fix any failure before replying. Items that depend on missing
