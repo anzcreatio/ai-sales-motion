@@ -77,7 +77,7 @@
 
 - **16 Nov: plugin 0.21.0 published** (tag v0.21.0 = 386ae3f): chat section rule, UI kit standard v0.4, **DECK-STANDARD v0.5** (no title kickers, card agenda, owners and minutes in the notes; log §4 item 98). Navalo meeting 2 reviewed (item 96): next = RFP criteria ~Wed 18 Nov.
 
-- **16 Nov: Abbe first-meeting pack** (§4 item 97): `deals/abbe-rh/`. Build plan v2 approved 16 Nov (voice route later). Next: Renzo requests the clean stand → `approval_pack.py new` + pre-flight → build in a new session (day 1 = voice test on the iPhone mirrored to the Mac); Ayush sends the success-criteria email (`01-fm-prep.md` Output 5) and gets `05-ae-brief.html`.
+- **16 Nov: Abbe first-meeting pack** (§4 item 97): `deals/abbe-rh/`. Build plan v2 approved, stand `11014981-demo` (clio `abbe`) registered, approval pack confirmed 16 Nov; deck rebuilt on DECK-STANDARD v0.5. Next: start the build session "Abbe 02 · Build" (pre-flight, restore point, day-1 voice test on the iPhone mirrored to the Mac); Ayush sends the success-criteria email (`01-fm-prep.md` Output 5) with `05-ae-brief.html`; meeting time, format and attendees TBC.
 
 - **16 Nov: customer chats grouped and numbered** (§4 item 95): rule in `CLAUDE.md` ("Customer chats"); `00-chats.md` in 11 deal folders, 17 chats renamed into 9 new + 2 existing sections. Sections rule **published in plugin 0.21.0** (16 Nov, tag v0.21.0, commit 386ae3f; also carries deck standard v0.5 + UI kit v0.4). To do: Renzo pushes `apac-sc-motion` with tags; trial the numbering on 2–3 deals this week, then add numbering to the plugin.
 
