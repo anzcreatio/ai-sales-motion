@@ -823,6 +823,16 @@ this layering, and its lessons apply directly.
     quiet lists, one accent, palette colours by meaning, slots fit cards, full-page check); section 1 lists the eight
     0.5.0 components; pickers and person-level exclusion rules. DEMO-BAR section 6, library README and runbook 12 point to
     v0.4; CHANGELOG "Unreleased" entry. Committed 0a7b32f on main (15 Nov); not published yet.
+92. **Business column + filter on the lending overview (16 Nov 2026, demo day).** Renzo: "add the business column and the
+    filter". Business column on the three work lists; Business quick filter (lookup UsrNavaloBusiness) in the header
+    card, wired to the three lists only (KPIs and charts stay group-wide: the widget quick-filter recipe isn't in the
+    local docs). Built on the live body after a designer save at 12:21 pm that turned list numbering back on (left as
+    is, Renzo to decide). Tested: Taurus narrows to Grace, Tom, Aisha / none / Matilda; cleared. Deck slide 14 and click
+    path step 1 re-shot (`01c-lending-desk-business.jpg`); click path step 1 has the filter click and a Q&A.
+93. **Lists: row numbers always on, users can add columns (16 Nov 2026).** Renzo: "keep row numbers on always ... please
+    add that option". All 7 list widgets on the lending overview, dealer home and performance page: numeration on,
+    columns adding + toolbar on; lending lists rebalanced (150 / 110 / 110). Standard v0.4 section 2b rule changed in
+    place (v0.4 not yet released) and CHANGELOG updated; committed on main. Feedback file 2026-11-16 in Lessons/feedback.
 
 87. **sc-academy: a training course that keeps itself current (14 Nov 2026).** Renzo approved the design: one module per skill area on fictional Kestrel (path P1, 9 modules ~10 h: A0 setup + lab stand, A1 first meeting, A2 demo plan + approval pack, B1 prep + object model, B2 pages, B3 data + home page, C1 processes, C2 Creatio.ai skill, D1 readiness/click path/harvest dry run/reset; P2 planned: AI Studio, landing/campaigns, packages, videos/translation, RFP/workshop/review, app-dev). Each module: why, skills, guided lab, check Claude verifies, traps from our build logs. `scripts/academy.py`: progress (`Lessons/training/<sc>.json`), stand guard (refuses a stand named in any real deal's notes; `--renzo-ok` only on his yes), three feedback questions → `Lessons/feedback/` (`Source: training`), `refresh` (sha256 of every toolkit/app-dev/plugin SKILL.md, snapshots, stale modules, diff drafts in `Lessons/training/_drafts/`), `stamp` (`--authoring` = pending; `--by "Renzo Huruiti"` only after his yes), `weekly` tips, `pages`. Wired into sc-guide (map + step 8) and sc-weekly-lessons step 1c. Renzo (14 Nov): **each SC trains on a stand of their own**, so labs are built the real way (stand prep, stock Case reused, replacing copies of stock pages) in app Academy Kestrel / package `Acad<initials>`; guard also refuses another trainee's stand; D1 resets the stand (commit 1b4a0b9). All modules stamped **pending**: Renzo to read and approve. Dry run on a scratch team root passed (guard refused a deal stand, fail x2 hint, feedback file read by collect_week, simulated toolkit change → B2 stale with diff, weekly tips). Committed in the plugin repo with 0.19.0 (unpublished, with sc-coach).
 

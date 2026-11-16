@@ -21,9 +21,9 @@ HARD RULES: never type or ask me to paste a password, token or MFA code into cha
 PHASE 1 - command-line tools (Homebrew is already installed)
 1. brew install git gh python@3.12 node ffmpeg
 2. brew install --cask dotnet-sdk google-chrome
-3. dotnet tool install --global clio ; make sure ~/.dotnet/tools is on PATH in ~/.zprofile ; check `clio --version` (the PC has 8.1.0.149; any 8.1.x is fine).
+3. Don't install clio yet: the creatio-demo-toolkit's setup script does it in step 16 (it also patches clio's .NET roll-forward, which a plain `dotnet tool install` on a Mac with a newer SDK misses). Just add ~/.dotnet/tools to PATH in ~/.zprofile.
 4. Python packages for python3 (Homebrew's): python3 -m pip install --user --break-system-packages python-pptx python-docx openpyxl pymupdf Pillow lxml requests websockets playwright ; then python3 -m playwright install chromium.
-5. Show me a table of versions: git, gh, python3, node, ffmpeg, dotnet, clio, and one python3 -c import check of pptx, docx, openpyxl, fitz, PIL, lxml, playwright.
+5. Show me a table of versions: git, gh, python3, node, ffmpeg, dotnet, and one python3 -c import check of pptx, docx, openpyxl, fitz, PIL, lxml, playwright.
 
 PHASE 2 - GitHub and the repos
 6. Run `gh auth login` (GitHub.com, HTTPS, login with a web browser) and let me finish it in the browser as anzcreatio. Then `gh auth setup-git`.
@@ -42,8 +42,8 @@ PHASE 4 - Claude config
 PHASE 5 - plugins (use the claude CLI: `claude plugin marketplace add ...` and `claude plugin install <plugin>@<marketplace>`)
 14. Marketplaces: creatio = https://github.com/Creatio-Platform/creatio-ai-app-development-toolkit.git ; creatio-demo-lab = https://github.com/isavenkocreatio/creatio-demo-toolkit.git ; claude-plugins-official = https://github.com/anthropics/claude-plugins-official.git ; apac-sc = the LIB/Plugin/apac-sc-motion folder ; ai-driven-apps = https://tscore-git.creatio.com/global-customer-success/ai-driven-apps/ai-driven-apps-marketplace.git (this one needs my Creatio GitLab sign-in: when git asks, stop and let me sign in in the terminal; if it still fails, skip it and tell me).
 15. Install and enable: creatio-ai-app-development-toolkit@creatio, creatio-demo-toolkit@creatio-demo-lab, apac-sc-motion@apac-sc, ai-driven-atlassian@ai-driven-apps, ai-driven-plugin-auditor@ai-driven-apps, ai-driven-project-estimation@ai-driven-apps, ai-driven-video-to-document@ai-driven-apps. Leave ai-driven-ai-studio, ai-driven-delivery-assurance-review and ai-driven-development-kit disabled (same as the PC).
-16. creatio-demo-toolkit checks its own prerequisites on first session (scripts/check-prereqs.sh). Run that check now and install only what it says is missing.
-17. Check the clio MCP server starts: `clio mcp-server` must launch without error (stop it after it starts). No environments will be registered yet: that's expected.
+16. Run the creatio-demo-toolkit's own setup: `sh <plugin folder>/scripts/setup-prereqs.sh` (find the folder under ~/.claude/plugins/cache/creatio-demo-lab/creatio-demo-toolkit/<newest version>/). It installs clio (dotnet global tool) with the roll-forward patch, its own Python venv (playwright, python-docx, Pillow, requests), Chrome or Chromium, and anything else missing. Show me its summary; exit 0 means clio launches.
+17. Check `clio ver` (the PC has 8.1.0.149; any 8.1.x is fine) and that `clio mcp-server` starts without error (stop it after it starts). No environments will be registered yet: that's expected.
 
 PHASE 6 - memory and handover
 18. Tell me to start a NEW Claude Code session on "~/Projects/Workspaces/AI Sales Motion" (so the project memory folder exists). In that session: copy _mac-setup/memory/*.md into that project's memory folder under ~/.claude/projects/ (the folder whose name is the project path with / and spaces turned into -), and fix any Windows paths inside them for the Mac.
