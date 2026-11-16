@@ -69,7 +69,7 @@
 
 - **16 Nov: Abbe first-meeting pack** (§4 item 97): `deals/abbe-rh/`. Next: Renzo answers the 5 build-plan decisions (stand, phone, voice route, hours, step 8) and approves → approval pack → build in a new session; Ayush sends the success-criteria email (text in `01-fm-prep.md` Output 5).
 
-- **16 Nov: customer chats grouped and numbered** (§4 item 95): rule in `CLAUDE.md` ("Customer chats"); `00-chats.md` in 11 deal folders, 17 chats renamed into 9 new + 2 existing sections. To do: trial on 2–3 deals this week, then add to the plugin (`sc-guide` / `sc-setup`) for Willy and Ferdhi.
+- **16 Nov: customer chats grouped and numbered** (§4 item 95): rule in `CLAUDE.md` ("Customer chats"); `00-chats.md` in 11 deal folders, 17 chats renamed into 9 new + 2 existing sections. Sections rule is in the plugin (unreleased, `sc-setup` "Chat section rule"). To do: publish it; trial the numbering on 2–3 deals this week, then add numbering to the plugin.
 
 - **16 Nov: second machine (Mac)** (§4 item 94): workspace + plugin are git repos for GitHub `anzcreatio`. Workspace pushed to `anzcreatio/ai-sales-motion` 16 Nov. To do: Renzo pushes `apac-sc-motion` himself (`git push -u origin main --tags`; Claude's push was blocked by auto mode), then Mac setup per `_mac-setup/MAC-SETUP.md`.
 
