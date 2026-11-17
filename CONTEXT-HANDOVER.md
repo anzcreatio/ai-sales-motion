@@ -69,6 +69,8 @@
 
 ## 3. Resume here
 
+- **17 Nov: customer self-install guides in plugin 0.26.0** (§4 item 125; `ff1f76f`, unpublished): `sc-customer-academy` F0 → `F0-install-windows.md` / `F0-install-mac.md`. To do: test each on a clean machine; Renzo publishes.
+
 - **17 Nov: AI coding agent explainer in the Slide-library** (§4 item 124): `Slide-library/ai-coding-agent-explainer-2026-11.pptx` (5 slides, generic), source `Deals/_examples/ai-coding-toolkit-explainer/`. To do (optional): fictional public-toolkit build for request → plan → page screens; needs a clean stand.
 
 - **17 Nov: BAF AI architecture v0.2** (§4 item 122): `deals/baf/` slide + page. On-prem Business Studio → secure gateway → AI Studio (governance) → LLM; on-prem microservice dropped. To do: confirm gateway date, AI Studio region for Indonesia, sources for cost caps + redaction; ask BAF IT about the gateway.

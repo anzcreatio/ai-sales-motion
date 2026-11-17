@@ -417,6 +417,7 @@ per deal · SE hours used · demo → next-stage conversion · partner feedback 
 ## 15. Changes
 
 ### After v0.5: live-deal updates
+- **17 Nov 2026: customer self-install guides** (plugin 0.26.0). `sc-customer-academy` F0 links to new Windows and Mac install guides (`modules/F0-install-windows.md`, `F0-install-mac.md`): one prompt in Claude Code installs .NET, clio and Creatio's public toolkit; the customer connects their sandbox with their own password in their own terminal. Replaces the Academy setup wizard (404). Not yet tested on a clean machine. Log §4 item 125.
 - **16 Nov 2026: existing customers, confidential terms, who owns what** (plugin 0.24.0, published). New
   `apac-sc-motion/standards/CONFIDENTIAL-TERMS-v0.1.md` (+ `confidential.py`: generic labels in everything shared,
   scan before writing); `sc-guide` mode D, the existing-customer path, with `knowledge/TEMPLATE-As-Built-v0.1.md`;
