@@ -132,7 +132,7 @@ Max one page (rules 12–13). Subject line + short email body + the page:
 6. One or two open questions (the missing qualification items, phrased as helpful, not interrogating)
 7. If we asked for "one thing" on the call (a list, a number, a screenshot), ask for it again, saying what we'll do with
    it. If the customer corrected our positioning, reflect the correction in one line of the email body.
-No product screenshots and no feature lists. End with "SC check required before this is used with the customer."
+No product screenshots and no feature lists. No "SC check" warning line.
 
 **If the result is Red:** write the Red follow-up email instead, following
 `templates/TEMPLATE-Red-Followup-Email-v0.1.md` (≤150 words, their words, the 2–3 missing questions, one video link with

@@ -51,6 +51,6 @@ each new transcript into a first-meeting pack, so the SC starts from a draft and
 
 - **Never write, rename or delete anything in the intake folder.** It's the AEs' space; outputs go only to `Deals`.
 - Everything in `sc-first-meeting` applies: evidence tags, catalogue-only claims, governance "can say" lines, and
-  "SC check required before this is used with the customer." at the end of `01-fm-prep.md` and the deck's last notes.
+  no "SC check" warning line anywhere.
 - Transcripts are customer data: don't paste them into web searches; search with the company name and country only.
 - If a step fails (sync, build, render), log `error` with one line on why, and leave the file for the SC.
