@@ -69,6 +69,8 @@
 
 ## 3. Resume here
 
+- **17 Nov: BAF AI architecture v0.2** (§4 item 122): `deals/baf/` slide + page. On-prem Business Studio → secure gateway → AI Studio (governance) → LLM; on-prem microservice dropped. To do: confirm gateway date, AI Studio region for Indonesia, sources for cost caps + redaction; ask BAF IT about the gateway.
+
 - **16 Nov: `sc-bom` published in plugin 0.25.0** (§4 item 116; tag v0.25.0 = d0976d7, merged to `main`): which licences a deal needs (SKUs, candidate tier, extras, gotchas, sizing questions; no prices, no users). Catalogue `knowledge/BOM-CATALOGUE-v0.1.json` (that's the "untracked" file in item 115). To do: Renzo pushes `apac-sc-motion` with tags; first real run on Navalo once the RFP criteria land; Deal Desk to close OPEN-1 to OPEN-4.
 
 - **16 Nov: EDB + plugin 0.24.0 published** (§4 item 115): `deals/edb-rh/` (existing customer, session Tue 17 Nov, deck `02-session-deck-2026-11-17.pptx`). Plugin 0.24.0 published (also ships 0.22.0 Delivery Assurance and 0.23.0 master stands): confidential terms, existing-customer path (`sc-guide` mode D), roadmap owners. Open: EDB's five archetype names for `confidential.json` (ask Renzo); the untracked `apac-sc-motion/knowledge/BOM-CATALOGUE-v0.1.json` belongs to another chat.
@@ -89,7 +91,7 @@
 
 - **15 Nov: Navalo performance page + labUiKit 0.5.0 (no-code pickers) live on 11014108** (§4 item 89). To do: open the pickers in the designer; Renzo pushes the kit; page into the menu after Monday.
 
-- **17 Nov: East West go-live tested with real logins** (§4 items 103–104, 120): 6 logins live; unit and Dodong tests pass; gaps fixed on 11014930 (units see only Pain Point Discovery, rules read-only for units, stage bar for leads only). Cards checked by Renzo and fixed 17 Nov. Ready to open; optional full Send dry run. Report `deals/east-west-bank-rh/12-go-live-test-report.md`.
+- **17 Nov: East West go-live tested with real logins** (§4 items 103–104, 120): 6 logins live; unit and Dodong tests pass; gaps fixed on 11014930 (units see only Pain Point Discovery, rules read-only for units, stage bar for leads only). Cards checked by Renzo and fixed 17 Nov. Full re-run 17 Nov (§4 item 121): all pass except the units' home tile (never counts a sent card) and the Sales-desktop landing; fix those before sending the logins. Report `deals/east-west-bank-rh/12-go-live-test-report.md`.
 
 - **14 Nov: `sc-desk` built** (log §4 item 101): commitments ledger, stall checks, daily brief (8 am task on Renzo's PC), weekly desk view, load check; plugin commit 3ccc007 for 0.20.0, unpublished. Privacy (log items 102, 105): desk briefs, coaching and training results stay on each SC's PC; skill feedback global; no per-person scores. **0.20.0 published 15 Nov 2026** (3be2868, tag v0.20.0). Open: Renzo picks commitments to capture, connects Microsoft 365 if wanted, approves the Friday task prompt update (steps 0b, 1b, learn stats); parked ideas: win/loss debriefs, missed-review nudge, day-before readiness, stand clashes, AE weekly note, claims check, where we win.
 
