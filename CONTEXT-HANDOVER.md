@@ -61,6 +61,7 @@
 | Abbe (packaging, AU) | `abbe-rh` | AE intro 11 Nov (Ayush ↔ Will Purcell, data and AI). **Detailed first demo Tue 1 Dec**: voice visit recap → right Kiwi account and fields → Monday (simulated). Deck 02 built; build plan 03 v3 (11 steps, 30.5 h; Will ranked the pains by email 17 Nov: new-customer step added) **approved 16–17 Nov**; AE brief 05. Waiting on: clean stand (Renzo requesting), then approval pack + day-1 voice test on iPhone via Mac (log §4 item 97) |
 | IQumulate (premium funder, Steadfast Group) | `iqumulate-rh` | Discovery + generic demo 22 Oct (AE Aaron + Koncept). **Biggest risk: Koncept did Steadfast Life (went badly); Wai-Lum spoke to its CEO and now fears implementation cost.** Plan: guided workshop 1 in Melbourne (broker quote follow-up) → journey built for workshop 2 → phased roadmap + fixed phase 1. **Decided 16 Nov: customer-led backed by Delivery Assurance** (maybe a different partner for bounded pieces); five delivery controls answer the Steadfast Life failures (log item 114); budget cycle Apr 2027. Next: Aaron gets Steadfast Life facts + Delivery Assurance scope + 12 Nov call notes, handles Koncept, calls Wai-Lum, sends `workshop/w1-00-invite-email.md` (log §4 item 107) |
 | MartinJenkins (NZ consulting) | `martinjenkins-rh` | Advisor recommends separate ERP + CRM: now CRM vs CRM (log §4 items 112, 118). Next: Aaron calls Hannah (`07-aaron-call-brief.md`), then email 04 v0.2 + one-pager 06 (PDF) asking for a 2-h session on 3 adoption tests. Drafts await Renzo's SC check + 4 [TBC] |
+| FirstCape (NZ wealth) | `firstcape-rh` | AE intro 18 Nov (Ayush ↔ Dawie Olivier, transformation). Microsoft-heavy; asked for a written Creatio-vs-Microsoft comparison on onboarding and **no further work**. One-pager + email drafted (log §4 item 127). Next: Renzo reviews, Ayush sends with seat break-even (Deal Desk) + tenancy answer |
 | Scentia | `scentia` | Phase 1 + client separation built on `11014147-2-demo`; not yet tested as real users |
 | Telkomsel | `telkomsel` | Meeting 12 Nov (Deloitte-led). Next: re-run FM on the meeting transcript, then the light config they pick |
 | Suntory Oceania | `suntory-oceania` | Demo held 11 Nov; Andrew re-engages late Jan; send slides PDF + FMCG stories |
@@ -68,6 +69,10 @@
 | SAHE | `southern-academy-of-higher-education` | First meeting moved (TBC); keep-warm email approved, needs dates + AE name |
 
 ## 3. Resume here
+
+- **18 Nov: FirstCape intro reviewed** (§4 item 127): no FM pack, by the customer's "no further work". Drafts `deals/firstcape-rh/02-…onepager.md` + `03-ae-email-draft.md` await Renzo; then PDF the one-pager for Ayush.
+
+- **17 Nov: no "SC check required" lines** (§4 item 126; plugin 0.27.0, unpublished): rule in CLAUDE.md; stripped from plugin, templates, Slide-library and Renzo's deals. All deal folders clean (incl. `-wn` / `-fa`, 18 Nov). To do: Renzo commits `CLAUDE.md` + publishes 0.27.0 (until then the installed builder still adds the line).
 
 - **17 Nov: customer self-install guides in plugin 0.26.0** (§4 item 125; `ff1f76f`, unpublished): `sc-customer-academy` F0 → `F0-install-windows.md` / `F0-install-mac.md`. To do: test each on a clean machine; Renzo publishes.
 
