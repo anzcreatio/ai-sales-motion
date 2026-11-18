@@ -69,6 +69,7 @@
 | SAHE | `southern-academy-of-higher-education` | First meeting moved (TBC); keep-warm email approved, needs dates + AE name |
 
 ## 3. Resume here
+- **18 Nov: BPD Bali POC Day 1 reviewed (Willy's deal, `deals/bpd-bali-wn/`)**: review `02-meeting-review-2026-11-18.md` (16 asked-not-seen items G1–G16), overnight plan `03-overnight-build-plan.html` (Tier 1 B1–B8, 15 h; Tier 2 parked), Bank.AI 18 lines. Waiting on Renzo: register `jkt-gld-demo` in clio, say if the stand is shared, approve the plan; then `approval_pack.py new` and build for Day 2 (19 Nov 09:15 WITA).
 
 - **18 Nov: sizing-only deal entry, plugin 0.31.0** (§4 item 131; **published 18 Nov, tag v0.31.0**): `sizing.py start` creates/reuses the deal folder for partner-led deals that only need a sizing; chat stage `Sizing`.
 
