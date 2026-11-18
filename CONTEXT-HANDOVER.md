@@ -69,9 +69,9 @@
 | SAHE | `southern-academy-of-higher-education` | First meeting moved (TBC); keep-warm email approved, needs dates + AE name |
 
 ## 3. Resume here
-- **18 Nov: learning loop pilot, plugin 0.32.0** (§4 item 133; not published): `sc-ready` readiness check (quiz first), call it first in FM v0.7 + demo plan, 💡 Learn points (CHAT-FORMAT v0.2). On for Renzo only (`pilot` in `~/.apac-sc-motion.json`). To do: Renzo publishes 0.32.0 (inert for others); first real run: `am I ready for insignia-financial-rh?` (demo Thu 19 Nov); review 2 Dec with `ready.py stats`.
+- **18 Nov: learning loop pilot, plugin 0.32.0** (§4 item 133; **published 18 Nov, tag v0.32.0**): `sc-ready` readiness check (quiz first), call it first in FM v0.7 + demo plan, 💡 Learn points (CHAT-FORMAT v0.2). On for Renzo only (`pilot` in `~/.apac-sc-motion.json`). To do: run `claude plugin update apac-sc-motion@apac-sc`, new session; first real run: `am I ready for insignia-financial-rh?` (demo Thu 19 Nov); review 2 Dec with `ready.py stats`.
 
-- **18 Nov: Agrobank on-prem sizing** (§4 item 132; `deals/agrobank-fa/03-sizing*`): template filled for 5 environments; drafts to Sergey and TCS in `03-sizing-notes.md`. Tender due Thu 19 Nov. To do: Renzo/Ferdhi send the Sergey note today, apply his review, then reply to TCS; commit + publish the `sizing.py` decimal-disk fix (uncommitted in `apac-sc-motion`).
+- **18 Nov: Agrobank on-prem sizing** (§4 item 132; `deals/agrobank-fa/03-sizing*`): template filled for 5 environments; drafts to Sergey and TCS in `03-sizing-notes.md`. Tender due Thu 19 Nov. To do: Ferdhi sends the Sergey note today (MS SQL Always On, Kubernetes on Debian 12, no OpenShift), apply his review, then reply to TCS; commit + publish the `sizing.py` decimal-disk fix (uncommitted in `apac-sc-motion`).
 
 - **18 Nov: BPD Bali POC Day 1 reviewed (Willy's deal, `deals/bpd-bali-wn/`)**: review `02-meeting-review-2026-11-18.md` (16 asked-not-seen items G1–G16), overnight plan `03-overnight-build-plan.html` (Tier 1 B1–B8, 15 h; Tier 2 parked), Bank.AI 18 lines. Handed to Willy (he has the stand and clio): `04-handover-to-willy.md`; his Claude approves, builds and runs Day 2 (19 Nov 09:15 WITA).
 
