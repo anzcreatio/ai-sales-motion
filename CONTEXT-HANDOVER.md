@@ -213,7 +213,8 @@
   development in the RFP. Pre-build answers still open (recorded as assumptions in the runbook). AI parked (Support ticket on Creatio.ai invalid_client).
 
 ## 4. Likely next steps
-- **Parked (Renzo, 18 Nov 2026): generalise the BPD map into a reusable `labUiKit` component after BPD Bali Day 2.** Generic layers (object, lat/long, label, colour-by, owner, date) with BPD values as defaults, picker panel, swap the vendored kit files for the kit's own, move into `lab-ui-kit` in a worktree of its own. Steps: `Deals/bpd-bali-wn/map-sandbox/BPD-MAP-COMPONENT-README.md`.
+- **18 Nov night: no-code map `usr.GeoMap` built (labUiKit 0.7.0, kit branch `geomap`, not merged/published; log §4 item 144).** Tested on clean82: BPD Peta Cabang and collateral check from settings only, same numbers as `usr.BpdMap`. Open: Renzo reviews the branch (merge + publish?), checks the bound collateral form page `UsrGeoMapAgunan_FormPage` in the browser, clean82 session timeout back to 60. Handover `C:/Projects/builds/geomap/HANDOVER.md`.
+- *(was)* **Parked (Renzo, 18 Nov 2026): generalise the BPD map into a reusable `labUiKit` component after BPD Bali Day 2.** Generic layers (object, lat/long, label, colour-by, owner, date) with BPD values as defaults, picker panel, swap the vendored kit files for the kit's own, move into `lab-ui-kit` in a worktree of its own. Steps: `Deals/bpd-bali-wn/map-sandbox/BPD-MAP-COMPONENT-README.md`.
 
   1. Run W2 v0.2 on the next real call (first live use after the blind-test fixes); run it on SAHE once its meeting happens.
   2. Sign-off with the Sales Director, then pilot readiness: shared Claude project (blockers in
