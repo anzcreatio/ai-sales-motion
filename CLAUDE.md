@@ -28,7 +28,7 @@ up for sign-off on 3 Nov 2026. It is now being tried on real deals.
   built) and **don't touch a stand until the SC approves it** (12 Nov 2026). The three questions: (1) Who is our competition, with names if known?
   (2) Has the customer given us anything else (RFP, requirements, an email, documents)? (3) Anything else we should
   know before we start configuring? Record the answers in the deal's plan.
-- **While building** (13–14 Nov 2026, `apac-sc-motion/standards/BUILD-RULES-v0.5.md`): **approve upfront, build
+- **While building** (13–14 Nov 2026, `apac-sc-motion/standards/BUILD-RULES-v0.6.md`): **approve upfront, build
   non-stop.** With the build plan, get one approval pack (`<deal>/build/approval-pack.json`: scope, stand, compiles,
   restarts on our own clean stand, custom code with rollback, auto-rollback, data, decisions log); then build without
   asking in chat, stopping only for the six hard stops (out of scope, shared-stand restart, a sign-in Renzo must do,
@@ -113,7 +113,7 @@ up for sign-off on 3 Nov 2026. It is now being tried on real deals.
 - When a decision is made or work is finished, add the decision to `CONTEXT-HANDOVER-LOG.md` §4 (next number: re-read
   the last item number right before you write, in the same step, because parallel chats write here too; items 99–106
   were renumbered on 16 Nov after three chats reused 87–93) and
-  update `CONTEXT-HANDOVER.md` §2–§3 (status, resume point; keep it short, deal detail goes in the deal folder), so any
+  **Adding to an existing log item later:** edit that item's own line in place (re-read the file right before writing); never append text at the end of the file, because parallel chats rewrite the end (18 Nov 2026: additions to item 144 were lost that way). update `CONTEXT-HANDOVER.md` §2–§3 (status, resume point; keep it short, deal detail goes in the deal folder), so any
   Claude account, on any machine, can continue from this folder alone.
 
 ## Tools this project needs
