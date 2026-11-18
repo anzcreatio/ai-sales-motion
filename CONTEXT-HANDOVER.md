@@ -69,6 +69,8 @@
 | SAHE | `southern-academy-of-higher-education` | First meeting moved (TBC); keep-warm email approved, needs dates + AE name |
 
 ## 3. Resume here
+- **18 Nov: DOC-STANDARD v0.1** (§4 item 136; plugin 0.32.3 `a7bd1b2`, not published): every Word document uses the Creatio look via `standards/doc-kit/creatio_doc.py`; PDF through Word. To do: Renzo runs `publish.ps1`.
+
 - **18 Nov: native Freedom UI patterns → UI kit standard v0.5, plugin 0.32.2** (§4 item 135; not committed or published): §2c tokens, component looks and schema conventions from clean stand 11014982; kit `_kit-tokens.scss` now chains to Creatio's `--crt-*` tokens Committed (plugin `80995ab` + rehearsal note; kit 0.5.5 `6ab9ace` + track/focus fix). clio sees 11014982 as `clean82`. Kit 0.5.5 installed and rehearsed on clean82 (Stage funnel matches native; test page deleted). To do: publish 0.32.2; merge kit `main` into `ewb-components` before the next EWB install; check status colours in real dark mode before a customer uses it.
 
 - **18 Nov: learning loop pilot, plugin 0.32.0** (§4 item 133; **published 18 Nov, tag v0.32.0**): `sc-ready` readiness check (quiz first), call it first in FM v0.7 + demo plan, 💡 Learn points (CHAT-FORMAT v0.2). On for Renzo only (`pilot` in `~/.apac-sc-motion.json`). To do: run `claude plugin update apac-sc-motion@apac-sc`, new session; first real run: `am I ready for insignia-financial-rh?` (demo Thu 19 Nov); review 2 Dec with `ready.py stats`.
