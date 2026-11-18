@@ -70,6 +70,8 @@
 
 ## 3. Resume here
 
+- **18 Nov: sizing-only deal entry, plugin 0.31.0** (§4 item 131; committed, not published): `sizing.py start` creates/reuses the deal folder for partner-led deals that only need a sizing; chat stage `Sizing`. To do: publish.
+
 - **18 Nov: on-prem sizing skill `sc-sizing`, plugin 0.30.0** (§4 item 130; **published 18 Nov, tag v0.30.0**): calculator live + rules R1–R31 from Academy and Sergey; customer `.docx`/`.xlsx` worded as pending infra review. To do: Sergey reviews `SIZING-RULES-v0.1.json` once; recover the POC app/DB image from his 15 Jul email; settle the AI licence conflict (Freedom vs Accelerate).
 
 - **18 Nov: chat format + open-work tracking, plugin 0.29.0** (§4 item 129; `79b9c93` + `0cf54c8`, not published): `CHAT-FORMAT-v0.1` (❓ first, six marks) and `CHAT-TRACKING-v0.1` (`00-chats.md` Status/Next/Due, `desk.py chat-open | chat-set | work`, Desk sidebar section, no master chat) load into every session via the plugin hook. **Release bundled 18 Nov** (`265395f`): 0.27.0 + 0.28.0 (slide types, cover) + 0.29.0 → one changelog entry, plugin.json 0.29.0, tree clean. Older chats' statuses set (9 open). To do: Renzo runs `publish.ps1`; in a fresh session check the format applies.
@@ -108,7 +110,7 @@
 
 - **15 Nov: Navalo performance page + labUiKit 0.5.0 (no-code pickers) live on 11014108** (§4 item 89). To do: open the pickers in the designer; Renzo pushes the kit; page into the menu after Monday.
 
-- **17 Nov: East West go-live tested with real logins** (§4 items 103–104, 120): 6 logins live; unit and Dodong tests pass; gaps fixed on 11014930 (units see only Pain Point Discovery, rules read-only for units, stage bar for leads only). Cards checked by Renzo and fixed 17 Nov. Full re-run 17 Nov (§4 item 121): home tile fixed in kit 0.5.3 (counts sent cards, own unit only); EWB logins land on a new Pain Point Discovery desktop. Ready to send the logins. Report `deals/east-west-bank-rh/12-go-live-test-report.md`.
+- **17 Nov: East West go-live tested with real logins** (§4 items 103–104, 120): 6 logins live; unit and Dodong tests pass; gaps fixed on 11014930 (units see only Pain Point Discovery, rules read-only for units, stage bar for leads only). Cards checked by Renzo and fixed 17 Nov. Full re-run 17 Nov (§4 item 121): home tile fixed in kit 0.5.3 (counts sent cards, own unit only); EWB logins land on a new Pain Point Discovery desktop; all 6 logins checked 18 Nov. Ready to send the logins; open: G4 (accept cross-unit API writes?). Report `deals/east-west-bank-rh/12-go-live-test-report.md`.
 
 - **14 Nov: `sc-desk` built** (log §4 item 101): commitments ledger, stall checks, daily brief (8 am task on Renzo's PC), weekly desk view, load check; plugin commit 3ccc007 for 0.20.0, unpublished. Privacy (log items 102, 105): desk briefs, coaching and training results stay on each SC's PC; skill feedback global; no per-person scores. **0.20.0 published 15 Nov 2026** (3be2868, tag v0.20.0). Open: Renzo picks commitments to capture, connects Microsoft 365 if wanted, approves the Friday task prompt update (steps 0b, 1b, learn stats); parked ideas: win/loss debriefs, missed-review nudge, day-before readiness, stand clashes, AE weekly note, claims check, where we win.
 
