@@ -69,6 +69,7 @@
 | SAHE | `southern-academy-of-higher-education` | First meeting moved (TBC); keep-warm email approved, needs dates + AE name |
 
 ## 3. Resume here
+- **18 Nov: UI kit 0.6.4 + plugin 0.32.5 published** (§4 item 148; tag v0.32.5): kit zip in SharePoint `Library/ui-kit/packages/`, `main` = `ewb-components` = 0.6.4. Both pushed with tags 18 Nov.
 - **18 Nov: channels and integrations playbook v0.1** (§4 item 143): `apac-sc-motion/knowledge/CHANNELS-AND-INTEGRATIONS-PLAYBOOK-v0.1.md` (integrations, chat channels, social comments, WhatsApp/SMS from campaigns; Academy-only, not rehearsed). Goes out in the next plugin release. **Then (same day): channels showcase build plan v1** (§4 item 145), SharePoint `Library/channels-showcase/` (`01-build-plan.html`, `00-module-design.md`: packages, dev practice, accounts list). Decisions taken (item 146): accelerator as is, Cloudflare relay, campaign element = phase 3. Waiting on Renzo: two clean 10.1 stands + accounts; then approval pack and build. Nothing built.
 
 - **19 Nov: UI kit standard v0.6, plugin 0.32.4** (§4 items 139–140; **published 19 Nov, tag v0.32.4**): §2d = rules from all 37 Freedom UI Academy front-end pages, §2e = lessons from 40 Community forum threads, both checked against the kit. EWB kit 0.6.1 live on 11014930 (19 Nov). **Kit `main` = 0.6.2** (`c92cebc`, not pushed): `ewb-components` fast-forwarded in, then the §2d/§2e to-dos done (choice-picker default + clear with null, panel errors visible, versions pinned, canSave/canDelete before writes, Stage funnel server-side counts); 116 tests; installed and rehearsed on clean82 only (counts match 104; test page deleted). Left: i18n (before a non-English customer); EWB stand gets 0.6.2 only with Renzo's yes and a heads-up to the EWB chat; zoneless test on a 10.2 stand before any customer stand goes to 10.2.1.
@@ -212,6 +213,7 @@
   development in the RFP. Pre-build answers still open (recorded as assumptions in the runbook). AI parked (Support ticket on Creatio.ai invalid_client).
 
 ## 4. Likely next steps
+- **Parked (Renzo, 18 Nov 2026): generalise the BPD map into a reusable `labUiKit` component after BPD Bali Day 2.** Generic layers (object, lat/long, label, colour-by, owner, date) with BPD values as defaults, picker panel, swap the vendored kit files for the kit's own, move into `lab-ui-kit` in a worktree of its own. Steps: `Deals/bpd-bali-wn/map-sandbox/BPD-MAP-COMPONENT-README.md`.
 
   1. Run W2 v0.2 on the next real call (first live use after the blind-test fixes); run it on SAHE once its meeting happens.
   2. Sign-off with the Sales Director, then pilot readiness: shared Claude project (blockers in
