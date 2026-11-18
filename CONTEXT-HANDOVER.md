@@ -70,6 +70,8 @@
 
 ## 3. Resume here
 
+- **18 Nov: Scentia install guide** (`deals/scentia/12-customer-toolkit-install.md`): one prompt for Windows and Mac, site `11014147-demo`, connection `scentia`; `13-…-windows.md` superseded. To do: Renzo sends it to the builders.
+
 - **18 Nov: FirstCape intro reviewed** (§4 item 127): no FM pack, by the customer's "no further work". Drafts `deals/firstcape-rh/02-…onepager.md` + `03-ae-email-draft.md` await Renzo; then PDF the one-pager for Ayush.
 
 - **17 Nov: no "SC check required" lines** (§4 item 126; plugin 0.27.0, unpublished): rule in CLAUDE.md; stripped from plugin, templates, Slide-library and Renzo's deals. All deal folders clean (incl. `-wn` / `-fa`, 18 Nov). To do: Renzo commits `CLAUDE.md` + publishes 0.27.0 (until then the installed builder still adds the line).
