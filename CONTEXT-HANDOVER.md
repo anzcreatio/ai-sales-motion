@@ -70,6 +70,10 @@
 
 ## 3. Resume here
 
+- **18 Nov: chat format + open-work tracking, plugin 0.29.0** (§4 item 129; `79b9c93` + `0cf54c8`, not published): `CHAT-FORMAT-v0.1` (❓ first, six marks) and `CHAT-TRACKING-v0.1` (`00-chats.md` Status/Next/Due, `desk.py chat-open | chat-set | work`, Desk sidebar section, no master chat) load into every session via the plugin hook. **Release bundled 18 Nov** (`265395f`): 0.27.0 + 0.28.0 (slide types, cover) + 0.29.0 → one changelog entry, plugin.json 0.29.0, tree clean. Older chats' statuses set (9 open). To do: Renzo runs `publish.ps1`; in a fresh session check the format applies.
+
+- **18 Nov: new visual slide types proposed** (§4 item 128): 9 types in the creatio.com style, mock-ups on https://claude.ai/artifact/Fv5a9SYA5PYBqDqh1RA4Hi. Built: 8 types (not the values tiles), DECK-STANDARD v0.6, **published in plugin 0.29.0 (18 Nov, tag v0.29.0)**. To do: brand photos for `photo_cards`.
+
 - **18 Nov: Scentia install guide** (`deals/scentia/12-customer-toolkit-install.md`): one prompt for Windows and Mac, site `11014147-demo`, connection `scentia`; `13-…-windows.md` superseded. To do: Renzo sends it to the builders.
 
 - **18 Nov: FirstCape intro reviewed** (§4 item 127): no FM pack, by the customer's "no further work". Deck `05-comparison-deck.pptx` + email `03` await Renzo, then Ayush sends. No build until Dawie names a gap.
