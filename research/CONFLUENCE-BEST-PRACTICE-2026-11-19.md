@@ -79,3 +79,32 @@ Skipped on purpose: ~140 Russian pages from 2012–2017 about Classic UI / bpm'o
 SCRUM, VM and phone rules.
 
 URL: `https://creatio.atlassian.net/wiki/spaces/<SPACE>/pages/<id>`.
+
+## 6. Mobile pages (second pass, 19 Nov 2026)
+
+88 mobile pages changed since Jun 2025; 13 read. **Already covered well by the demo toolkit**
+(`creatio-freedom-pages/references/mobile-golden-standard.md`: layout, crashers, refresh after a process, default
+mobile sections via `SysWorkplace` + `SysModule.MobileSectionSchemaUId`) and by our `UI-KIT-STANDARD` (custom
+components don't render on mobile). New from Confluence:
+
+| # | Rule | Source (space, id, date) | Tag |
+|---|---|---|---|
+| 1 | **Web and mobile pages are separate.** A web page never appears in the app by itself; after conversion the two are independent, so a later web change must be copied by hand | TER 5137727548 "[Academy draft] Convert web pages to mobile pages", 29 Sep 2026 | C |
+| 2 | **Use R&D's `creatio-mobile-page-conversion` skill** (installed with the AI app development toolkit) to build a mobile version: analysis → plan in plain words → your approval → build → publishing approval → report. Prompt: "Convert the Leads section to mobile." Beta; **phone layout only, no tablet**; Freedom UI pages only | same | C |
+| 3 | **Publishing replaces what's there:** registering the section or the default mobile edit page makes the app open the new page instead of the current one. Check what users see today first. **Converting again overwrites Mobile Designer edits**: say "update the existing mobile page", or the agent may create a duplicate | same | C |
+| 4 | Buttons that open a page with no mobile version open nothing (e.g. New on Products): convert the related object's form page too | same | C |
+| 5 | **Mobile page schemas are JSON only: no code in the page.** Logic goes in request handlers through the mobile TS SDK (`@creatio/mobile-common`) | TER 2754380052 "Mobile 8.X. Page schema metadata", 28 Jan 2026; TER 5331058690, 16 Nov 2026 | C |
+| 6 | **Custom view elements on mobile don't exist yet.** The app is compiled Flutter; an unknown component type renders a placeholder. R&D's design for `usr.*` mobile components is a DRAFT (16 Nov 2026). Plan native fields for every custom web component | TER 5331058690 "Architectural solution: Mobile custom components", 16 Nov 2026 | C |
+| 7 | **Offline business rules are limited:** only model-level rules run on the device; page (view) rules, rules that need server code (e.g. case number generation) or unsynchronised data don't. If the demo is offline, test every rule with the network off | TER 2482537177 "Flutter. Low-code. Бізнес-правила" (business rules), 8 Feb 2023; TER 5137727548 | C |
+| 8 | **Data freshness per list:** `cacheConfig.readMode` on the attribute: `auto` (0), `forceLocal` (1), `forceRemote` (2, always fresh: use for a live demo list), `remote` (3), plus `cacheMaxAge` in minutes | TER 2853241136 "Mobile 8.X. Load component data", 21 Jul 2026 | C |
+| 9 | **Mobile workplaces (8.3.3+):** Workplace setup → Usage type = Mobile → sections → user groups. Existing stands need feature `Mobile.UseSysWorkplaceForModuleRegistration`, and users on a legacy workplace must switch to "Main workplace" in Settings to see all sections | TER 4195778627 "Workplaces in the Creatio Mobile App", 16 Jan 2026 | C |
+| 10 | Mobile list page for an existing web section: Application Hub → Add page → "List page mobile", then set `SysModule.MobileSectionSchemaUId` (SQL) and, from 8.3.2, add the section to a mobile workplace | TER 4375085089, 23 Mar 2026 | C |
+| 11 | Hide the floating action button (Copy/Delete): in the page's `viewConfigDiff`, `merge` `FloatingActionButton` with `visible: false` | TER 2848063544, 18 May 2026 | C |
+| 12 | Mobile has its own components (`crt.FloatingActionButton`, `crt.Button` with `menuItems` and `buttonType: quick-add`, `crt.IndicatorWidget` with `useCompactFormat`, `crt.ChartWidget`) and a native DCM stage bar that works offline from cached stage data | TER 2853863987 "Mobile 8.X. Components", 24 Sep 2026; TER 4672553000, 6 Jul 2026; TER 4018896947, 28 Jan 2026 | C |
+| 13 | Gaps seen in a real project (Apr 2026): buttons that create a record pre-filled from the page aren't fully no-code; no way to limit rows shown in a detail; custom-code features (e.g. "Set GPS coordinates") need a plan | TER 4503896109 "Mobile Freedom UI App Designer gap analysis", 14 Apr 2026 | C |
+
+**For our builds (I):** rules 1–4, 6–9 belong in BUILD-RULES as a short mobile block (pending Renzo's OK); rules 8,
+11, 12 are details for the toolkit owners.
+
+Pages read: 5137727548, 4181721096, 4503896109, 4375085089, 5331058690, 2754380052, 2853863987, 2853241136,
+2848063544, 4195778627, 4672553000, 5273026563, 2371551418, 2358904221, 2482537177 (Ukrainian), 4018896947.
