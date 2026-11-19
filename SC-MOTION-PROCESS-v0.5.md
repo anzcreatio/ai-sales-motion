@@ -421,6 +421,7 @@ per deal · SE hours used · demo → next-stage conversion · partner feedback 
 ## 15. Changes
 
 ### After v0.5: live-deal updates
+- **19 Nov 2026: release flow** (Renzo). Chats change the plugin and add to `## Unreleased`; only `publish.ps1` picks the version and releases; `RELEASE-QUEUE.md` for requests; session start shows what waits. Same pattern for the UI kit (Scentia chat). Rule in CLAUDE.md. Log §4 item 159.
 - **19 Nov 2026: version clean-up** (plugin 0.36.1; Renzo). `UI-KIT-STANDARD-v0.6.md` renamed `-v0.7.md` to match its content; one release owner per artefact (plugin: motion chat; UI kit: Scentia chat), rule in CLAUDE.md. Log §4 item 158.
 - **19 Nov 2026: tool routing v0.1** (plugin 0.36.1; Renzo). New `apac-sc-motion/standards/TOOL-ROUTING-v0.1.md`, loaded into every session by the SessionStart hook: which tool or guidance to use first for custom components, pro-code, mobile, clio work and naming. Log §4 item 157.
 - **19 Nov 2026: build rules v0.8** (plugin 0.36.0; Renzo, from Creatio's Confluence mobile pages). `BUILD-RULES-v0.7` renamed to `-v0.8`, new §7 mobile pages: web and mobile pages separate, R&D conversion skill plan first (phone only), check before publishing, related form pages, no custom components on mobile, offline business rules, fresh lists, mobile workplace. Toolkit notes rule 10. Log §4 item 156.
