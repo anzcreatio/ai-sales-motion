@@ -18,7 +18,7 @@ I = my inference.
 |---|---|---|---|---|
 | 1 | **Connect the Creatio Instructions MCP** (`https://ai-instructions-rnd.creatio.com/api/v1/mcp`), so I load R&D's current instructions before building instead of relying on what I remember | Better: same guidance R&D's agents use, updated centrally | 15 min | Your OK. It's internal R&D tooling, may need VPN or Nexus access. The full installer (`install.py`) also adds skills and MCP servers, so run it yourself, not me |
 | 2 | **Custom components: tell the agent "Read AI_GUIDES from @creatio libraries"** and use two prompts: one for the component (behaviour, config panel, binding, validation, accessibility), one for registering it in the Designer | Better first build, fewer fix loops | Add to `UI-KIT-STANDARD` | Nothing. Check the guides exist in `node_modules/@creatio/*` on the next build |
-| 3 | **Atlassian MCP** (`claude mcp add --scope user --transport http atlassian https://mcp.atlassian.com/v1/mcp`, or the `ai-driven-atlassian:atlassian-setup` skill) | Faster: I can search Confluence in any chat without driving a browser | 10 min | Your sign-in |
+| 3 | ~~Atlassian MCP so chats can search Confluence~~ | **Declined by Renzo (19 Nov 2026):** chats don't search Confluence | — | — |
 | 4 | Add the §3 rules to `BUILD-RULES` v0.7 as a short "configuration quality" section | Safer + better | 1 h | Your OK |
 | 5 | Send the toolkit owners (creatio-demo-lab) the rules from §3 that belong in their skills | Better for every SC | 30 min | — |
 
