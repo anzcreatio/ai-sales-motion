@@ -28,7 +28,7 @@ up for sign-off on 3 Nov 2026. It is now being tried on real deals.
   built) and **don't touch a stand until the SC approves it** (12 Nov 2026). The three questions: (1) Who is our competition, with names if known?
   (2) Has the customer given us anything else (RFP, requirements, an email, documents)? (3) Anything else we should
   know before we start configuring? Record the answers in the deal's plan.
-- **While building** (13–14 Nov 2026, `apac-sc-motion/standards/BUILD-RULES-v0.7.md`): **approve upfront, build
+- **While building** (13–14 Nov 2026, `apac-sc-motion/standards/BUILD-RULES-v0.8.md`): **approve upfront, build
   non-stop.** With the build plan, get one approval pack (`<deal>/build/approval-pack.json`: scope, stand, compiles,
   restarts on our own clean stand, custom code with rollback, auto-rollback, data, decisions log); then build without
   asking in chat, stopping only for the six hard stops (out of scope, shared-stand restart, a sign-in Renzo must do,
