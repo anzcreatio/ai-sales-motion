@@ -106,6 +106,12 @@ up for sign-off on 3 Nov 2026. It is now being tried on real deals.
 - New deal: create `deals/<kebab-case-account>-<initials>/` (`rh` Renzo, `wn` Willy, `fa` Ferdhi; from `"sc"` in
   `~/.apac-sc-motion.json`) and number the files in workflow order. Suffix on the deal folder only; one folder per
   account (reuse it whatever its suffix); never rename. Folders made before 12 Nov 2026 have no suffix. Rule: `sc-setup`.
+- **One release owner per artefact** (19 Nov 2026, Renzo, after two chats released the UI kit and the plugin at once):
+  the **SC motion plugin** (version bumps and `publish.ps1`) is owned by the motion chat ("Confluence best-practice
+  research"); the **UI kit** (`main`, releases, stand installs) by the Scentia chat ("Scentia · Build · No-code portal
+  components"). Any other chat commits its changes **without bumping the version, publishing or installing the kit**,
+  and tells Renzo to hand the release to the owner. Never install a kit build on a deal stand (Navalo, EWB) without
+  that deal's OK.
 - **Never put `node_modules`, build caches (`.angular`, `dist`) or videos in a deal folder**: it is synced to every SC.
   Custom-component workspaces live in `C:\Projects\builds\<account>\`; only their source and a README go in the deal folder.
 - When a decision is made or work is finished, add the decision to `CONTEXT-HANDOVER-LOG.md` §4 (next number: re-read

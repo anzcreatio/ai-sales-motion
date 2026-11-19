@@ -69,7 +69,7 @@
 | SAHE | `southern-academy-of-higher-education` | First meeting moved (TBC); keep-warm email approved, needs dates + AE name |
 
 ## 3. Resume here
-- **19 Nov: tool routing v0.1, plugin 0.36.1** (§4 item 157; committed, **not published**). Open: auto-refresh of toolkit notes + AI app dev toolkit check in `sc-setup` (awaiting Renzo's yes).
+- **19 Nov: tool routing v0.1, plugin 0.36.1** (§4 items 157, 158; **published 19 Nov, tag v0.36.1**, with `UI-KIT-STANDARD-v0.7` rename). Release owners: plugin = motion chat, UI kit = Scentia chat (CLAUDE.md). Open: auto-refresh of toolkit notes + AI app dev toolkit check in `sc-setup` (awaiting Renzo's yes); kit 0.8.4 version integrity (Scentia chat).
 - **19 Nov: build rules v0.8 §7 mobile pages, plugin 0.36.0** (§4 item 156; **published 19 Nov, tag v0.36.0**, includes 0.35.1). Renzo's PC updated; toolkit notes block refreshed (rules 1–10).
 - **19 Nov: build rules v0.7 from Creatio Confluence, plugin 0.35.0** (§4 item 153; **published 19 Nov, tag v0.35.0**): `BUILD-RULES-v0.7` §6 configuration quality + toolkit notes rule 9; research `research/CONFLUENCE-BEST-PRACTICE-2026-11-19.md`. `creatio-instructions-mcp` ships in the plugin's `.mcp.json` (VPN only); Renzo's PC updated, hand-added copy removed, plugin copy connected; plugin repo's own `.mcp.json` disabled in its `.claude/settings.local.json`. No Atlassian MCP (Renzo). To do: Renzo sends `research/TOOLKIT-FEEDBACK-confluence-2026-11-19.md` to the toolkit owners.
 - **18 Nov: UI kit 0.6.4 + plugin 0.32.5 published** (§4 item 148; tag v0.32.5): kit zip in SharePoint `Library/ui-kit/packages/`, `main` = `ewb-components` = 0.6.4. Both pushed with tags 18 Nov.
