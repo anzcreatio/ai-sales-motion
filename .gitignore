@@ -19,6 +19,9 @@ tests/w2-v0.2-01-suntory-oceania/
 tests/w2-v0.2-02-perth-radiological-clinic/
 research/pricing-2026-11-13/BOM-EXAMPLE-*.xlsx
 
+# Session-end sync hook log (per machine)
+.claude/hooks/session-end-sync.log
+
 # Never commit credentials
 CREDENTIALS.md
 **/CREDENTIALS.md

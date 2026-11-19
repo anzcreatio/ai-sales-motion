@@ -50,10 +50,17 @@ Set this Mac up for my "AI Sales Motion" project. Read ~/Projects/Workspaces/AI 
 7. `pip3 install python-pptx`.
 8. Run the `sc-setup` skill's checks and report: what works, what's missing, what Renzo must do.
 9. Don't create scheduled tasks: the Friday digest, Monday release message and 8 am desk brief run on the PC only.
+10. Add the session-end sync hook (16 Nov 2026, log §4) to `.claude/settings.local.json` in this project (create it if
+    missing; it isn't in git). Copy the `"hooks": {"SessionEnd": …}` block from the PC's file, or:
+    `"hooks": {"SessionEnd": [{"hooks": [{"type": "command", "command": "\"$(command -v python || command -v python3)\" \"$CLAUDE_PROJECT_DIR/.claude/hooks/session_end_sync.py\"", "timeout": 90}]}]}`.
+    Test it dry: `echo '{}' | SYNC_DRY_RUN=1 python3 .claude/hooks/session_end_sync.py`. Also copy the PC's
+    `permissions.deny` git-push rules, so Claude itself still can't push.
 
 ## Working on two machines (the rule)
-- **Start:** `git pull` in both repos. **Stop or switch:** commit and `git push` both repos, and update
-  `CONTEXT-HANDOVER.md` §3 (Resume here).
+- **Start:** `git pull` in both repos. **Stop or switch:** update `CONTEXT-HANDOVER.md` §3 (Resume here); when the
+  chat closes, the session-end hook commits the two handover files and pushes both repos (skipped after a demo build:
+  push those by hand once you've read the build report). Anything else (plugin source, process docs) you still commit
+  yourself.
 - **One machine per deal at a time.** Deal files are on OneDrive: two machines editing one file make conflict copies.
 - **Publish the plugin from the PC only** (`publish.ps1` and `office_deck.ps1` are Windows-only). On the Mac you can edit
   and push plugin source; publish happens on the PC.
