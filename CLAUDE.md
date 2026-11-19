@@ -12,8 +12,8 @@ up for sign-off on 3 Nov 2026. It is now being tried on real deals.
    version** (§8; if another file disagrees with §8, §8 wins; §15 = changelog). Not needed for deal work through the
    plugin skills.
 3. The workflow for the task. **Default since 11 Nov 2026: the plugin repo `apac-sc-motion/`** (team rollout).
-   First meeting = skill `apac-sc-motion/skills/sc-first-meeting/SKILL.md` (FM v0.6); decks = `sc-deck` +
-   `apac-sc-motion/standards/DECK-STANDARD-v0.5.md` (one `deck.json` per deal). Packs, catalogue and governance pack:
+   First meeting = skill `apac-sc-motion/skills/sc-first-meeting/SKILL.md` (FM v0.7); decks = `sc-deck` +
+   `apac-sc-motion/standards/DECK-STANDARD-v0.6.md` (one `deck.json` per deal). Packs, catalogue and governance pack:
    the copies in `apac-sc-motion/knowledge/` are the ones SCs use, so change them there. The full motion stays for later
    stages: `W1-Pre-Call.md`, `W2-Post-Call.md`, `W3-Demo-Design.md` (deeper demo), `W5-Close.md` (Proposal + Partner Pack).
 
@@ -55,28 +55,21 @@ up for sign-off on 3 Nov 2026. It is now being tried on real deals.
   discovery), when the SC got the transcript, and when the demo is (planned, then done). Use
   `apac-sc-motion/skills/sc-guide/scripts/deal_dates.py` (`show`, `set`, `stats`). Take dates from the handoff or the
   transcript; ask at the top only for the missing ones; never guess.
-- **Customer chats: one sidebar section per customer, numbered titles** (16 Nov 2026, log §4 item 95). As soon as a
-  chat is about a customer (first message names the account, or a deal skill runs on it):
-  1. **Number from the deal folder, not the sidebar.** Read `<deal>/00-chats.md` (create it if missing: header with
-     the short customer name + section name, then a table `No · Date · Machine · Stage · Topic · Outcome`). Next
-     number = last row + 1. Write the row straight away (outcome blank) so a parallel chat can't take the same number.
-     The sidebar is per machine; this file is shared across the PC, the Mac and the other SCs.
-  2. **Section:** `list_sections`; if the customer has none, `create_section` named `<Customer full name> (<SHORT>)`
-     only when a short name is in use, else just the name (e.g. `Bussan Auto Finance (BAF)`, `Navalo`). Then
-     `move_sessions` with `self`. Never a near-duplicate section.
-  3. **Title:** `set_session_title` self → **`<Customer> NN · <Stage> · <topic>`**, under ~50 characters.
-     Customer = the short name from `00-chats.md` (same in every chat). NN = two digits. Stage = one of: `Intake`,
-     `FM prep`, `Meeting review`, `Demo plan`, `Build`, `Deck`, `RFP`, `Workshop`, `Click path`, `Proposal`, `Admin`.
-     Topic = 2–4 words on what this chat is for. E.g. `Navalo 04 · Build · performance page`.
-  4. **At wrap-up**, fill the row's outcome (one line) and fix the topic if the chat drifted.
-  Not for scheduled tasks (transcript intake, digests, desk brief) or motion/plugin work; those stay ungrouped.
+- **Customer chats and reply format: in the plugin since 0.29.0** (18 Nov 2026, log §4). `apac-sc-motion/standards/
+  CHAT-TRACKING-v0.2.md` (number + row via `desk.py chat-open`, sidebar section per customer, title
+  `🟢 <Customer> NN · <Stage> · <topic>`; since 0.33.0 every open chat's title carries 🟢/🟡/🔵, removed on "end chat", log §4 item 149, status/next/due via `desk.py chat-set` at every wrap-up; "what's running?" =
+  `desk.py work`; no master chat) and `CHAT-FORMAT-v0.1.md` (❓ questions first with defaults, ⚠️ only for real risk,
+  ✅ done, 💡 learn; seven fixed marks). The plugin's SessionStart hook loads both into every session. Not for scheduled tasks
+  or motion/plugin work.
 - He wants a recommendation, not a menu. Plain Australian English, tables, short steps, no long prose. He types
   fast, so typos are normal.
 - **Process first:** don't build Creatio modules or touch Creatio stands for this work unless he asks.
 - Never type passwords, register clio environments, create accounts, or open `CREDENTIALS.md` files.
 - **Two machines** (16 Nov 2026): Renzo works on a Windows PC and a Mac (separate Claude seats; nothing but this folder
   crosses). This folder and `apac-sc-motion/` are private git repos on GitHub `anzcreatio`. At the start of a session
-  `git pull` both; before stopping, commit + push both and update the handover §3. One machine per deal at a time
+  `git pull` both; before stopping, update the handover §3. A **SessionEnd hook** (`.claude/hooks/session_end_sync.py`,
+  in `settings.local.json`) then commits only the two handover files and pushes committed work in both repos; it skips
+  demo-build chats. Claude itself still may not `git push` (deny rule); commit other files yourself or leave them to Renzo. One machine per deal at a time
   (deals are on OneDrive). Publish the plugin and run scheduled tasks on the PC only. Setup: `_mac-setup/MAC-SETUP.md`.
 
 ## Folder map
@@ -104,7 +97,12 @@ up for sign-off on 3 Nov 2026. It is now being tried on real deals.
   reference to it (process §8 above all), and add a line to the process §15 changelog.
 - Evidence tags in every output: **C** Confirmed · **I** Inferred · **A** Assumed. Every research fact gets a source
   and a date. Keep numbers in their exact unit.
-- Every customer-facing output ends with "SC check required before this is used with the customer."
+- **Word documents use the Creatio look** (18 Nov 2026, Renzo): every Word document in the motion, customer or
+  internal, is built with the doc kit per `apac-sc-motion/standards/DOC-STANDARD-v0.1.md` (logo, orange cover band,
+  Montserrat headings, navy tables, estimates shaded, status in the footer), exported to PDF through Word, every page checked.
+- **No "SC check" warning lines** (17 Nov 2026, Renzo): never add "SC check required before this is used with the
+  customer." or any similar line to anything you generate (docs, emails, decks, notes, HTML, scripts). The SC still
+  reviews everything before it reaches a customer and Claude never sends; the line itself is gone.
 - New deal: create `deals/<kebab-case-account>-<initials>/` (`rh` Renzo, `wn` Willy, `fa` Ferdhi; from `"sc"` in
   `~/.apac-sc-motion.json`) and number the files in workflow order. Suffix on the deal folder only; one folder per
   account (reuse it whatever its suffix); never rename. Folders made before 12 Nov 2026 have no suffix. Rule: `sc-setup`.
