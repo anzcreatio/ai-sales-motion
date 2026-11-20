@@ -69,6 +69,7 @@
 | SAHE | `southern-academy-of-higher-education` | First meeting moved (TBC); keep-warm email approved, needs dates + AE name |
 
 ## 3. Resume here
+- **19 Nov: GenLife proof build done on 11015170** (§4 item 160; `deals/genlife-rh/09-proof-pack/`, build report `build/build-report.md`): all 8 steps proven (dup on save, name + DOB, adviser code, rules on every channel no code, export history, live change, listener block). Stand left clean for the live call with Tim (rules inactive). To do: Renzo reviews the pack and sends it; Claude never sends.
 - **19 Nov: release flow** (§4 item 159): plugin changes go under `## Unreleased`; "publish the plugin" runs `publish.ps1` (picks the version). Queue: `apac-sc-motion/RELEASE-QUEUE.md`. Mac: add `plugin_repo` to `~/.apac-sc-motion.json`. Kit side: Scentia chat.
 - **19 Nov: tool routing v0.1, plugin 0.36.1** (§4 items 157, 158; **published 19 Nov, tag v0.36.1**, with `UI-KIT-STANDARD-v0.7` rename). Release owners: plugin = motion chat, UI kit = Scentia chat (CLAUDE.md). Open: auto-refresh of toolkit notes + AI app dev toolkit check in `sc-setup` (awaiting Renzo's yes); kit 0.8.4 version integrity (Scentia chat).
 - **19 Nov: build rules v0.8 §7 mobile pages, plugin 0.36.0** (§4 item 156; **published 19 Nov, tag v0.36.0**, includes 0.35.1). Renzo's PC updated; toolkit notes block refreshed (rules 1–10).
