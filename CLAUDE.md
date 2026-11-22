@@ -58,7 +58,7 @@ up for sign-off on 3 Nov 2026. It is now being tried on real deals.
 - **Customer chats and reply format: in the plugin since 0.29.0** (18 Nov 2026, log §4). `apac-sc-motion/standards/
   CHAT-TRACKING-v0.2.md` (number + row via `desk.py chat-open`, sidebar section per customer, title
   `🟢 <Customer> NN · <Stage> · <topic>`; since 0.33.0 every open chat's title carries 🟢/🟡/🔵, removed on "end chat", log §4 item 149, status/next/due via `desk.py chat-set` at every wrap-up; "what's running?" =
-  `desk.py work`; no master chat) and `CHAT-FORMAT-v0.1.md` (❓ questions first with defaults, ⚠️ only for real risk,
+  `desk.py work`; no master chat) and `CHAT-FORMAT-v0.3.md` (❓ questions first with defaults, ⚠️ only for real risk,
   ✅ done, 💡 learn; seven fixed marks). The plugin's SessionStart hook loads both into every session. Not for scheduled tasks
   or motion/plugin work.
 - He wants a recommendation, not a menu. Plain Australian English, tables, short steps, no long prose. He types
