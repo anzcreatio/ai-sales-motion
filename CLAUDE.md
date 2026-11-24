@@ -13,7 +13,7 @@ up for sign-off on 3 Nov 2026. It is now being tried on real deals.
    plugin skills.
 3. The workflow for the task. **Default since 11 Nov 2026: the plugin repo `apac-sc-motion/`** (team rollout).
    First meeting = skill `apac-sc-motion/skills/sc-first-meeting/SKILL.md` (FM v0.7); decks = `sc-deck` +
-   `apac-sc-motion/standards/DECK-STANDARD-v0.6.md` (one `deck.json` per deal). Packs, catalogue and governance pack:
+   `apac-sc-motion/standards/DECK-STANDARD-v0.7.md` (one `deck.json` per deal). Packs, catalogue and governance pack:
    the copies in `apac-sc-motion/knowledge/` are the ones SCs use, so change them there. The full motion stays for later
    stages: `W1-Pre-Call.md`, `W2-Post-Call.md`, `W3-Demo-Design.md` (deeper demo), `W5-Close.md` (Proposal + Partner Pack).
 
