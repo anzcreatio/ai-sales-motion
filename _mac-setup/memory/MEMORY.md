@@ -6,3 +6,14 @@
 - [clio MCP reads a stale app copy](clio-register-outside-claude-app.md) — check BOTH appsettings files (PowerShell) before telling Renzo where to register; the MSIX copy comes back; never use show-web-app-list
 - [Build rules + Bank.AI log](build-rules-and-bank-ai.md) — ask before compile/restart (refresh first), token check on failures, rollback plan before custom/code, BFSI deals feed Bank.AI
 - [Demo depth first](demo-depth-first.md) — new deal: ask intro vs detailed demo first; detailed = pack best practice + Full demo plan
+- [Customer slides: labels, not explanations](customer-slides-labels-not-explanations.md) — customer diagrams = short plain labels; caveats in internal notes; customer-safe speaker notes
+- [Customer chat sections](customer-chat-sections.md) — per-customer sidebar section, number from <deal>/00-chats.md, title "<Customer> NN · <Stage> · <topic>"
+- [No "SC check" lines](no-sc-check-lines.md) — never add "SC check required…" warning lines to any generated content (17 Nov 2026)
+- [Kit worktree ownership](kit-worktree-ownership.md) — never build/edit in another chat's kit worktree (ui-kit-ewb = EWB chat); use your own worktree
+- [Customer question sheets](customer-question-sheets.md) — working xlsx with help columns for the SC; customer xlsx = # · IDs · question · answer; reasons inline, short, no past-call references
+- [Freedom UI dedup on save](freedom-ui-dedup-on-save.md) — needs EnableDeduplicationFreedomUI feature registered + on; demo stands lack it
+- [Street-smart deal strategy](street-smart-deal-strategy.md) — deal reads cover politics, motives, blockers and tells; no theoretical hypotheses
+- [Mock-ups look like Creatio](mockups-look-like-creatio.md) — every Creatio screen mock-up uses standards/mockup-kit (Freedom UI values), never our own styling
+- [Banner-style record pages](banner-style-record-pages.md) — demo record pages lead with a native banner (key number, route, main action) + live tiles, not plain forms
+- [No specific dates on next steps](no-specific-dates-next-steps.md) — steps only on the slide, timing in notes; no dates in the agenda goal (24 Nov 2026)
+- [AI Twin needs password session](ai-twin-password-session.md) — Twin connects only with username/password login, matching email, and one-time SC consent
